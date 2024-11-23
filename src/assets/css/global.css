@@ -1,0 +1,24 @@
+html,
+body {
+    margin: 0;
+    padding: 0;
+    height: 100%;
+    width: 100%;
+    background-color: rgb(19, 19, 26);
+    color: white;
+}
+
+/* 排除特定类 */
+.el-tooltip__popper.is-light {
+    color: black !important;
+    /* 保证该类的颜色为黑色 */
+}
+
+span {
+    font-weight: 200;
+}
+
+.el-table td,
+.el-table th.is-leaf {
+    border-bottom: none;
+}
