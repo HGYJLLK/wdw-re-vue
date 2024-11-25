@@ -191,7 +191,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 export default {
   name: "musicPlay",
   props: {},
@@ -203,7 +203,7 @@ export default {
       //判断是否被拖动
       isChange: false,
       //音量值
-      volumeVal: 50,
+      volumeVal: 12,
       //当前音量
       nowVolume: 50,
     };
@@ -241,6 +241,8 @@ export default {
   methods: {
     // 播放音乐
     playSong() {
+      console.log("this.musicUrl", this.musicUrl);
+
       if (!this.musicUrl) {
         const h = this.$createElement;
         this.$message.error({

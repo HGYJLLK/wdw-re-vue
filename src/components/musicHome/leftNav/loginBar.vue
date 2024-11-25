@@ -13,16 +13,18 @@
       <span class="loginSta">未登录</span>
     </div>
     <div v-else>
-      <el-dropdown>
-        <el-avatar
-          :src="userInfo.avatarUrl"
-          class="userHead"
-          style="vertical-align: middle; cursor: pointer"
-        ></el-avatar>
-        <span class="loginSta" style="cursor: default">{{
-          userInfo.nickname
-        }}</span>
-        <el-dropdown-menu slot="dropdown">
+      <el-avatar
+        :src="'http://127.0.0.1:5001/' + userInfo.avatarUrl || defaultAvatar"
+        class="userHead"
+        style="vertical-align: middle; cursor: default"
+      ></el-avatar>
+
+      <el-dropdown trigger="click">
+        <span class="loginSta" style="cursor: pointer"
+          >{{ userInfo.nickname }}<i class="el-icon-caret-bottom"></i
+        ></span>
+
+        <el-dropdown-menu slot="dropdown" style="margin-top: 15px">
           <el-dropdown-item @click.native="handleEditProfile">
             <i class="el-icon-user"></i> 个人信息
           </el-dropdown-item>
@@ -39,7 +41,7 @@
       :visible.sync="profileDialogVisible"
       width="400px"
       custom-class="profile-dialog"
-      :modal-append-to-body="false"
+      :close-on-click-modal="false"
     >
       <div class="profile-edit">
         <!-- 头像上传 -->
@@ -55,7 +57,9 @@
           >
             <img
               v-if="(userInfo && userInfo.avatarUrl) || tempAvatar"
-              :src="userInfo.avatarUrl || tempAvatar"
+              :src="
+                'http://127.0.0.1:5001/' + userInfo.avatarUrl || defaultAvatar
+              "
               class="avatar"
             />
             <i v-else class="el-icon-plus avatar-uploader-icon"></i>
@@ -66,29 +70,52 @@
           </el-upload>
         </div>
 
-        <!-- 用户信息表单 -->
-        <el-form :model="profileForm" label-width="80px" class="profile-form">
+        <el-form
+          :label-position="labelPosition"
+          label-width="80px"
+          :model="profileForm"
+          class="profile-form"
+        >
           <el-form-item label="用户名">
-            <el-input
-              type="text"
-              v-model="profileForm.username"
-              disabled
-            ></el-input>
+            <el-input v-model="profileForm.username" disabled></el-input>
           </el-form-item>
           <el-form-item label="昵称">
-            <el-input
-              type="text"
-              v-model="profileForm.nickname"
-              placeholder="请输入昵称"
-            ></el-input>
+            <el-input v-model="profileForm.nickname"></el-input>
           </el-form-item>
           <el-form-item label="简介">
-            <el-input
-              type="textarea"
-              v-model="profileForm.intro"
-              placeholder="请输入简介"
-            ></el-input>
+            <el-input type="textarea" v-model="profileForm.intro"></el-input>
           </el-form-item>
+
+          <el-button
+            type="primary"
+            @click="togglePasswordSection"
+            class="password-btn"
+            >修改密码</el-button
+          >
+
+          <div class="password-section" v-if="showPasswordSection">
+            <el-form-item label="旧密码">
+              <el-input
+                type="password"
+                v-model="profileForm.oldPassword"
+                placeholder="请输入旧密码"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="新密码">
+              <el-input
+                type="password"
+                v-model="profileForm.newPassword"
+                placeholder="请输入新密码"
+              ></el-input>
+            </el-form-item>
+            <el-form-item label="确认密码">
+              <el-input
+                type="password"
+                v-model="profileForm.confirmPassword"
+                placeholder="请确认新密码"
+              ></el-input>
+            </el-form-item>
+          </div>
         </el-form>
       </div>
       <div slot="footer" class="dialog-footer">
@@ -96,9 +123,6 @@
         <el-button type="primary" @click="handleSaveProfile">确 定</el-button>
       </div>
     </el-dialog>
-
-    <img :src="defaultAvatar" alt="img" />
-    
   </div>
 </template>
 
@@ -127,8 +151,12 @@ export default {
         nickname: "",
         avatarUrl: "",
         intro: "",
+        oldPassword: "",
+        newPassword: "",
+        confirmPassword: "",
       },
-      defaultAvatar
+      defaultAvatar,
+      showPasswordSection: false,
     };
   },
 
@@ -180,8 +208,13 @@ export default {
     handleAvatarSuccess(res) {
       if (res.code === 200) {
         const avatarUrl = `http://127.0.0.1:5001${res.data.url}`;
+        console.log("头像上传成功", avatarUrl);
+
         this.tempAvatar = avatarUrl;
         this.profileForm.avatarUrl = avatarUrl;
+        console.log("头像上传成功", this.profileForm.avatarUrl);
+        console.log("头像上传成功", this.tempAvatar);
+
         this.$message.success("头像上传成功");
       } else {
         this.$message.error(res.message || "头像上传失败");
@@ -198,7 +231,29 @@ export default {
         ...this.userInfo,
         nickname: this.profileForm.nickname,
         avatarUrl: this.profileForm.avatarUrl || this.userInfo.avatarUrl,
+        oldPassword: this.profileForm.oldPassword,
+        newPassword: this.profileForm.newPassword,
+        confirmPassword: this.profileForm.confirmPassword,
+        intro: this.profileForm.intro,
       };
+
+      // 如果oldPassword不为空，则需要填写newPassword和confirmPassword，且两者必须相同
+      if (updatedInfo.oldPassword) {
+        if (!updatedInfo.newPassword) {
+          this.$message.error("请输入新密码");
+          return;
+        }
+        if (!updatedInfo.confirmPassword) {
+          this.$message.error("请确认新密码");
+          return;
+        }
+        if (updatedInfo.newPassword !== updatedInfo.confirmPassword) {
+          this.$message.error("两次密码输入不一致");
+          return;
+        }
+      }
+
+      console.log("更新个人信息", updatedInfo);
 
       this.$store.dispatch("saveUserInfo", updatedInfo);
       this.$message.success("个人信息已更新");
@@ -217,6 +272,10 @@ export default {
         .catch((error) => {
           console.log(error);
         });
+    },
+
+    togglePasswordSection() {
+      this.showPasswordSection = !this.showPasswordSection;
     },
   },
 
@@ -413,5 +472,32 @@ export default {
 
 :deep(.el-dialog) {
   background: rgb(19, 19, 26);
+}
+
+:deep(.el-input__inner:nth-child(1)) {
+  margin-top: 25px;
+}
+
+:deep(.el-form-item) {
+  margin-bottom: 0;
+  height: 65px;
+}
+
+:deep(.el-textarea__inner) {
+  min-height: 60px; /* 设置最小高度 */
+  max-height: 200px; /* 设置最大高度 */
+  overflow-y: auto; /* 允许垂直滚动 */
+  background-color: #3a3a47;
+  border-color: #4a4a57;
+  color: #fff;
+  width: 225px;
+  margin-left: 15px;
+  opacity: 0.5;
+  resize: none;
+}
+
+.password-btn {
+  width: 100%;
+  margin-top: 15px;
 }
 </style>
