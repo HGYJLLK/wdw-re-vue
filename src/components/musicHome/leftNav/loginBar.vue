@@ -14,7 +14,11 @@
     </div>
     <div v-else>
       <el-avatar
-        :src="'http://127.0.0.1:5001/' + userInfo.avatarUrl || defaultAvatar"
+        :src="
+          userInfo.avatarUrl && userInfo.avatarUrl.trim() !== ''
+            ? userInfo.avatarUrl
+            : defaultAvatar
+        "
         class="userHead"
         style="vertical-align: middle; cursor: default"
       ></el-avatar>
@@ -58,7 +62,10 @@
             <img
               v-if="(userInfo && userInfo.avatarUrl) || tempAvatar"
               :src="
-                'http://127.0.0.1:5001/' + userInfo.avatarUrl || defaultAvatar
+                tempAvatar ||
+                (userInfo.avatarUrl && userInfo.avatarUrl.trim() !== ''
+                  ? userInfo.avatarUrl
+                  : defaultAvatar)
               "
               class="avatar"
             />

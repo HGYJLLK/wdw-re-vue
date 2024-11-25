@@ -30,6 +30,7 @@
 
 <script>
 import tokenUtils from "../../utils/token";
+import defaultAvatar from "@/assets/image/default.jpg";
 
 export default {
   emits: ["switch-mode"],
@@ -62,6 +63,8 @@ export default {
         if (!data) {
           throw new Error("登录响应数据为空");
         }
+
+        console.log("登录成功，用户信息:", data.data);
 
         // 保存token
         if (data.data && data.data.token) {
