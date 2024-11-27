@@ -115,7 +115,7 @@ const mutations = {
         state.playList = list;
         // 放入一个进入已经播放歌单
         state.hasPlayList.push(list[0])
-            // 可播放音乐范围
+        // 可播放音乐范围
         state.playDur = [];
         // 当前播放歌曲详情
         state.musicDetail = list[0]
@@ -195,5 +195,9 @@ const mutations = {
     deleteAllSearchHistory(state) {
         state.searchHistory = [];
     },
+    setQuality(state, quality) {
+        console.log('设置音质:', quality); // 确保 mutation 被调用
+        state.currentQuality = quality;
+    }
 }
 export default mutations

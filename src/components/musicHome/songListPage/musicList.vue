@@ -26,13 +26,11 @@
       @mouseenter="currentIndex = index"
       @mouseleave="currentIndex = -1"
     >
-      <!-- 是否可mv或试听等 -->
       <div class="songRoot">
         <i
           class="iconfont icon-MV"
-          style="color: #ec4141; cursor: pointer"
+          style="color: #ec4141; cursor: default"
           v-show="item.mv != 0"
-          @click="toVideoPage(item.mv)"
         ></i>
         <i
           class="iconfont icon-vip-l"
@@ -42,7 +40,6 @@
           "
         ></i>
       </div>
-      <!-- 播放或暂停音乐动画表情 -->
       <div
         style="
           font-size: 10px;
@@ -66,7 +63,6 @@
         "
         v-else-if="item.id === songId && !isPlaying"
       ></i>
-      <!-- 歌曲序号 -->
       <span
         style="
           font-size: 15px !important;
@@ -78,7 +74,6 @@
         v-else
         >{{ index >= 9 ? index + 1 : "0" + (index + 1) }}</span
       >
-      <!-- 歌曲名 -->
       <div
         :class="{
           pauseSongName: item.id !== songId,
@@ -97,7 +92,6 @@
           >{{ !item.alia[0] ? "" : "(" + item.alia[0] + ")" }}</span
         >
       </div>
-      <!-- 歌曲功能 -->
       <div class="songFunc" v-show="index === currentIndex">
         <i class="iconfont icon-xin" style="opacity: 0.9; cursor: pointer"></i>
         <i
@@ -106,17 +100,11 @@
           title="添加到播放列表"
           @click="addList(item, index)"
         ></i>
-        <!-- <i
-          class="iconfont icon-fenxiang"
-          style="opacity: 0.9; cursor: pointer; margin-left: 10px"
-          title="分享"
-        ></i> -->
       </div>
-      <!-- 作者名 -->
       <div
         style="position: absolute; left: 45%"
         :class="{
-          startSongAurtor: item.id === songId && item.id !== -1, // 只有当前播放的歌曲才使用该样式
+          startSongAurtor: item.id === songId && item.id !== -1,
           pauseSongAurtor: item.id !== songId,
         }"
       >
@@ -138,7 +126,6 @@
           >
         </div>
       </div>
-      <!-- 专辑 -->
       <div
         style="
           width: 15%;
@@ -155,7 +142,6 @@
       >
         {{ item.al.name }}
       </div>
-      <!-- 时长 -->
       <span style="position: absolute; left: 85%">{{
         Math.floor(item.dt / 1000) | timeFormat
       }}</span>

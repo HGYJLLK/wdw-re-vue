@@ -46,6 +46,7 @@ const state = {
     playDur: sessionStorage.getItem('playDur') ? JSON.parse(sessionStorage.getItem('playDur')) : {},
     // 搜索历史
     searchHistory: sessionStorage.getItem('searchHistory') ? JSON.parse(sessionStorage.getItem('searchHistory')) : [],
+    currentQuality: '标准',  // 默认音质
 }
 
 export default state

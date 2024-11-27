@@ -140,6 +140,33 @@
         ? 0
         : Math.floor(this.musicDetail.dt / 1000) | timeFormat
     }}</span>
+
+    <!-- 音质选择 -->
+    <div class="quality">
+      <div class="quality-expand">
+        <el-dropdown trigger="click">
+          <span class="quality-text">{{ currentQuality }}</span>
+          <el-dropdown-menu slot="dropdown">
+            <el-dropdown-item
+              @click.native="selectQuality('高品质')"
+              :class="{ selected: currentQuality === '高品质' }"
+              >高品质</el-dropdown-item
+            >
+            <el-dropdown-item
+              @click.native="selectQuality('标准')"
+              :class="{ selected: currentQuality === '标准' }"
+              >标准</el-dropdown-item
+            >
+            <el-dropdown-item
+              @click.native="selectQuality('流畅')"
+              :class="{ selected: currentQuality === '流畅' }"
+              >流畅</el-dropdown-item
+            >
+          </el-dropdown-menu>
+        </el-dropdown>
+      </div>
+    </div>
+
     <div class="volume">
       <i
         class="iconfont icon-icon-test"
@@ -206,6 +233,7 @@ export default {
       volumeVal: 12,
       //当前音量
       nowVolume: 50,
+      currentQuality: "标准", // 默认音质
     };
   },
   computed: {
@@ -228,6 +256,8 @@ export default {
       "slider",
       //播放范围
       "playDur",
+      // 当前音质
+      "currentQuality",
     ]),
   },
   watch: {
@@ -236,6 +266,9 @@ export default {
       if (newUrl === oldUrl) return;
       // this.musicUrl = newUrl;
       this.$store.dispatch("saveIsPlaying", true);
+    },
+    currentQuality(newValue) {
+      console.log("音质变化:", newValue); // 在控制台查看音质是否变化
     },
   },
   methods: {
@@ -530,6 +563,13 @@ export default {
     toSongDetail() {
       this.$router.push("/musicHome/songDetail");
     },
+    selectQuality(quality) {
+      console.log("音质选择", quality);
+
+      this.currentQuality = quality;
+      // 保存当前音质，触发store的更新
+      this.$store.dispatch("updateQuality", quality);
+    },
   },
   mounted() {
     // 若有歌曲变为已播放
@@ -648,6 +688,34 @@ export default {
 #authorName:hover {
   opacity: 1;
 }
+
+/** 音质 */
+.quality {
+  position: absolute;
+  width: auto;
+  height: 20px;
+  right: 270px;
+  top: 30px;
+  border: 1px solid #949495;
+  border-radius: 5px;
+  padding: 5px;
+  cursor: pointer;
+  color: #fff;
+  display: inline-block;
+  z-index: 1000;
+}
+
+.quality-expand {
+  width: 100%; /* 或者固定宽度 */
+  height: 100%; /* 或者根据内容自适应 */
+  cursor: pointer; /* 确保整个区域都是可点击的 */
+}
+
+.quality-text {
+  color: #fff;
+  cursor: pointer;
+}
+
 /* 音量 */
 
 .volume {
@@ -658,10 +726,10 @@ export default {
   top: 30px;
 }
 
-::v-deep .el-slider__runway,
+/* ::v-deep .el-slider__runway,
 ::v-deep .el-slider__bar {
-  background: #red;
-}
+  background: #fff;
+} */
 
 ::v-deep .volume .el-slider__runway {
   background: #fff;
@@ -669,5 +737,10 @@ export default {
 
 ::v-deep .el-tooltip__popper.is-light {
   color: black !important;
+}
+
+.selected {
+  background-color: #ecf5ff;
+  color: #66b1ff;
 }
 </style>

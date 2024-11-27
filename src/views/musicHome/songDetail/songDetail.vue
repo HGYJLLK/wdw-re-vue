@@ -57,7 +57,7 @@
                 color: red;
                 padding: 1px 4px;
               "
-              >标准音质</span
+              >{{ currentQuality }}</span
             >
             <div style="margin: 19px 0; fontsize: 13px">
               <div
@@ -175,6 +175,8 @@ export default {
       "nowDuration",
       //是否加载
       "isLoading",
+      // 当前音质,
+      "currentQuality",
     ]),
   },
   watch: {

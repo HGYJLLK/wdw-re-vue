@@ -103,6 +103,10 @@ const actions = {
     // 是否显示登录面板
     changeShowLogin({ commit }, payload) {
         commit('changeShowLogin', payload)
-    }
+    },
+    updateQuality({ commit }, quality) {
+        console.log('quality', quality);
+        commit('setQuality', quality);  // 提交 mutation 更新音质
+    },
 }
 export default actions

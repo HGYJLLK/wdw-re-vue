@@ -49,3 +49,5 @@ export const personalList = state => state.personalList
 
 // 是否打开登录面板
 export const showLogin = state => state.showLogin
+
+export const currentQuality = state => state.currentQuality
