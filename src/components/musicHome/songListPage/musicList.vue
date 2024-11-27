@@ -1,6 +1,6 @@
 <template>
   <div class="musicList">
-    <div id="songSearchHead">
+    <!-- <div id="songSearchHead">
       <span style="position: absolute; left: 2%; color: #fff; font-size: 15px"
         >序号</span
       >
@@ -147,13 +147,41 @@
       }}</span>
     </div>
     <br />
-    <br /><br /><br />
+    <br /><br /><br /> -->
+
+    <div
+      class="row"
+      v-for="(item, index) in items"
+      :key="index"
+      @mouseenter="hoverIn(index)"
+      @mouseleave="hoverOut(index)"
+    >
+      <div class="number">#{{ item.number }}</div>
+      <div class="row-main">
+        <div class="row-container">
+          <div class="small-image">
+            <img :src="item.smallImage" alt="Small Image" />
+          </div>
+          <div class="large-image">
+            <img :src="item.largeImage" alt="Large Image" />
+          </div>
+          <div class="text">{{ item.name }}</div>
+        </div>
+      </div>
+
+      <div class="artist">{{ item.artist }}</div>
+    </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import playAni from "@/components/musicHome/playAnimation/playAni";
+import img1 from "@/assets/musicList/a1.jpg";
+import img2 from "@/assets/musicList/a2.jpg";
+import img3 from "@/assets/musicList/a3.jpg";
+import img4 from "@/assets/musicList/a4.jpg";
+import { gsap } from "gsap";
 export default {
   name: "musicList",
   props: {
@@ -182,6 +210,23 @@ export default {
     return {
       // 鼠标移入的index
       currentIndex: -1,
+      items: [
+        {
+          number: "001",
+          smallImage: img1,
+          largeImage: img1,
+          name: "Love is in the Air aaaaaaaaaaaaaaaaaaaaaaaaaaa",
+          artist: "Nike",
+        },
+        {
+          number: "002",
+          smallImage: img2,
+          largeImage: img2,
+          name: "We Dream",
+          artist: "Favored Nation",
+        },
+        // ...更多数据
+      ],
     };
   },
   methods: {
@@ -307,6 +352,63 @@ export default {
     toArtistPage(id) {
       this.$router.push("/musicHome/artistPage/" + id);
     },
+
+    hoverIn(index) {
+      const rows = this.$el.querySelectorAll(".row");
+
+      // 遍历所有行，重置非当前行的状态
+      rows.forEach((row, i) => {
+        const smallImage = row.querySelector(".small-image img");
+        const largeImage = row.querySelector(".large-image img");
+
+        if (i !== index) {
+          // 停止正在进行的动画
+          gsap.killTweensOf(smallImage);
+          gsap.killTweensOf(largeImage);
+          // 重置小图片状态
+          gsap.to(smallImage, { clipPath: "inset(0 0 0 0%)", duration: 0 });
+          // 重置大图片状态
+          gsap.to(largeImage, { clipPath: "inset(0 0 0 100%)", duration: 0 });
+        }
+      });
+
+      // 对当前行应用动画
+      const row = rows[index];
+      const smallImage = row.querySelector(".small-image img");
+      const largeImage = row.querySelector(".large-image img");
+
+      // 停止正在进行的动画
+      gsap.killTweensOf(smallImage);
+      gsap.killTweensOf(largeImage);
+
+      // 小图片淡出，大图片淡入
+      gsap.to(smallImage, { clipPath: "inset(0 0 0 100%)", duration: 0.3 });
+      // 大图片淡入并缩放
+      gsap.to(largeImage, {
+        clipPath: "inset(0 0 0 0%)",
+        duration: 0.3,
+        scale: 1,
+        opacity: 1, // 显示大图
+      });
+    },
+
+    hoverOut(index) {
+      const row = this.$el.querySelectorAll(".row")[index];
+      const smallImage = row.querySelector(".small-image img");
+      const largeImage = row.querySelector(".large-image img");
+
+      // 停止正在进行的动画
+      gsap.killTweensOf(smallImage);
+      gsap.killTweensOf(largeImage);
+
+      // 直接设置小图片和大图片的状态，无过渡时间
+      gsap.set(smallImage, { clipPath: "inset(0 0 0 0%)" });
+      gsap.set(largeImage, {
+        clipPath: "inset(0 0 0 100%)",
+        scale: 0.95,
+        opacity: 0, // 隐藏大图
+      });
+    },
   },
   created() {
     this.getSongPage(0, "Song");
@@ -316,7 +418,6 @@ export default {
 
 <style scoped>
 /* 标题 */
-
 #songSearchHead {
   position: relative;
   width: 100%;
@@ -404,5 +505,74 @@ export default {
 .songRoot {
   position: absolute;
   right: 86%;
+}
+
+.row {
+  display: flex;
+  align-items: center;
+  position: relative;
+  /* margin-bottom: 20px; */
+  border-top: 1px solid #393944;
+  border-bottom: 1px solid #393944;
+  justify-content: space-between;
+}
+.number {
+  width: 15%;
+  font-size: 50px;
+  color: white;
+}
+
+.row-main {
+  width: 60%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-size: 50px;
+  /* text-align: center; */
+  /* margin-left: 25%; */
+}
+
+.row-container {
+  display: flex;
+  align-items: center;
+  justify-content: flex-start;
+  width: 50%;
+}
+
+.small-image img {
+  width: 100px;
+  height: auto;
+  /** 图片垂直居中 */
+  display: block;
+  object-fit: cover;
+  clip-path: inset(0 0 0 0);
+  margin: 5px 0;
+}
+.large-image {
+  position: absolute;
+  left: 65%;
+  top: 0;
+  z-index: 2;
+  transition: opacity 0.3s, transform 0.3s;
+}
+
+.large-image img {
+  width: 300px;
+  height: auto;
+  object-fit: cover;
+  opacity: 0;
+}
+.artist {
+  /* margin-left: 20px; */
+  color: white;
+  font-size: 15px;
+  width: 25%;
+  text-align: right;
+}
+
+.text {
+  margin-left: 20px;
+  color: white;
+  font-size: 25px;
 }
 </style>
