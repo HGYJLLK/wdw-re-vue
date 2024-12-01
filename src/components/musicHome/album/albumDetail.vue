@@ -71,7 +71,7 @@ export default {
         }
       }
       // 全部加入歌单
-      this.$store.dispatch("playAllSong", songList);
+      this.$store.dispatch("", songList);
       // 获得音乐url并保存到当前播放url
       this.getMusicUrl(songList[0].id);
       this.$store.dispatch("deleteHisListSong", songList[0].id);

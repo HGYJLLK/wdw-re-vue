@@ -8,6 +8,7 @@
       @changeActive="changeActive"
       :commentCount="comment.total"
     /> -->
+    <newMenuTab :songs="songsDetail.songs" />
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
@@ -32,6 +33,7 @@
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
+import newMenuTab from "@/components/musicHome/songListPage/newMenuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
 import comment from "@/components/musicHome/songListPage/comment";
 import img1 from "@/assets/musicList/a1.jpg";
@@ -47,6 +49,7 @@ export default {
     menuTab,
     musicList,
     comment,
+    newMenuTab,
   },
   watch: {
     $route: function (newVal, oldVal) {
@@ -87,12 +90,13 @@ export default {
               name: "Album One",
               picUrl: img1,
             },
-            dt: 240000, // 时长（毫秒）
+            dt: 307173, // 时长（毫秒）
             mv: 0, // 没有MV
             alia: [],
             self: true, // 是否为用户自己上传的歌曲
             url: music1, // 歌曲链接
             fee: 8,
+            st: 0,
           },
           {
             id: 2,
@@ -106,12 +110,13 @@ export default {
               name: "Album Two",
               picUrl: img2,
             },
-            dt: 200000,
+            dt: 307173,
             mv: 1, // 有MV
             alia: [],
             self: true, // 是否为用户自己上传的歌曲
             url: music2,
             fee: 8,
+            st: 0,
           },
           {
             id: 3,
@@ -122,12 +127,13 @@ export default {
               name: "Album Three",
               picUrl: img3,
             },
-            dt: 300000,
+            dt: 307173,
             mv: 0,
             alia: [],
             self: true, // 是否为用户自己上传的歌曲
             url: music3,
             fee: 8,
+            st: 0,
           },
           {
             name: "Re:Re:",
@@ -145,6 +151,7 @@ export default {
               pic: 109951169826632560,
             },
             dt: 307173,
+            st: 0,
           },
         ],
         privileges: [
