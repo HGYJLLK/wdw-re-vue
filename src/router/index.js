@@ -98,6 +98,13 @@ const router = new VueRouter({
                     component: () =>
                         import ('@/views/musicHome/myFavoriteMusic/myFavoriteMusic')
                 },
+                // 我的歌单音乐模块
+                {
+                    path: '/musicHome/mySongListMusic',
+                    name: 'mySongListMusic',
+                    component: () =>
+                        import ('@/views/musicHome/mySongListMusic/mySongListMusic')
+                },
                 // 搜索页面模块
                 {
                     path: '/musicHome/searchPage',

@@ -52,7 +52,7 @@
       <div class="playAll" @click="allAddList">
         <i class="iconfont icon-bofang" style="font-size: 15px"></i> 播放全部
       </div>
-      <div class="orbtn">
+      <!-- <div class="orbtn">
         <i
           class="iconfont Add a document icon-Adddocument"
           style="font-size: 15px"
@@ -62,7 +62,7 @@
             ? (playList.subscribedCount / 10000).toFixed(0) + "万"
             : playList.subscribedCount
         }})
-      </div>
+      </div> -->
       <!-- <div class="orbtn">
         <i class="iconfont icon-fenxiang" style="font-size: 15px"></i> 分享({{
           playList.shareCount >= 100000

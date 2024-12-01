@@ -29,11 +29,35 @@
         <p class="leftNavFont">我的音乐</p>
         <div>
           <el-menu-item index="/musicHome/myCloudMusic">
-            <i class="iconfont icon-yun"></i>
-            <span slot="title">我的音乐云盘</span>
+            <img
+              src="@/assets/image/jiashimoshibendiyinle.svg"
+              alt=""
+              style="width: 22px; border-radius: 40px; margin-right: 4px"
+            />
+            <span slot="title">本地音乐</span>
           </el-menu-item>
         </div>
-        <p class="leftNavFont">创建的歌单</p>
+        <div>
+          <el-menu-item index="/musicHome/myFavoriteMusic">
+            <img
+              src="@/assets/image/xihuan.svg"
+              alt=""
+              style="width: 22px; border-radius: 40px; margin-right: 4px"
+            />
+            <span slot="title">我喜欢的音乐</span>
+          </el-menu-item>
+        </div>
+        <div>
+          <el-menu-item index="/musicHome/mySongListMusic">
+            <img
+              src="@/assets/image/wodegedan.svg"
+              alt=""
+              style="width: 22px; border-radius: 40px; margin-right: 4px"
+            />
+            <span slot="title">我的歌单</span>
+          </el-menu-item>
+        </div>
+        <!-- <p class="leftNavFont">创建的歌单</p>
         <div>
           <el-menu-item
             v-for="(item, i) in personalList"
@@ -48,7 +72,7 @@
             ></i>
             <span slot="title">{{ item.name }}</span>
           </el-menu-item>
-        </div>
+        </div> -->
       </el-menu>
       <br /><br /><br /><br /><br /><br /><br /><br /><br />
     </el-col>

@@ -151,25 +151,47 @@
 
     <div
       class="row"
-      v-for="(item, index) in items"
+      v-for="(item, index) in songsDetail.songs"
       :key="index"
       @mouseenter="hoverIn(index)"
       @mouseleave="hoverOut(index)"
+      @dblclick="startSong(item, index)"
     >
-      <div class="number">#{{ item.number }}</div>
+      <div
+        style="font-size: 50px; color: #ec4141; width: 15%"
+        v-if="item.id === songId && isPlaying"
+      >
+        <playAni />
+      </div>
+      <i
+        class="iconfont icon-zanting"
+        style="font-size: 50px; color: #ec4141; width: 15%"
+        v-else-if="item.id === songId && !isPlaying"
+      ></i>
+      <div class="number" v-else>
+        #{{ (index + 1).toString().padStart(3, "0") }}
+      </div>
+      <!-- <div class="number">#{{ item.number }}</div> -->
       <div class="row-main">
         <div class="row-container">
           <div class="small-image">
-            <img :src="item.smallImage" alt="Small Image" />
+            <img :src="item.al.picUrl" alt="Small Image" />
           </div>
           <div class="large-image">
-            <img :src="item.largeImage" alt="Large Image" />
+            <img :src="item.al.picUrl" alt="Large Image" />
           </div>
           <div class="text">{{ item.name }}</div>
         </div>
       </div>
 
-      <div class="artist">{{ item.artist }}</div>
+      <div class="artist">
+        <b
+          style="cursor: default"
+          v-for="(item, index) in item.ar"
+          :key="index"
+          >{{ index === 0 ? item.name : "/" + item.name }}</b
+        >
+      </div>
     </div>
   </div>
 </template>
@@ -177,10 +199,6 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import playAni from "@/components/musicHome/playAnimation/playAni";
-import img1 from "@/assets/musicList/a1.jpg";
-import img2 from "@/assets/musicList/a2.jpg";
-import img3 from "@/assets/musicList/a3.jpg";
-import img4 from "@/assets/musicList/a4.jpg";
 import { gsap } from "gsap";
 export default {
   name: "musicList",
@@ -210,50 +228,40 @@ export default {
     return {
       // 鼠标移入的index
       currentIndex: -1,
-      items: [
-        {
-          number: "001",
-          smallImage: img1,
-          largeImage: img1,
-          name: "Love is in the Air aaaaaaaaaaaaaaaaaaaaaaaaaaa",
-          artist: "Nike",
-        },
-        {
-          number: "002",
-          smallImage: img2,
-          largeImage: img2,
-          name: "We Dream",
-          artist: "Favored Nation",
-        },
-        // ...更多数据
-      ],
+      temp: {},
     };
   },
   methods: {
     // 双击切换到当前播放
     startSong(musicDetail, index) {
+      console.log("将要播放的歌曲的数据：", musicDetail);
+
       if (musicDetail.id === this.songId) return;
       if (this.songsDetail.privileges[index].st == -200) {
-        const h = this.$createElement;
-        this.$message.error({
-          message: h("p", null, [
-            h("span", null, "因版权问题，该歌曲已下架"),
-            h(
-              "i",
-              {
-                style: "color: red",
-              },
-              ""
-            ),
-          ]),
-          offset: 280,
-          center: true,
-          showClose: true,
-        });
+        // const h = this.$createElement;
+        // this.$message.error({
+        //   message: h("p", null, [
+        //     h("span", null, "因版权问题，该歌曲已下架"),
+        //     h(
+        //       "i",
+        //       {
+        //         style: "color: red",
+        //       },
+        //       ""
+        //     ),
+        //   ]),
+        //   offset: 280,
+        //   center: true,
+        //   showClose: true,
+        // });
         return;
       }
       // 获得音乐url并保存到当前播放url
-      this.getMusicUrl(musicDetail.id);
+      /**
+       * 如果musicDetail存在self属性，说明是自定义音乐，直接获取musicDetail.url
+       * 否则，需要请求接口获取音乐url
+       */
+      this.getMusicUrl(musicDetail.id, musicDetail.self);
       // 保存到当前播放歌曲详情
       this.$store.dispatch("saveMusicDetail", musicDetail);
       // 保存到当前播放歌曲id
@@ -266,7 +274,7 @@ export default {
     //加入歌单
     addList(musicDetail, index) {
       if (this.songsDetail.privileges[index].st == -200) {
-        const h = this.$createElement;
+        /*const h = this.$createElement;
         this.$message.error({
           message: h("p", null, [
             h("span", null, "因版权问题，该歌曲已下架"),
@@ -281,7 +289,7 @@ export default {
           offset: 280,
           center: true,
           showClose: true,
-        });
+        });*/
         return;
       }
       // 放入已经播放过的歌单
@@ -313,7 +321,13 @@ export default {
       this.$store.dispatch("pushPlayList", musicDetail);
     },
     //根据id获取音乐url
-    async getMusicUrl(musicId) {
+    async getMusicUrl(musicId, isSelf) {
+      console.log("是否是自定义音乐：" + isSelf);
+      if (isSelf) {
+        this.$store.dispatch("saveAur", [0, 0]);
+        this.$store.dispatch("saveMusicUrl", musicDetail.url);
+        return;
+      }
       await this.$http
         .get("song/url", {
           params: {
@@ -321,6 +335,8 @@ export default {
           },
         })
         .then((res) => {
+          console.log("将要播放的歌曲的url：", res);
+
           if (res.data.data[0].freeTrialInfo) {
             this.$store.dispatch("saveAur", [
               res.data.data[0].freeTrialInfo.start,
@@ -383,6 +399,27 @@ export default {
 
       // 小图片淡出，大图片淡入
       gsap.to(smallImage, { clipPath: "inset(0 0 0 100%)", duration: 0.3 });
+
+      // 底部边界处理
+      const checkAndAdjustPosition = () => {
+        const rect = largeImage.getBoundingClientRect();
+        const viewportHeight = window.innerHeight;
+        const bottomDistance = viewportHeight - rect.bottom;
+        const playerHeight = 80; // 播放器高度
+
+        if (bottomDistance < playerHeight) {
+          const offset = playerHeight - bottomDistance;
+          gsap.set(largeImage, {
+            y: -offset,
+          });
+        } else {
+          gsap.set(largeImage, {
+            y: 0,
+          });
+        }
+      };
+      checkAndAdjustPosition();
+
       // 大图片淡入并缩放
       gsap.to(largeImage, {
         clipPath: "inset(0 0 0 0%)",
@@ -407,12 +444,14 @@ export default {
         clipPath: "inset(0 0 0 100%)",
         scale: 0.95,
         opacity: 0, // 隐藏大图
+        y: 0,
       });
     },
   },
   created() {
     this.getSongPage(0, "Song");
   },
+  mounted() {},
 };
 </script>
 
@@ -568,6 +607,7 @@ export default {
   font-size: 15px;
   width: 25%;
   text-align: right;
+  display: inline-block;
 }
 
 .text {

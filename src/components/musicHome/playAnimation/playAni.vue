@@ -1,6 +1,6 @@
 <template>
-<!-- 音乐播放时的动画表情 -->
-  <div class="playAni">
+  <!-- 音乐播放时的动画表情 -->
+  <div :class="playAni">
     <div class="waveFir"></div>
     <div class="waveSec"></div>
     <div class="waveTrd"></div>
@@ -9,8 +9,19 @@
 
 <script>
 export default {
+  props: {
+    small: {
+      type: String,
+      default: false,
+    },
+  },
   name: "playAni",
   components: {},
+  computed: {
+    playAni() {
+      return this.small ? "small-playAni" : "playAni";
+    },
+  },
   data() {
     return {};
   },
@@ -20,10 +31,19 @@ export default {
 <style scoped>
 .playAni {
   height: 12px;
+  width: 20px;
+  scale: 3;
+  overflow: hidden;
+  transform: rotate(180deg);
+}
+
+.small-playAni {
+  height: 12px;
   width: 12px;
   overflow: hidden;
   transform: rotate(180deg);
 }
+
 .waveFir {
   float: left;
   width: 3px;

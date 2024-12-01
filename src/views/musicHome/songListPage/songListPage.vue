@@ -8,6 +8,7 @@
       @changeActive="changeActive"
       :commentCount="comment.total"
     />
+    <!-- <div>{{ temp }}</div> -->
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
@@ -67,6 +68,7 @@ export default {
       songsDetail: {},
       // 评论数据
       comment: {},
+      temp: {},
     };
   },
   methods: {
@@ -116,6 +118,12 @@ export default {
             songs: filteredSongs,
             code: res.data.code,
             privileges: filteredPrivileges,
+          };
+
+          this.temp = {
+            songs: filteredSongs[0],
+            code: res.data.code,
+            privileges: filteredPrivileges[0],
           };
           console.log("歌曲数据：", this.songsDetail);
         });

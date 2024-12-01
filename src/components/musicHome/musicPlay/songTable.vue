@@ -50,7 +50,7 @@
           "
           v-show="item.id === songId && isPlaying"
         >
-          <playAni />
+          <playAni :small="true" />
         </div>
         <i
           class="iconfont icon-zanting"
@@ -162,7 +162,7 @@
           "
           v-show="item.id === songId && isPlaying"
         >
-          <playAni />
+          <playAni :small="true"/>
         </div>
         <i
           class="iconfont icon-zanting"

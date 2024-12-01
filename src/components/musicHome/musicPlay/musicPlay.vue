@@ -265,6 +265,8 @@ export default {
     musicUrl(newUrl, oldUrl) {
       if (newUrl === oldUrl) return;
       // this.musicUrl = newUrl;
+      console.log("歌曲url变化:", newUrl);
+
       this.$store.dispatch("saveIsPlaying", true);
     },
     currentQuality(newValue) {
@@ -415,22 +417,22 @@ export default {
         }
       }
       if (index === this.playList.length - 1) {
-        const h = this.$createElement;
-        this.$message.error({
-          message: h("p", null, [
-            h("span", null, "已经是列表最后一首歌曲"),
-            h(
-              "i",
-              {
-                style: "color: red",
-              },
-              ""
-            ),
-          ]),
-          offset: 280,
-          center: true,
-          showClose: true,
-        });
+        // const h = this.$createElement;
+        // this.$message.error({
+        //   message: h("p", null, [
+        //     h("span", null, "已经是列表最后一首歌曲"),
+        //     h(
+        //       "i",
+        //       {
+        //         style: "color: red",
+        //       },
+        //       ""
+        //     ),
+        //   ]),
+        //   offset: 280,
+        //   center: true,
+        //   showClose: true,
+        // });
         return;
       }
       this.startSong(this.playList[index + 1]);

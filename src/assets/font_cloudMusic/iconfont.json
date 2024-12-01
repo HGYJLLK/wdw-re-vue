@@ -214,6 +214,20 @@
       "font_class": "yun",
       "unicode": "e602",
       "unicode_decimal": 58882
+    },
+    {
+      "icon_id": "2076193",
+      "name": "喜欢2",
+      "font_class": "xihuan",
+      "unicode": "e86f",
+      "unicode_decimal": 59503
+    },
+    {
+      "icon_id": "3251929",
+      "name": "驾驶模式_本地音乐_48",
+      "font_class": "jiashimoshibendiyinle",
+      "unicode": "e635",
+      "unicode_decimal": 58933
     }
   ]
 }
