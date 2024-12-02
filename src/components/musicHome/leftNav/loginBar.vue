@@ -39,7 +39,6 @@
       </el-dropdown>
     </div>
 
-    <!-- 个人信息编辑弹窗 -->
     <el-dialog
       title="个人信息"
       :visible.sync="profileDialogVisible"
@@ -48,7 +47,6 @@
       :close-on-click-modal="false"
     >
       <div class="profile-edit">
-        <!-- 头像上传 -->
         <div class="avatar-section">
           <el-upload
             class="avatar-uploader"
@@ -60,7 +58,7 @@
             :on-error="handleUploadError"
           >
             <img
-              v-if="(userInfo && userInfo.avatarUrl) || tempAvatar"
+              v-if="(userInfo && userInfo.avatarUrl) || defaultAvatar"
               :src="
                 tempAvatar ||
                 (userInfo.avatarUrl && userInfo.avatarUrl.trim() !== ''
@@ -175,6 +173,7 @@ export default {
             username: newVal.username,
             nickname: newVal.nickname || newVal.username,
             avatarUrl: newVal.avatarUrl,
+            intro: newVal.intro,
           };
         }
       },
@@ -191,6 +190,15 @@ export default {
     handleEditProfile() {
       this.profileDialogVisible = true;
       this.tempAvatar = "";
+      this.showPasswordSection = false;
+      this.profileForm.username = this.userInfo.username;
+      this.profileForm.nickname = this.userInfo.nickname;
+      this.profileForm.avatarUrl = this.userInfo.avatarUrl;
+      this.profileForm.intro = this.userInfo.intro;
+      this.profileForm.oldPassword = "";
+      this.profileForm.newPassword = "";
+      this.profileForm.confirmPassword = "";
+      this.console.log("个人信息", this.userInfo);
     },
 
     handleAvatarError() {
@@ -260,25 +268,25 @@ export default {
         }
       }
 
-      console.log("更新个人信息", updatedInfo);
+      // console.log("更新个人信息", updatedInfo);
 
-      this.$store.dispatch("saveUserInfo", updatedInfo);
+      // this.$store.dispatch("saveUserInfo", updatedInfo);
       this.$message.success("个人信息已更新");
       this.profileDialogVisible = false;
     },
 
     //登出
     handleLogout() {
-      this.$http
-        .get("/logout")
-        .then((res) => {
-          this.$message.success("成功退出");
-          this.$store.dispatch("saveUserInfo", null);
-          this.$store.dispatch("savePersonalList", []);
-        })
-        .catch((error) => {
-          console.log(error);
-        });
+      // this.$http
+      //   .get("/logout")
+      //   .then((res) => {
+      //     this.$message.success("成功退出");
+      //     this.$store.dispatch("saveUserInfo", null);
+      //     this.$store.dispatch("savePersonalList", []);
+      //   })
+      //   .catch((error) => {
+      //     console.log(error);
+      //   });
     },
 
     togglePasswordSection() {
