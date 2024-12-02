@@ -10,13 +10,21 @@
           ></i>
           播放全部
         </div>
-        <div class="playAll">
+        <!-- <div class="playAll" @click="refresh">
+          <input
+            type="file"
+            id="folderInput"
+            webkitdirectory
+            multiple
+            style="display: none"
+            @change="handleFolderSelection"
+          />
           <img
             src="@/assets/image/refresh-line.svg"
             alt=""
             style="width: 22px; border-radius: 40px"
           /><span style="font-weight: 400">刷新</span>
-        </div>
+        </div> -->
       </div>
       <div class="right">
         <div class="playAll" @click="dialogVisible = true">
@@ -58,17 +66,17 @@
         <div v-if="currentOption === 'online'">
           <!-- <h3>选择本地文件夹</h3> -->
           <div class="online-main">
-            <div v-for="(folder, index) in tempFolders" :key="index">
-              <input
-                type="checkbox"
-                :id="'folder-' + index"
-                v-model="folder.selected"
-              />
-              <label :for="'folder-' + index">{{ folder.name }}</label>
+            <div
+              v-for="(folder, index) in tempFolders"
+              :key="index"
+              class="folder-item"
+              :class="{ selected: folder.selected }"
+            >
+              <span class="folder-icon">✔</span>
+              <span class="folder-name">{{ folder.name }}</span>
             </div>
           </div>
           <div class="online-bottom">
-            <!-- 隐藏的文件夹选择 input -->
             <input
               type="file"
               webkitdirectory
@@ -113,13 +121,10 @@ export default {
     return {
       dialogVisible: false,
       currentOption: "online", // 当前选中的选项
-      tempFolders: [
-        // { name: "音乐文件夹1", selected: false },
-        // { name: "我的歌单", selected: false },
-        // { name: "收藏歌曲", selected: false },
-        // { name: "流行音乐", selected: false },
-      ], // 模拟的文件夹数据，每个文件夹包含名称和选中状态
+      tempFolders: [], // 模拟的文件夹数据，每个文件夹包含名称和选中状态
       musicFiles: [], // Store selected music files
+      audioUrls: [], // 音乐文件的data url
+      audioData: [],
       newSong: {
         file: null,
         name: "",
@@ -185,14 +190,9 @@ export default {
     selectOption(option) {
       this.currentOption = option;
     },
-    // addFolder() {
-    //   const folderName = `新文件夹${this.tempFolders.length + 1}`;
-    //   this.tempFolders.push({ name: folderName, selected: false }); // 动态添加文件夹
-    // },
-
     handleFolderSelection(event) {
       const files = event.target.files;
-      const folderPaths = new Set(); // To store unique folder names
+      const folderPaths = new Set();
       const musicFiles = [];
       const supportedMusicExtensions = [
         ".mp3",
@@ -202,24 +202,22 @@ export default {
         ".ogg",
       ];
 
-      // Loop through the selected files and check for their folder names and music file types
+      // 添加文件夹名 和 添加音频文件
       for (let file of files) {
         const folderName = file.webkitRelativePath.split("/")[0];
-        folderPaths.add(folderName); // Add folder name to the set
+        folderPaths.add(folderName);
 
-        // Check if the file is a music file
         const fileExtension = file.name.split(".").pop().toLowerCase();
         if (supportedMusicExtensions.includes(`.${fileExtension}`)) {
-          musicFiles.push(file); // Add the file to musicFiles array
+          musicFiles.push(file);
         }
       }
 
-      // Add new folders that aren't already in tempFolders
       folderPaths.forEach((folderName) => {
         if (!this.tempFolders.some((folder) => folder.name === folderName)) {
           this.tempFolders.push({
             name: folderName,
-            selected: false,
+            selected: true,
           });
         }
       });
@@ -251,63 +249,81 @@ export default {
     },
 
     // Confirm folder selection and process files
-    confirmFolders() {
-      // const selectedFolders = this.tempFolders
-      //   .filter((folder) => folder.selected)
-      //   .map((folder) => folder.name);
-      // console.log("Selected folders:", selectedFolders);
-      // console.log("Music files to process:", this.musicFiles);
+    async confirmFolders() {
+      // 过滤未选中的文件夹
+      console.log("this.tempFolders", this.tempFolders);
 
-      // if (this.musicFiles.length > 0) {
-      //   // Call a function to process the selected music files
-      //   this.processMusicFiles(this.musicFiles);
-      // } else {
-      //   console.log("No music files selected.");
-      // }
-
-      // 获取已勾选的文件夹
       const selectedFolders = this.tempFolders.filter(
         (folder) => folder.selected
       );
-      localStorage.setItem("selectedFolders", JSON.stringify(selectedFolders));
-      console.log("已勾选的文件夹:", selectedFolders);
-
-      if (selectedFolders.length === 0) {
-        console.log("没有勾选任何文件夹");
-        this.dialogVisible = false;
-        return;
-      }
-
-      // 提取勾选文件夹的名称
+      // if (selectedFolders.length === 0) {
+      //   this.$message.warning("未选择任何文件夹！");
+      //   return;
+      // }
       const selectedFolderNames = selectedFolders.map((folder) => folder.name);
-
-      // 筛选属于勾选文件夹的音频文件
       const selectedMusicFiles = this.musicFiles.filter((file) => {
         const folderName = file.webkitRelativePath.split("/")[0];
         return selectedFolderNames.includes(folderName);
       });
+      // // 生成音频URL
+      this.audioUrls = await this.generateAudioUrls(selectedMusicFiles);
 
-      console.log("勾选文件夹中的音频文件:", selectedMusicFiles);
-
-      // 将音频文件转换为 URL
-      const musicUrls = selectedMusicFiles.map((file) =>
-        URL.createObjectURL(file)
+      // 获取音频时长
+      const durations = await Promise.all(
+        this.audioUrls.map((audio) => this.getAudioDuration(audio.url))
       );
+      this.audioUrls.forEach((audio, index) => {
+        audio.duration = durations[index];
+      });
 
-      console.log("生成的音频文件 URL:", musicUrls);
+      // // 只存储文件的必要信息
+      // const audioData = {
+      //   musicFiles: selectedMusicFiles.map((file) => ({
+      //     name: file.name,
+      //     webkitRelativePath: file.webkitRelativePath,
+      //     size: file.size,
+      //     type: file.type,
+      //   })),
+      //   audioUrls: this.audioUrls,
+      // };
+      // localStorage.setItem("audioData", JSON.stringify(audioData));
 
-      // 保存音频文件信息到 localStorage
-      const audioData = {
-        musicFiles: selectedMusicFiles,
-        musicUrls: musicUrls,
-      };
-      localStorage.setItem("audioData", JSON.stringify(audioData));
+      // 拼接音频数据，同时根据 name 去重，保留之前的
+      const mergedAudioData = [...(this.audioData || []), ...this.audioUrls];
 
-      // 通过 $emit 将音频 URL 传递给父组件
-      // this.$emit("update-audio-urls", musicUrls);
+      // 使用 Map 进行去重，保留之前的元素
+      this.audioData = Array.from(
+        mergedAudioData
+          .reduce((map, audio) => {
+            if (!map.has(audio.name)) {
+              map.set(audio.name, audio); // 保留之前的
+            }
+            return map;
+          }, new Map())
+          .values()
+      );
+      console.log("音频数据：", this.audioData);
 
-      // 关闭对话框
+      this.musicFiles = selectedMusicFiles; // 更新当前显示的音乐文件
+      this.$message.success("文件夹选择已确认！");
+
+      // 传递音频数据给父组件
+      this.$emit("audioData", this.audioData);
       this.dialogVisible = false;
+    },
+
+    getAudioDuration(audioUrl) {
+      return new Promise((resolve, reject) => {
+        const audio = new Audio(audioUrl);
+        audio.onloadedmetadata = () => {
+          resolve(Math.floor(audio.duration * 1000));
+          // 释放资源
+          URL.revokeObjectURL(audioUrl);
+        };
+        audio.onerror = (error) => {
+          reject(error);
+        };
+      });
     },
 
     processMusicFiles(musicFiles) {
@@ -352,24 +368,112 @@ export default {
     triggerFolderSelection() {
       this.$refs.folderInput.click();
     },
-  },
-  mounted() {
-    const savedFolders =
-      JSON.parse(localStorage.getItem("selectedFolders")) || [];
-    this.tempFolders = savedFolders;
-    console.log("Restored tempFolders:", this.tempFolders);
 
-    // 加载保存的音频数据
-    const savedAudioData = JSON.parse(localStorage.getItem("audioData")) || {};
-    if (savedAudioData.musicFiles) {
-      this.musicFiles = savedAudioData.musicFiles;
-      console.log("Restored music files:", this.musicFiles);
-    }
-    if (savedAudioData.musicUrls) {
-      this.musicUrls = savedAudioData.musicUrls;
-      console.log("Restored music URLs:", this.musicUrls);
-    }
+    // async refresh() {
+    //   console.log("刷新页面");
+
+    //   const savedFolders =
+    //     JSON.parse(localStorage.getItem("selectedFolders")) || [];
+
+    //   if (savedFolders.length === 0) {
+    //     this.$message.warning("没有已存储的文件夹，请先选择文件夹！");
+    //     return;
+    //   }
+
+    //   // 引导用户选择文件夹
+    //   const folderInput = document.getElementById("folderInput");
+    //   folderInput.click();
+
+    //   // // 获取保存的文件夹和音乐数据
+    //   // const savedFolders = JSON.parse(localStorage.getItem("selectedFolders"));
+    //   // const savedAudioData = JSON.parse(localStorage.getItem("audioData"));
+    //   // if (!savedFolders || savedFolders.length === 0) {
+    //   //   this.$message.error("未保存任何文件夹，请先添加文件夹！");
+    //   //   return;
+    //   // }
+    //   // // 提示用户即将操作的文件夹
+    //   // const folderNames = savedFolders.map((folder) => folder.name).join(", ");
+    //   // if (
+    //   //   !confirm(
+    //   //     `此操作将刷新并上传文件夹：${folderNames} 中的音乐文件。是否继续？`
+    //   //   )
+    //   // ) {
+    //   //   return;
+    //   // }
+    //   // // 重新扫描选定的文件夹
+    //   // // await this.rescanFolders(savedFolders);
+    //   // // // 恢复并处理音乐文件
+    //   // // if (savedAudioData && savedAudioData.musicFiles) {
+    //   // //   this.musicFiles = savedAudioData.musicFiles.map((file) => ({
+    //   // //     ...file,
+    //   // //     webkitRelativePath: file.webkitRelativePath || "", // 防止路径为空
+    //   // //   }));
+    //   // //   console.log("已刷新音乐文件:", this.musicFiles);
+    //   // //   this.processMusicFiles(this.musicFiles);
+    //   // //   this.$message.success(
+    //   // //     `刷新完成，已加载 ${this.musicFiles.length} 个音乐文件！`
+    //   // //   );
+    //   // // } else {
+    //   // //   this.$message.warning("未找到音乐文件，请重新添加！");
+    //   // // }
+    //   // // 更新本地存储
+    //   // const audioData = {
+    //   //   musicFiles: this.musicFiles.map((file) => ({
+    //   //     name: file.name,
+    //   //     webkitRelativePath: file.webkitRelativePath,
+    //   //     size: file.size,
+    //   //     type: file.type,
+    //   //   })),
+    //   //   audioUrls: this.audioUrls,
+    //   // };
+    //   // console.log("刷新后的音乐文件数据：", audioData);
+    //   // localStorage.setItem("audioData", JSON.stringify(audioData));
+    //   // this.$message.success(
+    //   //   `刷新完成，已加载 ${this.musicFiles.length} 个音乐文件！`
+    //   // );
+    // },
+
+    // 重新扫描文件夹
+    // async rescanFolders(folders) {
+    //   this.musicFiles = [];
+    //   for (const folder of folders) {
+    //     try {
+    //       const directoryHandle = await window.showDirectoryPicker({
+    //         id: folder.name,
+    //         startIn: "music",
+    //       });
+    //       await this.scanDirectory(directoryHandle);
+    //     } catch (error) {
+    //       console.error(`Error scanning folder ${folder.name}:`, error);
+    //     }
+    //   }
+    // },
+
+    // // 扫描文件夹
+    // async scanDirectory(directoryHandle) {
+    //   for await (const entry of directoryHandle.values()) {
+    //     if (entry.kind === "file") {
+    //       const file = await entry.getFile();
+    //       if (file.type.startsWith("audio/")) {
+    //         this.musicFiles.push(file);
+    //       }
+    //     } else if (entry.kind === "directory") {
+    //       await this.scanDirectory(entry);
+    //     }
+    //   }
+    // },
+
+    // 生成音频URL
+    async generateAudioUrls(files) {
+      const urls = [];
+      for (const file of files) {
+        const url = URL.createObjectURL(file);
+        urls.push({ name: file.name, url: url });
+      }
+      return urls;
+    },
   },
+  mounted() {},
 };
 </script>
 
@@ -538,5 +642,35 @@ label {
   margin-left: 8px;
   font-size: 16px;
   color: #fff;
+}
+
+.folder-item {
+  display: flex;
+  align-items: center;
+  margin-bottom: 8px;
+  padding: 8px 12px;
+  border-radius: 8px;
+  /* background-color: #2c2c2e; */
+  color: #fff;
+  transition: background-color 0.3s ease, transform 0.3s ease;
+  cursor: pointer;
+}
+
+.folder-item.selected {
+  /* background-color: #4caf50; */
+  color: #fff;
+  transform: scale(1.05);
+}
+
+.folder-icon {
+  margin-right: 8px;
+  font-size: 18px;
+  color: #4caf50;
+}
+
+.folder-name {
+  flex: 1;
+  font-size: 16px;
+  font-weight: 500;
 }
 </style>

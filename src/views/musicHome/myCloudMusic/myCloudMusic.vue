@@ -8,7 +8,7 @@
       @changeActive="changeActive"
       :commentCount="comment.total"
     /> -->
-    <newMenuTab :songs="songsDetail.songs" />
+    <newMenuTab :songs="songsDetail.songs" @audioData="handleAudioData" />
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
@@ -50,6 +50,9 @@ export default {
     musicList,
     comment,
     newMenuTab,
+  },
+  props: {
+    audioData: Array,
   },
   watch: {
     $route: function (newVal, oldVal) {
@@ -221,6 +224,7 @@ export default {
           },
         ],
       },
+      receivedAudioData: [],
       // 评论数据
       comment: {},
       audio: null,
@@ -320,6 +324,10 @@ export default {
         this.audio.pause();
         console.log("音乐已暂停");
       }
+    },
+    handleAudioData(data) {
+      this.receivedAudioData = data; // 更新父组件的状态
+      console.log("从子组件接收到的音频数据：", this.receivedAudioData);
     },
   },
   created() {

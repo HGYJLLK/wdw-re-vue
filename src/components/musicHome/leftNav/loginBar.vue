@@ -39,7 +39,7 @@
       </el-dropdown>
     </div>
 
-    <el-dialog
+    <!-- <el-dialog
       title="个人信息"
       :visible.sync="profileDialogVisible"
       width="400px"
@@ -127,7 +127,7 @@
         <el-button @click="profileDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleSaveProfile">确 定</el-button>
       </div>
-    </el-dialog>
+    </el-dialog> -->
   </div>
 </template>
 

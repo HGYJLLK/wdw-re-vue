@@ -1,79 +1,50 @@
-### wdw-music-一个基于vue的高仿网易云音乐网站
+# 技术难点与攻坚过程
 
-#### (http://8.129.133.120/)
-(线上演示地址，由于太菜了跨域什么的没有做好，线上地址可能会有一些数据请求不到，后面我会完善的！！)
+## 网页检索电脑音乐文件
 
-#### 前言
+- 难点1
+- 参考网易云音乐客户端检索电脑音频文件，用户能够添加多个文件夹，并且根据需求去选择检索哪些文件夹里的音频数据
+- 引发问题：用户上传音频到网页具有时效性，根据浏览器安全策略，无法保存用户上传的文件夹路径，导致用户每次检索都需要重新选择文件夹，增加了用户操作复杂度。
 
-本人大三前端菜鸡一只，想自己做一个拿得出手的项目，网上看来看去不是管理系统就是什么商城之类的，没有多大兴趣，偶然间看到github有提供网易云音乐接口，然后看了看别人的作品不禁投出羡慕，想着要是自己能做一个这个该多有成就感，想着想着就开始肝代码了hh。
-肝代码不易，跪求各位大佬去github上给个star。在网上转载或调用请标明出处，该项目仅供学习！！！！！！！
+---
 
-[Github仓库](https://github.com/sanbinlbw/wdw-music)
+- 攻坚1
+- 更改结构，用户不能够选择检索哪些文件夹里的音频数据，添加的文件夹全部检索
 
-
-#### 项目简介
-
-本项目后端接口是Github Binaryify的开源项目（[后端仓库地址](https://github.com/Binaryify/NeteaseCloudMusicApi)），接口文档直接在百度搜索“网易云音乐API”作者是Binaryify。
-
-本项目前端均是本人独立自主开发，所用技术栈：Vue全家桶+elementUi+axios。
-
-因为网页渲染可能会比较慢，图片加载请耐心等候，或者刷新
-[项目演示](https://www.bilibili.com/video/BV13p4y1p76G?from=search&seid=1144058164303611817) 随手点个赞吧
-
-## 快速启动
-
-`当前项目目录下,路径输入cmd进入命令行`
-
-当前目录终端```
-npm install     # 安装项目所需的依赖(如果速度过慢, 可以尝试cnpm或者使用代理)
-npm run serve   #启动项目服务
+```html
+        <div class="online-main">
+            <div v-for="(folder, index) in tempFolders" :key="index">
+              <input
+                type="checkbox"
+                :id="'folder-' + index"
+                v-model="folder.selected"
+              />
+              <label :for="'folder-' + index">{{ folder.name }}</label>
+            </div>
+          </div>
 ```
 
-浏览器打开输入http://localhost:8080网站就能打开哟(注意查看main.js的路径查看接口地址，localhost:3000是后端下载到本地开启，使用云端的api的话需要去配置哦，配置目录node_modules>@vue>cli-service>lib>option.js,找到devServer,修改为
-      devServer: {
-        disableHostCheck: true,
-        proxy: { //解决跨域问题
-            '/api': {
-                // 此处的写法，目的是为了 将 /api 替换成 https://autumnfish.cn/
-                target: 'https://autumnfish.cn/',
-                // 允许跨域
-                changeOrigin: true,
-                ws: true,
-                pathRewrite: {
-                    '^/api': ''
-                }
-            }
-        },
-        port: 8081
-    })
-不要直接使用云端地址哦，不然会有跨域问题。
+原有结构，采用input + checkbox属性，实现多个文件夹的选择
 
- **API安装步骤：** 
+调整为默认选择所有文件夹结构
 
-1. git clone https://github.com/Binaryify/NeteaseCloudMusicApi.git
+```html
+<div class="online-main">
+  <div 
+    v-for="(folder, index) in tempFolders" 
+    :key="index" 
+    class="folder-item"
+    :class="{ selected: folder.selected }"
+  >
+    <span class="folder-icon">✔</span>
+    <span class="folder-name">{{ folder.name }}</span>
+  </div>
+</div>
+```
 
-(不会使用git的小伙伴可以直接去上面的接口仓库下载接口哦)
+- 引发问题：检索完毕后，用户更改本地文件夹以及文件，用户再次重新添加文件夹上传最新的音频数据，以前保留的音频数据可能存在重复性
 
-2. npm install
+---
 
-3.cd api文件夹
-
-4.node app.js
-
-
-
-
-
-#### 关于本项目
-
-本项目还有许多值得改进的地方，各位小伙伴们有好的意见或者遇到什么问题欢迎评论或者加vx：crlshihb 一起讨论哦， 
-
-
-项目下一步方向：实现其他的小功能，封装请求，增加二维码登录等操作
-
-项目中会遇到的坑和bug只要发现都有填和修复哦
-
-#### 有增加一个小彩蛋 
-
-在搜索栏输入 @crl是个憨批@ 即可出现彩蛋哦
-如果不喜欢这个效果的话，在搜索栏输入 @crl不是憨批@ 即可关闭
+- 攻坚2
+- 添加过滤限制，拼接现有音频数据，使用map数据结构进行去重处理，重复部分保留旧的，去除新的
