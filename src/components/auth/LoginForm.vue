@@ -77,9 +77,6 @@ export default {
         // 关闭登录框
         await this.$store.dispatch("changeShowLogin", false);
 
-        // 显示成功消息
-        this.$message.success("登录成功!");
-
         // 清空表单
         this.form.username = "";
         this.form.password = "";
@@ -87,10 +84,11 @@ export default {
         // 重新获取用户列表
         await this.$store.dispatch("savePersonalList", []);
 
-        // 返回主页
-        // setTimeout(() => {
-        //   window.location.href = "/";
-        // }, 500);
+        // 保存成功消息到 localStorage
+        localStorage.setItem("loginSuccessMessage", "登录成功!");
+
+        // 刷新页面
+        window.location.reload();
       } catch (error) {
         console.error("登录失败:", error);
         this.$message.error(error.message || "登录失败");
@@ -100,6 +98,18 @@ export default {
     goToHome() {
       this.$emit("goToHome");
     },
+  },
+  mounted() {
+    // 读取保存的成功消息
+    const successMessage = localStorage.getItem("loginSuccessMessage");
+
+    if (successMessage) {
+      // 显示成功消息
+      this.$message.success(successMessage);
+
+      // 清除已显示的消息，防止再次显示
+      localStorage.removeItem("loginSuccessMessage");
+    }
   },
 };
 </script>

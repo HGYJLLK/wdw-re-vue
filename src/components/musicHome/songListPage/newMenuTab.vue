@@ -27,7 +27,7 @@
         </div> -->
       </div>
       <div class="right">
-        <div class="playAll" @click="dialogVisible = true">
+        <div class="playAll" @click="addMusicDialog">
           <i
             class="iconfont icon-tianjia"
             style="font-size: 15px; margin-right: 4px"
@@ -55,8 +55,8 @@
         </div>
         <div
           class="tab-option"
-          :class="{ active: currentOption === 'local' }"
-          @click="selectOption('local')"
+          :class="{ active: currentOption === 'local', disabled: !isTokenAvailable }"
+          @click="isTokenAvailable ? selectOption('local') : null"
         >
           添加歌曲
         </div>
@@ -127,7 +127,8 @@
 </template>
 
 <script>
-import { gsap } from "gsap";
+import { gsap, selector } from "gsap";
+import tokenUtils from "../../../utils/token";
 export default {
   name: "newMenuTab",
   components: {},
@@ -159,6 +160,9 @@ export default {
             ? "translateX(0)"
             : "translateX(100%)",
       };
+    },
+    isTokenAvailable() {
+      return tokenUtils.hasToken();
     },
   },
   methods: {
@@ -492,6 +496,10 @@ export default {
       }
       return urls;
     },
+    addMusicDialog() {
+      this.dialogVisible = true;
+      this.selectOption("online");
+    },
   },
   mounted() {},
 };
@@ -772,5 +780,11 @@ label {
 
 .upload-button:hover {
   background: #45a049;
+}
+
+.tab-option.disabled {
+  cursor: not-allowed;
+  /* background-color: #ccc;
+  color: #999; */
 }
 </style>

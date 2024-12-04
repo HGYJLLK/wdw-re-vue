@@ -37,7 +37,7 @@
             <span slot="title">本地音乐</span>
           </el-menu-item>
         </div>
-        <div>
+        <div v-if="isLoggedIn">
           <el-menu-item index="/musicHome/myFavoriteMusic">
             <img
               src="@/assets/image/xihuan.svg"
@@ -47,7 +47,7 @@
             <span slot="title">我喜欢的音乐</span>
           </el-menu-item>
         </div>
-        <div>
+        <div v-if="isLoggedIn">
           <el-menu-item index="/musicHome/mySongListMusic">
             <img
               src="@/assets/image/wodegedan.svg"
@@ -81,6 +81,7 @@
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
+import tokenUtils from "../../../utils/token";
 export default {
   name: "leftNav",
   components: {},
@@ -92,6 +93,11 @@ export default {
   },
   data() {
     return {};
+  },
+  computed: {
+    isLoggedIn() {
+      return tokenUtils.hasToken(); // 根据 Token 判断是否登录
+    },
   },
   methods: {
     handleOpen(key, keyPath) {

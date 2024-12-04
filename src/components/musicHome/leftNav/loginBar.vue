@@ -135,6 +135,7 @@
 <script>
 import { mapGetters } from "vuex";
 import defaultAvatar from "@/assets/image/default.jpg";
+import tokenUtils from "../../../utils/token";
 export default {
   name: "loginBar",
   components: {},
@@ -293,12 +294,14 @@ export default {
         const response = await this.$authHttp.get("/logout");
         console.log("登出响应:", response);
 
-        this.$message.success("成功退出");
         this.profileDialogVisible = false; // 关闭个人信息弹窗
         this.$store.dispatch("saveUserInfo", null);
         this.$store.dispatch("savePersonalList", []);
         // 清理本地存储
-        localStorage.removeItem("token");
+        tokenUtils.removeToken();
+        // 刷新页面
+        localStorage.setItem("logout", "登出成功");
+        window.location.reload();
       } catch (error) {
         console.error("登出失败:", error);
         this.$message.error(error.message || "登出失败");
@@ -312,6 +315,11 @@ export default {
 
   mounted() {
     console.log("user info:", this.userInfo);
+    const logoutMessage = localStorage.getItem("logout");
+    if (logoutMessage) {
+      this.$message.success(logoutMessage);
+      localStorage.removeItem("logout");
+    }
   },
 };
 </script>
