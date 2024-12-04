@@ -95,11 +95,31 @@
           </div>
         </div>
 
-        <div v-else-if="currentOption === 'local'">
+        <!-- <div v-else-if="currentOption === 'local'">
           <h3>上传音乐</h3>
           <input type="file" @change="uploadFile" />
           <input type="text" v-model="newSong.artist" placeholder="歌手" />
           <button @click="addMusic">添加</button>
+        </div> -->
+        <div v-else-if="currentOption === 'local'" class="upload-container">
+          <!-- <h3 class="upload-title">上传音乐</h3> -->
+          <div class="upload-form">
+            <label class="upload-label">
+              选择文件:
+              <input type="file" @change="uploadFile" class="upload-input" />
+            </label>
+            <label for="">
+              歌手：
+              <input
+                type="text"
+                v-model="newSong.artist"
+                placeholder="歌手"
+                class="artist-input"
+              />
+            </label>
+
+            <button @click="addMusic" class="upload-button">添加</button>
+          </div>
         </div>
       </div>
     </el-dialog>
@@ -672,5 +692,85 @@ label {
   flex: 1;
   font-size: 16px;
   font-weight: 500;
+}
+
+.upload-container {
+  background: #343a40;
+  border-radius: 10px;
+  padding: 20px;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+  color: #ffffff;
+  margin-top: 15px;
+}
+
+.upload-title {
+  font-size: 20px;
+  font-weight: bold;
+  margin-bottom: 15px;
+  text-align: center;
+  color: #ffc107;
+}
+
+.upload-form {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+}
+
+label {
+  display: flex;
+  align-items: center;
+  gap: 10px; /* 控制文字和输入框之间的间距 */
+  font-size: 14px;
+  color: #e0e0e0;
+}
+
+.upload-label {
+  font-size: 14px;
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  color: #e0e0e0; /* 浅灰色，统一文字风格 */
+}
+
+.upload-input {
+  background: #1e1e1e;
+  border: 1px solid #444;
+  color: #ffffff;
+  padding: 5px;
+  border-radius: 5px;
+  flex: 1;
+}
+
+.upload-label input[type="file"] {
+  flex: 1; /* 自适应宽度 */
+  width: 80%;
+}
+
+.artist-input {
+  background: #1e1e1e;
+  border: 1px solid #444;
+  color: #ffffff;
+  padding: 10px;
+  border-radius: 5px;
+  font-size: 14px;
+  flex: 1; /* 和文件选择框对齐宽度 */
+}
+
+.upload-button {
+  background: #4caf50;
+  border: none;
+  color: #ffffff;
+  padding: 10px 15px;
+  text-align: center;
+  font-size: 14px;
+  font-weight: bold;
+  border-radius: 5px;
+  cursor: pointer;
+  transition: background 0.3s ease;
+}
+
+.upload-button:hover {
+  background: #45a049;
 }
 </style>
