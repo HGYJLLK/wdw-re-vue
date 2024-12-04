@@ -261,7 +261,7 @@ export default {
        * 如果musicDetail存在self属性，说明是自定义音乐，直接获取musicDetail.url
        * 否则，需要请求接口获取音乐url
        */
-      this.getMusicUrl(musicDetail.id, musicDetail.self);
+      this.getMusicUrl(musicDetail.id, musicDetail.self, musicDetail.url);
       // 保存到当前播放歌曲详情
       this.$store.dispatch("saveMusicDetail", musicDetail);
       // 保存到当前播放歌曲id
@@ -321,11 +321,11 @@ export default {
       this.$store.dispatch("pushPlayList", musicDetail);
     },
     //根据id获取音乐url
-    async getMusicUrl(musicId, isSelf) {
+    async getMusicUrl(musicId, isSelf, url) {
       console.log("是否是自定义音乐：" + isSelf);
       if (isSelf) {
         this.$store.dispatch("saveAur", [0, 0]);
-        this.$store.dispatch("saveMusicUrl", musicDetail.url);
+        this.$store.dispatch("saveMusicUrl", url);
         return;
       }
       await this.$http
@@ -451,7 +451,9 @@ export default {
   created() {
     this.getSongPage(0, "Song");
   },
-  mounted() {},
+  mounted() {
+    console.log("列表中拿到的音频信息", this.songsDetail);
+  },
 };
 </script>
 

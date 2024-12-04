@@ -279,22 +279,22 @@ export default {
       console.log("this.musicUrl", this.musicUrl);
 
       if (!this.musicUrl) {
-        const h = this.$createElement;
-        this.$message.error({
-          message: h("p", null, [
-            h("span", null, "列表中没有可播放的歌曲"),
-            h(
-              "i",
-              {
-                style: "color: red",
-              },
-              ""
-            ),
-          ]),
-          offset: 280,
-          center: true,
-          showClose: true,
-        });
+        // const h = this.$createElement;
+        // this.$message.error({
+        //   message: h("p", null, [
+        //     h("span", null, "列表中没有可播放的歌曲"),
+        //     h(
+        //       "i",
+        //       {
+        //         style: "color: red",
+        //       },
+        //       ""
+        //     ),
+        //   ]),
+        //   offset: 280,
+        //   center: true,
+        //   showClose: true,
+        // });
         return;
       }
       this.$store.dispatch("saveIsPlaying", true);
@@ -447,22 +447,22 @@ export default {
         }
       }
       if (index === 0) {
-        const h = this.$createElement;
-        this.$message.error({
-          message: h("p", null, [
-            h("span", null, "已经是列表第一首歌曲"),
-            h(
-              "i",
-              {
-                style: "color: red",
-              },
-              ""
-            ),
-          ]),
-          offset: 280,
-          center: true,
-          showClose: true,
-        });
+        // const h = this.$createElement;
+        // this.$message.error({
+        //   message: h("p", null, [
+        //     h("span", null, "已经是列表第一首歌曲"),
+        //     h(
+        //       "i",
+        //       {
+        //         style: "color: red",
+        //       },
+        //       ""
+        //     ),
+        //   ]),
+        //   offset: 280,
+        //   center: true,
+        //   showClose: true,
+        // });
         return;
       }
       this.startSong(this.playList[index - 1]);
@@ -525,7 +525,7 @@ export default {
     startSong(musicDetail) {
       if (musicDetail.id === this.songId) return;
       // 获得音乐url
-      this.getMusicUrl(musicDetail.id);
+      this.getMusicUrl(musicDetail.id, musicDetail.self, musicDetail.url);
       // 保存到当前播放歌曲详情
       this.$store.dispatch("saveMusicDetail", musicDetail);
       // 保存到当前播放歌曲id
@@ -538,7 +538,12 @@ export default {
       this.$store.dispatch("pushHasPlayList", musicDetail);
     },
     //根据id获取音乐url
-    async getMusicUrl(musicId) {
+    async getMusicUrl(musicId, isSelf, url) {
+      if (isSelf) {
+        this.$store.dispatch("saveAur", [0, 0]);
+        this.$store.dispatch("saveMusicUrl", url);
+        return;
+      }
       await this.$http
         .get("song/url", {
           params: {

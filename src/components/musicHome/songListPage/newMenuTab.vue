@@ -3,13 +3,13 @@
     <h1 class="menuTitle">本地音乐</h1>
     <div class="playAllSong">
       <div class="left">
-        <div class="playAll" @click="allAddList">
+        <!-- <div class="playAll" @click="allAddList">
           <i
             class="iconfont icon-bofang"
             style="font-size: 15px; margin-right: 4px"
           ></i>
           播放全部
-        </div>
+        </div> -->
         <!-- <div class="playAll" @click="refresh">
           <input
             type="file"
@@ -98,9 +98,7 @@
         <div v-else-if="currentOption === 'local'">
           <h3>上传音乐</h3>
           <input type="file" @change="uploadFile" />
-          <input type="text" v-model="newSong.name" placeholder="歌名" />
           <input type="text" v-model="newSong.artist" placeholder="歌手" />
-          <input type="text" v-model="newSong.duration" placeholder="时长" />
           <button @click="addMusic">添加</button>
         </div>
       </div>
@@ -146,47 +144,48 @@ export default {
   methods: {
     // 全部播放
     allAddList() {
-      let songList = [];
-      for (let song of this.songs) {
-        if (song.st != -200) {
-          songList.push(song);
-        }
-      }
-      // 全部加入歌单
-      this.$store.dispatch("playAllSong", songList);
-      // 获得音乐url并保存到当前播放url
-      this.getMusicUrl(songList[0].id, songList[0].self, songList[0].url);
-      this.$store.dispatch("deleteHisListSong", songList[0].id);
-      this.$store.dispatch("unshiftHisMusicList", songList[0]);
+      // let songList = [];
+      // for (let song of this.songs) {
+      //   if (song.st != -200) {
+      //     songList.push(song);
+      //   }
+      // }
+      // // 全部加入歌单
+      // this.$store.dispatch("playAllSong", songList);
+      // // 获得音乐url并保存到当前播放url
+      // this.getMusicUrl(songList[0].id, songList[0].self, songList[0].url);
+      // this.$store.dispatch("deleteHisListSong", songList[0].id);
+      // this.$store.dispatch("unshiftHisMusicList", songList[0]);
+      this.$emit("playAll");
     },
     //根据id获取音乐url
-    async getMusicUrl(musicId, isSelf, musicUrl) {
-      console.log("是否是自定义音乐：" + isSelf);
-      if (isSelf) {
-        this.$store.dispatch("saveAur", [0, 0]);
-        this.$store.dispatch("saveMusicUrl", musicUrl);
-        return;
-      }
-      await this.$http
-        .get("song/url", {
-          params: {
-            id: musicId,
-          },
-        })
-        .then((res) => {
-          console.log("将要播放的歌曲的url：", res);
+    // async getMusicUrl(musicId, isSelf, musicUrl) {
+    //   console.log("是否是自定义音乐：" + isSelf);
+    //   if (isSelf) {
+    //     this.$store.dispatch("saveAur", [0, 0]);
+    //     this.$store.dispatch("saveMusicUrl", musicUrl);
+    //     return;
+    //   }
+    //   await this.$http
+    //     .get("song/url", {
+    //       params: {
+    //         id: musicId,
+    //       },
+    //     })
+    //     .then((res) => {
+    //       console.log("将要播放的歌曲的url：", res);
 
-          if (res.data.data[0].freeTrialInfo) {
-            this.$store.dispatch("saveAur", [
-              res.data.data[0].freeTrialInfo.start,
-              res.data.data[0].freeTrialInfo.end,
-            ]);
-          } else {
-            this.$store.dispatch("saveAur", [0, 0]);
-          }
-          this.$store.dispatch("saveMusicUrl", res.data.data[0].url);
-        });
-    },
+    //       if (res.data.data[0].freeTrialInfo) {
+    //         this.$store.dispatch("saveAur", [
+    //           res.data.data[0].freeTrialInfo.start,
+    //           res.data.data[0].freeTrialInfo.end,
+    //         ]);
+    //       } else {
+    //         this.$store.dispatch("saveAur", [0, 0]);
+    //       }
+    //       this.$store.dispatch("saveMusicUrl", res.data.data[0].url);
+    //     });
+    // },
     selectOption(option) {
       this.currentOption = option;
     },
@@ -267,6 +266,7 @@ export default {
       });
       // // 生成音频URL
       this.audioUrls = await this.generateAudioUrls(selectedMusicFiles);
+      console.log("将要传递的音频数据：", this.audioUrls);
 
       // 获取音频时长
       const durations = await Promise.all(
@@ -318,7 +318,7 @@ export default {
         audio.onloadedmetadata = () => {
           resolve(Math.floor(audio.duration * 1000));
           // 释放资源
-          URL.revokeObjectURL(audioUrl);
+          // URL.revokeObjectURL(audioUrl);
         };
         audio.onerror = (error) => {
           reject(error);

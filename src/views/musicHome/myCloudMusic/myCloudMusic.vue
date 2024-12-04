@@ -8,7 +8,11 @@
       @changeActive="changeActive"
       :commentCount="comment.total"
     /> -->
-    <newMenuTab :songs="songsDetail.songs" @audioData="handleAudioData" />
+    <newMenuTab
+      :songs="songsDetail.songs"
+      @audioData="handleAudioData"
+      @playAll="playAll"
+    />
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
@@ -97,7 +101,7 @@ export default {
             mv: 0, // 没有MV
             alia: [],
             self: true, // 是否为用户自己上传的歌曲
-            url: music1, // 歌曲链接
+            url: "", // 歌曲链接
             fee: 8,
             st: 0,
           },
@@ -117,7 +121,7 @@ export default {
             mv: 1, // 有MV
             alia: [],
             self: true, // 是否为用户自己上传的歌曲
-            url: music2,
+            url: "",
             fee: 8,
             st: 0,
           },
@@ -134,7 +138,7 @@ export default {
             mv: 0,
             alia: [],
             self: true, // 是否为用户自己上传的歌曲
-            url: music3,
+            url: "",
             fee: 8,
             st: 0,
           },
@@ -328,6 +332,57 @@ export default {
     handleAudioData(data) {
       this.receivedAudioData = data; // 更新父组件的状态
       console.log("从子组件接收到的音频数据：", this.receivedAudioData);
+
+      this.songsDetail.songs[0].url = this.receivedAudioData[0].url;
+      this.songsDetail.songs[1].url = this.receivedAudioData[1].url;
+      this.songsDetail.songs[2].url = this.receivedAudioData[2].url;
+
+      this.songsDetail.songs[0].dt = this.receivedAudioData[0].duration;
+      this.songsDetail.songs[1].dt = this.receivedAudioData[1].duration;
+      this.songsDetail.songs[2].dt = this.receivedAudioData[2].duration;
+    },
+    // 全部播放
+    playAll() {
+      let songList = [];
+      for (let song of this.songsDetail.songs) {
+        if (song.st != -200) {
+          songList.push(song);
+        }
+      }
+      // 全部加入歌单
+      this.$store.dispatch("playAllSong", songList);
+      // 获得音乐url并保存到当前播放url
+      this.getMusicUrl(songList[0].id, songList[0].self, songList[0].url);
+      this.$store.dispatch("deleteHisListSong", songList[0].id);
+      this.$store.dispatch("unshiftHisMusicList", songList[0]);
+    },
+    //根据id获取音乐url
+    async getMusicUrl(musicId, isSelf, musicUrl) {
+      console.log("是否是自定义音乐：" + isSelf);
+      if (isSelf) {
+        this.$store.dispatch("saveAur", [0, 0]);
+        this.$store.dispatch("saveMusicUrl", musicUrl);
+        return;
+      }
+      await this.$http
+        .get("song/url", {
+          params: {
+            id: musicId,
+          },
+        })
+        .then((res) => {
+          console.log("将要播放的歌曲的url：", res);
+
+          if (res.data.data[0].freeTrialInfo) {
+            this.$store.dispatch("saveAur", [
+              res.data.data[0].freeTrialInfo.start,
+              res.data.data[0].freeTrialInfo.end,
+            ]);
+          } else {
+            this.$store.dispatch("saveAur", [0, 0]);
+          }
+          this.$store.dispatch("saveMusicUrl", res.data.data[0].url);
+        });
     },
   },
   created() {

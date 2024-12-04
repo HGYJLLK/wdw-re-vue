@@ -162,7 +162,7 @@
           "
           v-show="item.id === songId && isPlaying"
         >
-          <playAni :small="true"/>
+          <playAni :small="true" />
         </div>
         <i
           class="iconfont icon-zanting"
@@ -287,7 +287,7 @@ export default {
     startSong(musicDetail) {
       if (musicDetail.id === this.songId) return;
       // 获得音乐url并保存到当前播放url
-      this.getMusicUrl(musicDetail.id);
+      this.getMusicUrl(musicDetail.id, musicDetail.self, musicDetail.url);
       // 保存到当前播放歌曲详情
       this.$store.dispatch("saveMusicDetail", musicDetail);
       // 保存到当前播放歌曲id
@@ -300,7 +300,12 @@ export default {
       this.$store.dispatch("pushHasPlayList", musicDetail);
     },
     //根据id获取音乐url
-    async getMusicUrl(musicId) {
+    async getMusicUrl(musicId, isSelf, url) {
+      if (isSelf) {
+        this.$store.dispatch("saveAur", [0, 0]);
+        this.$store.dispatch("saveMusicUrl", url);
+        return;
+      }
       await this.$http
         .get("song/url", {
           params: {
@@ -335,6 +340,7 @@ export default {
     },
     //删除当前歌单歌曲
     delPlayListSong(musicId) {
+      console.log("删除的歌曲id", musicId);
       if (musicId === this.songId) this.$emit("getNextSong");
       this.$store.dispatch("deletePlayListSong", musicId);
       this.$store.dispatch("deleteHasListSong", musicId);
