@@ -1,5 +1,12 @@
 <template>
   <div class="musicList">
+    <contextMenu
+      :visible="contextMenuVisible"
+      :position="contextMenuPosition"
+      :song="currentSong"
+      @action="handleContextMenuAction"
+      @close="hideContextMenu"
+    />
     <!-- <div id="songSearchHead">
       <span style="position: absolute; left: 2%; color: #fff; font-size: 15px"
         >序号</span
@@ -153,6 +160,7 @@
       class="row"
       v-for="(item, index) in songsDetail.songs"
       :key="index"
+      @contextmenu.prevent="showContextMenu($event, item, index)"
       @mouseenter="hoverIn(index)"
       @mouseleave="hoverOut(index)"
       @dblclick="startSong(item, index)"
@@ -199,6 +207,7 @@
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
 import playAni from "@/components/musicHome/playAnimation/playAni";
+import contextMenu from "@/components/musicHome/contextMenu/contextMenu";
 import { gsap } from "gsap";
 export default {
   name: "musicList",
@@ -223,12 +232,16 @@ export default {
   components: {
     //播放动画
     playAni,
+    contextMenu,
   },
   data() {
     return {
       // 鼠标移入的index
       currentIndex: -1,
       temp: {},
+      contextMenuVisible: false,
+      contextMenuPosition: { x: 0, y: 0 },
+      currentSong: null,
     };
   },
   methods: {
@@ -447,12 +460,57 @@ export default {
         y: 0,
       });
     },
+    showContextMenu(event, song) {
+      const menuWidth = 185; // 假设菜单宽度为200px
+      const menuHeight = 140; // 假设菜单高度为160px
+      const viewportWidth = window.innerWidth; // 获取视口宽度
+      const viewportHeight = window.innerHeight; // 获取视口高度
+      const offset = 10; // 菜单和边界之间的最小间距
+
+      let x = event.clientX;
+      let y = event.clientY;
+
+      // 判断右侧边界，如果超出则显示在鼠标左侧
+      if (viewportWidth - x < menuWidth + offset) {
+        x = x - menuWidth - offset;
+      } else {
+        x += offset;
+      }
+
+      // 判断底部边界，如果超出则显示在鼠标上方
+      if (viewportHeight - y < menuHeight + 80) {
+        y = y - menuHeight - offset;
+      } else {
+        y += offset;
+      }
+
+      this.contextMenuPosition = { x: x, y: y };
+      this.currentSong = song;
+      this.contextMenuVisible = true;
+    },
+    hideContextMenu() {
+      this.contextMenuVisible = false;
+    },
+    handleContextMenuAction(action, song) {
+      if (action === "play") {
+        this.startSong(song);
+      } else if (action === "add") {
+        this.addList(song);
+      } else if (action === "delete") {
+        console.log("删除歌曲：", song.name);
+        // 添加删除逻辑
+      }
+    },
   },
   created() {
     this.getSongPage(0, "Song");
   },
   mounted() {
     console.log("列表中拿到的音频信息", this.songsDetail);
+    document.addEventListener("click", this.hideContextMenu);
+  },
+  beforeDestroy() {
+    document.removeEventListener("click", this.hideContextMenu);
   },
 };
 </script>
