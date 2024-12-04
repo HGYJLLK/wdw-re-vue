@@ -108,6 +108,7 @@
                   {{ item.c }}
                 </li>
               </ul>
+              <div v-else-if="musicDetail.self">暂无歌词</div>
               <div v-else>纯音乐，请您欣赏</div>
             </div>
           </div>
