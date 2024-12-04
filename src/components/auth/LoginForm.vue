@@ -53,8 +53,6 @@ export default {
 
       try {
         console.log("开始登录，发送数据:", this.form);
-
-        // 改用 auth.login 方法
         const response = await this.$authHttp.post("/login", this.form);
         console.log("登录响应:", response);
 

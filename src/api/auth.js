@@ -28,7 +28,9 @@ export const auth = {
     username: data.username,
     security_answer: data.security_answer || '' // 添加默认空值
   }),
-  resetPassword: (data) => api.post('/reset-password', data)
+  resetPassword: (data) => api.post('/reset-password', data),
+  logout: () => api.get('/logout'),
+  apiUserProfile: (data) => api.put('/api/user/profile', data) // 获取用户p
 }
 
 export default api

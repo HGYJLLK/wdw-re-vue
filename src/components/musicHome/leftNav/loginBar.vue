@@ -39,7 +39,8 @@
       </el-dropdown>
     </div>
 
-    <!-- <el-dialog
+    <el-dialog
+      v-if="profileDialogVisible"
       title="个人信息"
       :visible.sync="profileDialogVisible"
       width="400px"
@@ -127,7 +128,7 @@
         <el-button @click="profileDialogVisible = false">取 消</el-button>
         <el-button type="primary" @click="handleSaveProfile">确 定</el-button>
       </div>
-    </el-dialog> -->
+    </el-dialog>
   </div>
 </template>
 
@@ -276,7 +277,7 @@ export default {
     },
 
     //登出
-    handleLogout() {
+    async handleLogout() {
       // this.$http
       //   .get("/logout")
       //   .then((res) => {
@@ -287,6 +288,21 @@ export default {
       //   .catch((error) => {
       //     console.log(error);
       //   });
+
+      try {
+        const response = await this.$authHttp.get("/logout");
+        console.log("登出响应:", response);
+
+        this.$message.success("成功退出");
+        this.profileDialogVisible = false; // 关闭个人信息弹窗
+        this.$store.dispatch("saveUserInfo", null);
+        this.$store.dispatch("savePersonalList", []);
+        // 清理本地存储
+        localStorage.removeItem("token");
+      } catch (error) {
+        console.error("登出失败:", error);
+        this.$message.error(error.message || "登出失败");
+      }
     },
 
     togglePasswordSection() {

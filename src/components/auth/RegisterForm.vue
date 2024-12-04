@@ -81,7 +81,7 @@ export default {
         });
 
         alert("注册成功!");
-        // 可以在这里添加路由跳转到登录页面
+        this.$emit("switch-mode", "login");
       } catch (error) {
         alert(error.response?.data?.message || "注册失败");
       }
