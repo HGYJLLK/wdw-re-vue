@@ -3,13 +3,13 @@
     <h1 class="menuTitle">本地音乐</h1>
     <div class="playAllSong">
       <div class="left">
-        <!-- <div class="playAll" @click="allAddList">
+        <div class="playAll" @click="allAddList">
           <i
             class="iconfont icon-bofang"
             style="font-size: 15px; margin-right: 4px"
           ></i>
           播放全部
-        </div> -->
+        </div>
         <!-- <div class="playAll" @click="refresh">
           <input
             type="file"

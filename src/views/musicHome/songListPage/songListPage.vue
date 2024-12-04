@@ -3,13 +3,14 @@
     <!-- 歌单细节 -->
     <listDetail :playList="playList" :songsDetail="songsDetail" />
     <!-- 导航栏 -->
-    <menuTab
+    <!-- <menuTab
       ref="menuTab"
       @changeActive="changeActive"
       :commentCount="comment.total"
-    />
+    /> -->
     <!-- <div>{{ temp }}</div> -->
     <!-- 歌曲列表 -->
+    <div style="margin-top: 10px;"></div>
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
       <!-- 评论 -->

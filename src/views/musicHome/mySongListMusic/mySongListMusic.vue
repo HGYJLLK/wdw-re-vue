@@ -9,6 +9,7 @@
       :commentCount="comment.total"
     /> -->
     <!-- 歌曲列表 -->
+    <div style="margin-top: 15px"></div>
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
       <!-- 评论 -->
@@ -40,6 +41,7 @@ import img3 from "@/assets/musicList/a3.jpg";
 import music1 from "@/assets/music/a1.mp3";
 import music2 from "@/assets/music/a2.mp3";
 import music3 from "@/assets/music/a3.mp3";
+import defaultAvatar from "@/assets/image/default.jpg";
 export default {
   name: "myFavoriteMusic",
   components: {
@@ -63,14 +65,15 @@ export default {
     ...mapGetters([
       // 加载状态
       "isLoading",
+      // 登录信息
+      "userInfo",
     ]),
   },
   data() {
     return {
       // 传入的id
       currentId: this.$route.params.id,
-      // 歌单数据
-      playList: {},
+
       // 导航页面
       activeIndex: "1",
       // 请求的歌曲id
@@ -214,6 +217,15 @@ export default {
           },
         ],
       },
+      // 歌单数据
+      playList: {
+        // coverImgUrl: this.songsDetail.songs[0].al.picUrl,
+        // name: "我喜欢的音乐",
+        // creator: {
+        //   nickname: this.userInfo.nickname,
+        //   avatarUrl: this.userInfo.avatarUrl,
+        // },
+      },
       // 评论数据
       comment: {},
       audio: null,
@@ -223,6 +235,12 @@ export default {
     // 获取歌单详情数据
     async getPlayListDetail() {
       this.$store.dispatch("changeIsLoading", true);
+      this.playList.coverImgUrl = this.songsDetail.songs[0].al.picUrl;
+      this.playList.name = "我喜欢的音乐";
+      this.playList.creator = {
+        nickname: this.userInfo.nickname,
+        avatarUrl: this.userInfo.avatarUrl || defaultAvatar,
+      };
       // await this.$http
       //   .get("playlist/detail", {
       //     params: {
