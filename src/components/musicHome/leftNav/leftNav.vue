@@ -92,17 +92,15 @@ export default {
       //用户信息
       "userInfo",
     ]),
-  },
-  data() {
-    return {};
-  },
-  computed: {
     isLoggedIn() {
       console.log("isLoggedIn", tokenUtils.hasToken());
       console.log("userInfo", this.userInfo);
 
       return tokenUtils.hasToken() && this.userInfo; // 根据 Token 判断是否登录
     },
+  },
+  data() {
+    return {};
   },
   methods: {
     handleOpen(key, keyPath) {

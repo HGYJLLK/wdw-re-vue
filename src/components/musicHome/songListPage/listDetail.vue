@@ -1,13 +1,11 @@
 <template>
   <!-- 歌单细节 -->
   <div class="listDetail">
-    <!-- 歌单封面 -->
     <el-image
       :src="playList.coverImgUrl"
       fit="fill"
       style="border-radius: 10px; height: 100%; width: 30vh; position: absolute"
     ></el-image>
-    <!-- 歌单名 -->
     <div class="listName">
       <div
         style="
@@ -25,9 +23,7 @@
       </div>
       {{ playList.name }}
     </div>
-    <!-- 作者信息 -->
     <div class="creator">
-      <!-- 作者头像 -->
       <el-image
         :src="playList.creator.avatarUrl"
         fit="fill"
@@ -38,95 +34,15 @@
           vertical-align: middle;
         "
       ></el-image>
-      <!-- 作者名 -->
       <span style="color: #507daf; cursor: pointer">
-        {{ playList.creator.nickname }}
+        {{ playList.creator.nickname || playList.creator.username }}
       </span>
-      <!-- 创建时间 -->
-      <!-- <span style="font-size: 10px; margin-left: 5px">
-        {{ playList.createTime | dateFormat }} 创建
-      </span> -->
     </div>
-    <!-- 收听全部 -->
     <div class="playAllSong">
       <div class="playAll" @click="allAddList">
         <i class="iconfont icon-bofang" style="font-size: 15px"></i> 播放全部
       </div>
-      <!-- <div class="orbtn">
-        <i
-          class="iconfont Add a document icon-Adddocument"
-          style="font-size: 15px"
-        ></i>
-        收藏({{
-          playList.subscribedCount >= 100000
-            ? (playList.subscribedCount / 10000).toFixed(0) + "万"
-            : playList.subscribedCount
-        }})
-      </div> -->
-      <!-- <div class="orbtn">
-        <i class="iconfont icon-fenxiang" style="font-size: 15px"></i> 分享({{
-          playList.shareCount >= 100000
-            ? (playList.shareCount / 10000).toFixed(0) + "万"
-            : playList.shareCount
-        }})
-      </div> -->
     </div>
-    <!-- 介绍 -->
-    <!-- <div class="listIntro">
-      <div>
-        标签：<span v-for="(item, index) in playList.tags" :key="index"
-          ><span style="color: #507daf; cursor: pointer" @click="toSongListPage(item)">{{
-            item
-          }}</span
-          >{{ index + 1 === playList.tags.length ? "" : " / " }}</span
-        >
-      </div>
-      <div>
-        <div style="display: inline-block; margin-right: 20px">
-          歌曲：{{ playList.trackCount }}
-        </div>
-        <div style="display: inline-block">
-          播放：{{
-            playList.playCount >= 100000
-              ? (playList.playCount / 10000).toFixed(0) + "万"
-              : playList.playCount
-          }}
-        </div>
-      </div>
-      <div style="position: relative; width: 40vw">
-        <div
-          v-show="!isIntro"
-          style="
-            position: absolute;
-            width: 95%;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            word-break: break-all;
-          "
-        >
-          简介：{{ playList.description }}
-        </div>
-        <div
-          v-show="isIntro"
-          style="position: absolute; z-index: 100; width: 95%; background: #fff"
-        >
-          简介：{{ playList.description }}
-        </div>
-        <i
-          v-show="!isIntro"
-          @click="isIntro = true"
-          class="el-icon-caret-bottom"
-          style="position: absolute; right: 0; cursor: pointer"
-        ></i>
-        <i
-          v-show="isIntro"
-          @click="isIntro = false"
-          class="el-icon-caret-top"
-          style="position: absolute; right: 0; cursor: pointer"
-        ></i>
-      </div>
-    </div> -->
   </div>
 </template>
 

@@ -60,7 +60,7 @@
               >{{ currentQuality }}</span
             >
             <div style="margin: 19px 0; fontsize: 13px">
-              <div
+              <!-- <div
                 style="
                   display: inline-block;
                   width: 140px;
@@ -76,7 +76,7 @@
                 ><span style="cursor: default">{{
                   musicDetail.alia[0] || musicDetail.al.name
                 }}</span>
-              </div>
+              </div> -->
               <div
                 style="
                   display: inline-block;

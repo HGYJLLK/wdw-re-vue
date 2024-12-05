@@ -240,6 +240,7 @@ export default {
       this.playList.creator = {
         nickname: this.userInfo.nickname,
         avatarUrl: this.userInfo.avatarUrl || defaultAvatar,
+        username: this.userInfo.username,
       };
       // await this.$http
       //   .get("playlist/detail", {

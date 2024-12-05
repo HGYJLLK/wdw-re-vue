@@ -30,7 +30,8 @@ export const auth = {
   }),
   resetPassword: (data) => api.post('/reset-password', data),
   logout: () => api.get('/logout'),
-  apiUserProfile: (data) => api.put('/api/user/profile', data) // 获取用户p
+  apiUserProfile: (data) => api.put('/api/user/profile', data), // 更新用户信息
+  uploadAudio:(data) => api.post('/upload/audio', data), // 上传用户音频
 }
 
 export default api

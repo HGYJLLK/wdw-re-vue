@@ -55,7 +55,10 @@
         </div>
         <div
           class="tab-option"
-          :class="{ active: currentOption === 'local', disabled: !isTokenAvailable }"
+          :class="{
+            active: currentOption === 'local',
+            disabled: !isTokenAvailable,
+          }"
           @click="isTokenAvailable ? selectOption('local') : null"
         >
           添加歌曲
@@ -127,6 +130,7 @@
 </template>
 
 <script>
+import { mapGetters, mapMutations, mapActions } from "vuex";
 import { gsap, selector } from "gsap";
 import tokenUtils from "../../../utils/token";
 export default {
@@ -164,6 +168,12 @@ export default {
     isTokenAvailable() {
       return tokenUtils.hasToken();
     },
+    ...mapGetters([
+      // 加载状态
+      "isLoading",
+      // 用户信息
+      "userInfo",
+    ]),
   },
   methods: {
     // 全部播放
@@ -245,10 +255,10 @@ export default {
         }
       });
 
-      // Store the selected music files
-      this.musicFiles = musicFiles;
-      console.log("Found folders:", this.tempFolders);
-      console.log("Found music files:", this.musicFiles);
+      // 拼接音乐数据
+      this.musicFiles = [...this.musicFiles, ...musicFiles];
+      // console.log("Found folders:", this.tempFolders);
+      // console.log("Found music files:", this.musicFiles);
 
       // Generate data URLs for the music files
       // this.generateMusicUrls(this.musicFiles);
@@ -273,66 +283,82 @@ export default {
 
     // Confirm folder selection and process files
     async confirmFolders() {
-      // 过滤未选中的文件夹
-      console.log("this.tempFolders", this.tempFolders);
+      // // 过滤未选中的文件夹
+      // // console.log("this.tempFolders", this.tempFolders);
 
-      const selectedFolders = this.tempFolders.filter(
-        (folder) => folder.selected
-      );
-      // if (selectedFolders.length === 0) {
-      //   this.$message.warning("未选择任何文件夹！");
-      //   return;
-      // }
-      const selectedFolderNames = selectedFolders.map((folder) => folder.name);
-      const selectedMusicFiles = this.musicFiles.filter((file) => {
-        const folderName = file.webkitRelativePath.split("/")[0];
-        return selectedFolderNames.includes(folderName);
-      });
-      // // 生成音频URL
-      this.audioUrls = await this.generateAudioUrls(selectedMusicFiles);
-      console.log("将要传递的音频数据：", this.audioUrls);
+      // const selectedFolders = this.tempFolders.filter(
+      //   (folder) => folder.selected
+      // );
+      // // if (selectedFolders.length === 0) {
+      // //   this.$message.warning("未选择任何文件夹！");
+      // //   return;
+      // // }
+      // const selectedFolderNames = selectedFolders.map((folder) => folder.name);
+      // const selectedMusicFiles = this.musicFiles.filter((file) => {
+      //   const folderName = file.webkitRelativePath.split("/")[0];
+      //   return selectedFolderNames.includes(folderName);
+      // });
+      // // // 生成音频URL
+      // // this.audioUrls = await this.generateAudioUrls(selectedMusicFiles);
+      // // console.log("将要传递的音频数据：", this.audioUrls);
 
-      // 获取音频时长
-      const durations = await Promise.all(
-        this.audioUrls.map((audio) => this.getAudioDuration(audio.url))
-      );
-      this.audioUrls.forEach((audio, index) => {
-        audio.duration = durations[index];
-      });
+      // // // 获取音频时长
+      // // const durations = await Promise.all(
+      // //   this.audioUrls.map((audio) => this.getAudioDuration(audio.url))
+      // // );
+      // // this.audioUrls.forEach((audio, index) => {
+      // //   audio.duration = durations[index];
+      // // });
 
       // // 只存储文件的必要信息
-      // const audioData = {
-      //   musicFiles: selectedMusicFiles.map((file) => ({
-      //     name: file.name,
-      //     webkitRelativePath: file.webkitRelativePath,
-      //     size: file.size,
-      //     type: file.type,
-      //   })),
-      //   audioUrls: this.audioUrls,
-      // };
-      // localStorage.setItem("audioData", JSON.stringify(audioData));
+      // const newAudioData = selectedMusicFiles.map((file) => ({
+      //   name: file.name,
+      //   // webkitRelativePath: file.webkitRelativePath,
+      //   size: file.size,
+      //   // type: file.type,
+      // }));
 
-      // 拼接音频数据，同时根据 name 去重，保留之前的
-      const mergedAudioData = [...(this.audioData || []), ...this.audioUrls];
+      // // 拼接音频数据，同时根据 name 去重，保留之前的
+      // const mergedAudioData = [...(this.audioData || []), ...newAudioData];
 
-      // 使用 Map 进行去重，保留之前的元素
-      this.audioData = Array.from(
-        mergedAudioData
-          .reduce((map, audio) => {
-            if (!map.has(audio.name)) {
-              map.set(audio.name, audio); // 保留之前的
-            }
-            return map;
-          }, new Map())
-          .values()
-      );
-      console.log("音频数据：", this.audioData);
+      // // 使用 Map 进行去重，保留之前的元素
+      // this.audioData = Array.from(
+      //   mergedAudioData
+      //     .reduce((map, audio) => {
+      //       if (!map.has(audio.name)) {
+      //         map.set(audio.name, audio); // 保留之前的
+      //       }
+      //       return map;
+      //     }, new Map())
+      //     .values()
+      // );
+      // console.log("音频数据：", this.audioData);
 
-      this.musicFiles = selectedMusicFiles; // 更新当前显示的音乐文件
-      this.$message.success("文件夹选择已确认！");
+      // this.musicFiles = selectedMusicFiles; // 更新当前显示的音乐文件
+      console.log("音频数据", this.musicFiles);
+
+      try {
+        const response = await this.$authHttp.post("/upload/audio", {
+          audio_files: this.musicFiles,
+          username: this.userInfo.username,
+        });
+
+        console.log("upload/audio response:", response);
+
+        this.$message.success("上传成功！");
+
+        // if (response.data.code === 200) {
+        //   this.$message.success("上传成功！");
+        // } else {
+        //   this.$message.error(response.data.message);
+        // }
+      } catch (error) {
+        console.error("检索失败:", error);
+        this.$message.error(error.message || "检索失败");
+      }
 
       // 传递音频数据给父组件
-      this.$emit("audioData", this.audioData);
+      // this.$emit("audioData", this.audioData);
       this.dialogVisible = false;
     },
 

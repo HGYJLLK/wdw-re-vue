@@ -251,22 +251,6 @@ export default {
 
       if (musicDetail.id === this.songId) return;
       if (this.songsDetail.privileges[index].st == -200) {
-        // const h = this.$createElement;
-        // this.$message.error({
-        //   message: h("p", null, [
-        //     h("span", null, "因版权问题，该歌曲已下架"),
-        //     h(
-        //       "i",
-        //       {
-        //         style: "color: red",
-        //       },
-        //       ""
-        //     ),
-        //   ]),
-        //   offset: 280,
-        //   center: true,
-        //   showClose: true,
-        // });
         return;
       }
       // 获得音乐url并保存到当前播放url
@@ -287,22 +271,6 @@ export default {
     //加入歌单
     addList(musicDetail, index) {
       if (this.songsDetail.privileges[index].st == -200) {
-        /*const h = this.$createElement;
-        this.$message.error({
-          message: h("p", null, [
-            h("span", null, "因版权问题，该歌曲已下架"),
-            h(
-              "i",
-              {
-                style: "color: red",
-              },
-              ""
-            ),
-          ]),
-          offset: 280,
-          center: true,
-          showClose: true,
-        });*/
         return;
       }
       // 放入已经播放过的歌单
@@ -311,23 +279,6 @@ export default {
       // 放入当前播放歌单
       for (let song of this.playList) {
         if (song.id === musicDetail.id) {
-          // const h = this.$createElement;
-          // this.$message.error({
-          //   message: h("p", null, [
-          //     h("span", null, "列表中已存在该歌曲"),
-          //     h(
-          //       "i",
-          //       {
-          //         style: "color: red",
-          //       },
-          //       ""
-          //     ),
-          //   ]),
-          //   offset: 280,
-          //   center: true,
-          //   showClose: true,
-          //   duration: 0,
-          // });
           return;
         }
       }
