@@ -89,6 +89,8 @@ export default {
     ...mapGetters([
       //用户歌单
       "personalList",
+      //用户信息
+      "userInfo",
     ]),
   },
   data() {
@@ -96,7 +98,10 @@ export default {
   },
   computed: {
     isLoggedIn() {
-      return tokenUtils.hasToken(); // 根据 Token 判断是否登录
+      console.log("isLoggedIn", tokenUtils.hasToken());
+      console.log("userInfo", this.userInfo);
+
+      return tokenUtils.hasToken() && this.userInfo; // 根据 Token 判断是否登录
     },
   },
   methods: {

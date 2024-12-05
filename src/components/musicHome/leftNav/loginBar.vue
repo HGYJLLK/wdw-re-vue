@@ -25,7 +25,8 @@
 
       <el-dropdown trigger="click">
         <span class="loginSta" style="cursor: pointer"
-          >{{ userInfo.nickname }}<i class="el-icon-caret-bottom"></i
+          >{{ userInfo.nickname || userInfo.username
+          }}<i class="el-icon-caret-bottom"></i
         ></span>
 
         <el-dropdown-menu slot="dropdown" style="margin-top: 15px">
