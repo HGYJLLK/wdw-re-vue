@@ -2,25 +2,10 @@
   <div class="songListPage">
     <!-- 歌单细节 -->
     <listDetail :playList="playList" :songsDetail="songsDetail" />
-    <!-- 导航栏 -->
-    <!-- <menuTab
-      ref="menuTab"
-      @changeActive="changeActive"
-      :commentCount="comment.total"
-    /> -->
-    <!-- <div>{{ temp }}</div> -->
     <!-- 歌曲列表 -->
     <div style="margin-top: 10px;"></div>
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
-      <!-- 评论 -->
-      <!-- <comment
-        :comment="comment"
-        v-show="activeIndex === '2'"
-        @getCommentPage="getCommentPage"
-        :currentId = "currentId"
-      /> -->
-      <!-- 收藏者 -->
     </div>
     <br /><br /><br /><br /><br /><br />
   </div>
@@ -31,14 +16,14 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-import comment from "@/components/musicHome/songListPage/comment";
+// import comment from "@/components/musicHome/songListPage/comment";
 export default {
   name: "songListPage",
   components: {
     listDetail,
     menuTab,
     musicList,
-    comment,
+    // comment,
   },
   watch: {
     $route: function (newVal, oldVal) {

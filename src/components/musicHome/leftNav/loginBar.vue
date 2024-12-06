@@ -224,6 +224,8 @@ export default {
     },
 
     handleAvatarSuccess(res) {
+      console.log("头像上传成功", res);
+
       if (res.code === 200) {
         const avatarUrl = `http://127.0.0.1:5001${res.data.url}`;
         console.log("头像上传成功", avatarUrl);
@@ -524,9 +526,9 @@ export default {
 }
 
 :deep(.el-textarea__inner) {
-  min-height: 60px; /* 设置最小高度 */
-  max-height: 200px; /* 设置最大高度 */
-  overflow-y: auto; /* 允许垂直滚动 */
+  min-height: 60px;
+  max-height: 200px;
+  overflow-y: auto;
   background-color: #3a3a47;
   border-color: #4a4a57;
   color: #fff;

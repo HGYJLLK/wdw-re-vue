@@ -139,22 +139,6 @@ export default {
           this.$store.dispatch("changeIsLoading", false);
         });
     },
-    //获取精品歌单
-    // getNiceMusicList(cat, page) {
-    //   this.$store.dispatch("changeIsLoading", true);
-    //   this.$http
-    //     .get("/top/playlist/highquality", {
-    //       params: {
-    //         cat: cat,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       console.log(res.data);
-    //       // this.playLists = res.data.playlists;
-    //       // this.count = res.data.total;
-    //       this.$store.dispatch("changeIsLoading", false);
-    //     });
-    // },
     // 选中标签
     selectTag(tag) {
       if (this.tagKind !== tag) {

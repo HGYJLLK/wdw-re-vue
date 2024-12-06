@@ -5,117 +5,6 @@
       <el-header>
         <img src="../assets/image/demo.svg" alt="" id="musicDemo" />
         <span>Liu的音乐播放器</span>
-        <!-- <div id="back">
-          <i
-            class="el-icon-arrow-left"
-            @click="$router.go(-1)"
-            style="cursor: pointer"
-          ></i>
-        </div> -->
-        <div
-          id="searchDiv"
-          @mouseenter="isClose = false"
-          @mouseleave="isClose = true"
-        >
-          <!-- <el-input
-            style="opacity: 1;"
-            placeholder="请输入歌曲名或歌手名"
-            size="mini"
-            v-model="searchData"
-            @keyup.enter.native="search"
-            @focus="showSuggest = true"
-          />
-          <i class="elsearch el-icon-search" @click="search"></i> -->
-          <!-- 搜索建议 -->
-          <div class="searchSuggest" v-show="showSuggest">
-            <div
-              style="opacity: 0.6; font-size: 18px"
-              v-show="searchHistory.length > 0"
-            >
-              搜索历史
-              <i
-                class="iconfont icon-act_qingkong"
-                style="cursor: pointer"
-                @click="deleteAllSearchHistory()"
-              ></i>
-            </div>
-            <!-- 历史标签 -->
-            <div>
-              <div
-                class="historyTag"
-                v-for="(item, index) in searchHistory"
-                :key="index"
-              >
-                <span
-                  style="color: #fff; font-size: 15px"
-                  @click="toSearch(item)"
-                  >{{ item }}</span
-                >
-                <i class="el-icon-close" @click="deleteSearchHistory(item)"></i>
-              </div>
-            </div>
-            <!-- 热搜榜 -->
-            <div
-              style="
-                opacity: 0.6;
-                font-size: 18px;
-                margin-top: 20px;
-                margin-bottom: 20px;
-              "
-            >
-              热搜榜
-            </div>
-            <div
-              class="hotSearch"
-              v-for="(item, index) in hotSearchList"
-              :key="index"
-              @click="toSearch(item.searchWord)"
-            >
-              <div
-                style="position: absolute; width: 10%; top: 35%; left: 5%"
-                :class="{ frontTir: index <= 2, other: index > 2 }"
-              >
-                {{ index + 1 }}
-              </div>
-              <div
-                style="
-                  display: grid;
-                  grid-template-rows: repeat(2,1fr);
-                  position: absolute;
-                  height: 100%;
-                  width:80%
-                  top: 0;
-                  left: 15%;
-                "
-              >
-                <div style="margin-top: 5%">
-                  <div
-                    style="
-                      font-size: 15px;
-                      font-weight: 540;
-                      display: inline-block;
-                      margin-right: 5%;
-                    "
-                  >
-                    {{ item.searchWord }}
-                  </div>
-                  <img
-                    v-show="item.iconUrl"
-                    :src="item.iconUrl"
-                    alt=""
-                    style="width: 28px; height: 15px; margin-bottom: -1%"
-                  />
-                  <span style="color: #fff; font-size: 12px">{{
-                    item.score
-                  }}</span>
-                </div>
-                <div style="font-size: 12px; color: #fff; margin-top: 3%">
-                  {{ item.content }}
-                </div>
-              </div>
-            </div>
-          </div>
-        </div>
         <loginBar style="position: absolute; right: 5%; top: 20%" />
       </el-header>
       <el-container>
@@ -136,11 +25,6 @@
       @getNextSong="getNextSong"
       @cleanDur="cleanDur"
     />
-    <!-- 彩蛋 -->
-    <div class="egg" v-show="isEgg">
-      <loveLetter />
-      <loveHeart :loveModel="loveModel" />
-    </div>
     <!-- 登录页 -->
     <login v-show="!userInfo && showLogin" />
   </div>
@@ -152,8 +36,8 @@ import loginBar from "@/components/musicHome/leftNav/loginBar";
 import login from "@/components/musicHome/login/login";
 import musicPlay from "@/components/musicHome/musicPlay/musicPlay";
 import songTable from "@/components/musicHome/musicPlay/songTable";
-import loveLetter from "@/components/musicHome/playAnimation/loveLetter";
-import loveHeart from "@/components/musicHome/playAnimation/loveHeart";
+// import loveLetter from "@/components/musicHome/playAnimation/loveLetter";
+// import loveHeart from "@/components/musicHome/playAnimation/loveHeart";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   name: "musicHome",
@@ -162,8 +46,8 @@ export default {
     loginBar,
     musicPlay,
     songTable,
-    loveLetter,
-    loveHeart,
+    // loveLetter,
+    // loveHeart,
     login,
   },
   data() {

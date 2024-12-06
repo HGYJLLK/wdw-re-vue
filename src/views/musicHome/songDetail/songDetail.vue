@@ -124,34 +124,16 @@
     </div>
     <!-- 底部信息 -->
     <div class="singel-bottom">
-      <div class="showComment">
-        <!-- 评论区 -->
-        <!-- <p style="font-weight: 600; font-size: 20px; cursor: pointer; margin-left: 3%">
-          评论({{ comment.total }})
-        </p>
-        <div v-loading="isLoading" element-loading-text="加载中...">
-          <comment :comment="comment" @getCommentPage="getSongComment" ref="comment" />
-        </div> -->
-      </div>
-      <!-- 相似歌曲 -->
-      <!-- <div class="simiInfo">
-        <p style="font-weight: 600; font-size: 20px">相似歌曲</p>
-        <simiInfo :simiInfo="simiInfo" />
-      </div> -->
+      <div class="showComment"></div>
     </div>
   </div>
 </template>
 
 <script>
 import { mapGetters, mapMutations, mapActions } from "vuex";
-import comment from "@/components/musicHome/songDetail/comment";
-import simiInfo from "@/components/musicHome/songDetail/simiInfo";
 export default {
   name: "Singel",
-  components: {
-    comment,
-    simiInfo,
-  },
+  components: {},
   computed: {
     ...mapGetters([
       //当前播放歌曲url

@@ -10,21 +10,6 @@
           ></i>
           播放全部
         </div>
-        <!-- <div class="playAll" @click="refresh">
-          <input
-            type="file"
-            id="folderInput"
-            webkitdirectory
-            multiple
-            style="display: none"
-            @change="handleFolderSelection"
-          />
-          <img
-            src="@/assets/image/refresh-line.svg"
-            alt=""
-            style="width: 22px; border-radius: 40px"
-          /><span style="font-weight: 400">刷新</span>
-        </div> -->
       </div>
       <div class="right">
         <div class="playAll" @click="addMusicDialog">
@@ -37,7 +22,6 @@
       </div>
     </div>
 
-    <!-- 弹窗 -->
     <el-dialog
       title="添加歌曲"
       :visible.sync="dialogVisible"
@@ -67,7 +51,6 @@
       </div>
       <div class="content" ref="content">
         <div v-if="currentOption === 'online'">
-          <!-- <h3>选择本地文件夹</h3> -->
           <div class="online-main">
             <div
               v-for="(folder, index) in tempFolders"
@@ -97,15 +80,7 @@
             <button @click="confirmFolders">确定</button>
           </div>
         </div>
-
-        <!-- <div v-else-if="currentOption === 'local'">
-          <h3>上传音乐</h3>
-          <input type="file" @change="uploadFile" />
-          <input type="text" v-model="newSong.artist" placeholder="歌手" />
-          <button @click="addMusic">添加</button>
-        </div> -->
         <div v-else-if="currentOption === 'local'" class="upload-container">
-          <!-- <h3 class="upload-title">上传音乐</h3> -->
           <div class="upload-form">
             <label class="upload-label">
               选择文件：
@@ -144,9 +119,9 @@ export default {
     return {
       dialogVisible: false,
       currentOption: "online", // 当前选中的选项
-      tempFolders: [], // 模拟的文件夹数据，每个文件夹包含名称和选中状态
-      musicFiles: [], // Store selected music files
-      audioUrls: [], // 音乐文件的data url
+      tempFolders: [],
+      musicFiles: [],
+      audioUrls: [],
       audioData: [],
       newSong: {
         file: null,
@@ -178,48 +153,8 @@ export default {
   methods: {
     // 全部播放
     allAddList() {
-      // let songList = [];
-      // for (let song of this.songs) {
-      //   if (song.st != -200) {
-      //     songList.push(song);
-      //   }
-      // }
-      // // 全部加入歌单
-      // this.$store.dispatch("playAllSong", songList);
-      // // 获得音乐url并保存到当前播放url
-      // this.getMusicUrl(songList[0].id, songList[0].self, songList[0].url);
-      // this.$store.dispatch("deleteHisListSong", songList[0].id);
-      // this.$store.dispatch("unshiftHisMusicList", songList[0]);
       this.$emit("playAll");
     },
-    //根据id获取音乐url
-    // async getMusicUrl(musicId, isSelf, musicUrl) {
-    //   console.log("是否是自定义音乐：" + isSelf);
-    //   if (isSelf) {
-    //     this.$store.dispatch("saveAur", [0, 0]);
-    //     this.$store.dispatch("saveMusicUrl", musicUrl);
-    //     return;
-    //   }
-    //   await this.$http
-    //     .get("song/url", {
-    //       params: {
-    //         id: musicId,
-    //       },
-    //     })
-    //     .then((res) => {
-    //       console.log("将要播放的歌曲的url：", res);
-
-    //       if (res.data.data[0].freeTrialInfo) {
-    //         this.$store.dispatch("saveAur", [
-    //           res.data.data[0].freeTrialInfo.start,
-    //           res.data.data[0].freeTrialInfo.end,
-    //         ]);
-    //       } else {
-    //         this.$store.dispatch("saveAur", [0, 0]);
-    //       }
-    //       this.$store.dispatch("saveMusicUrl", res.data.data[0].url);
-    //     });
-    // },
     selectOption(option) {
       this.currentOption = option;
     },
@@ -366,100 +301,6 @@ export default {
       this.$refs.folderInput.click();
     },
 
-    // async refresh() {
-    //   console.log("刷新页面");
-
-    //   const savedFolders =
-    //     JSON.parse(localStorage.getItem("selectedFolders")) || [];
-
-    //   if (savedFolders.length === 0) {
-    //     this.$message.warning("没有已存储的文件夹，请先选择文件夹！");
-    //     return;
-    //   }
-
-    //   // 引导用户选择文件夹
-    //   const folderInput = document.getElementById("folderInput");
-    //   folderInput.click();
-
-    //   // // 获取保存的文件夹和音乐数据
-    //   // const savedFolders = JSON.parse(localStorage.getItem("selectedFolders"));
-    //   // const savedAudioData = JSON.parse(localStorage.getItem("audioData"));
-    //   // if (!savedFolders || savedFolders.length === 0) {
-    //   //   this.$message.error("未保存任何文件夹，请先添加文件夹！");
-    //   //   return;
-    //   // }
-    //   // // 提示用户即将操作的文件夹
-    //   // const folderNames = savedFolders.map((folder) => folder.name).join(", ");
-    //   // if (
-    //   //   !confirm(
-    //   //     `此操作将刷新并上传文件夹：${folderNames} 中的音乐文件。是否继续？`
-    //   //   )
-    //   // ) {
-    //   //   return;
-    //   // }
-    //   // // 重新扫描选定的文件夹
-    //   // // await this.rescanFolders(savedFolders);
-    //   // // // 恢复并处理音乐文件
-    //   // // if (savedAudioData && savedAudioData.musicFiles) {
-    //   // //   this.musicFiles = savedAudioData.musicFiles.map((file) => ({
-    //   // //     ...file,
-    //   // //     webkitRelativePath: file.webkitRelativePath || "", // 防止路径为空
-    //   // //   }));
-    //   // //   console.log("已刷新音乐文件:", this.musicFiles);
-    //   // //   this.processMusicFiles(this.musicFiles);
-    //   // //   this.$message.success(
-    //   // //     `刷新完成，已加载 ${this.musicFiles.length} 个音乐文件！`
-    //   // //   );
-    //   // // } else {
-    //   // //   this.$message.warning("未找到音乐文件，请重新添加！");
-    //   // // }
-    //   // // 更新本地存储
-    //   // const audioData = {
-    //   //   musicFiles: this.musicFiles.map((file) => ({
-    //   //     name: file.name,
-    //   //     webkitRelativePath: file.webkitRelativePath,
-    //   //     size: file.size,
-    //   //     type: file.type,
-    //   //   })),
-    //   //   audioUrls: this.audioUrls,
-    //   // };
-    //   // console.log("刷新后的音乐文件数据：", audioData);
-    //   // localStorage.setItem("audioData", JSON.stringify(audioData));
-    //   // this.$message.success(
-    //   //   `刷新完成，已加载 ${this.musicFiles.length} 个音乐文件！`
-    //   // );
-    // },
-
-    // 重新扫描文件夹
-    // async rescanFolders(folders) {
-    //   this.musicFiles = [];
-    //   for (const folder of folders) {
-    //     try {
-    //       const directoryHandle = await window.showDirectoryPicker({
-    //         id: folder.name,
-    //         startIn: "music",
-    //       });
-    //       await this.scanDirectory(directoryHandle);
-    //     } catch (error) {
-    //       console.error(`Error scanning folder ${folder.name}:`, error);
-    //     }
-    //   }
-    // },
-
-    // // 扫描文件夹
-    // async scanDirectory(directoryHandle) {
-    //   for await (const entry of directoryHandle.values()) {
-    //     if (entry.kind === "file") {
-    //       const file = await entry.getFile();
-    //       if (file.type.startsWith("audio/")) {
-    //         this.musicFiles.push(file);
-    //       }
-    //     } else if (entry.kind === "directory") {
-    //       await this.scanDirectory(entry);
-    //     }
-    //   }
-    // },
-
     // 生成音频URL
     async generateAudioUrls(files) {
       const urls = [];
@@ -477,7 +318,7 @@ export default {
   mounted() {
     const selectedFolders = localStorage.getItem("selectedFolders");
     if (selectedFolders) {
-      this.$message.success(  );
+      this.$message.success();
       localStorage.removeItem("selectedFolders");
     }
   },
@@ -717,7 +558,7 @@ label {
   display: flex;
   align-items: center;
   gap: 10px;
-  color: #e0e0e0; /* 浅灰色，统一文字风格 */
+  color: #e0e0e0;
 }
 
 .upload-input {
@@ -763,7 +604,5 @@ label {
 
 .tab-option.disabled {
   cursor: not-allowed;
-  /* background-color: #ccc;
-  color: #999; */
 }
 </style>

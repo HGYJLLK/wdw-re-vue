@@ -133,7 +133,6 @@ export default {
 
 <style scoped>
 /* 布局 */
-
 #recomSongDiv {
   position: relative;
   display: grid;
@@ -142,18 +141,7 @@ export default {
   column-gap: 40px;
   margin-top: 30px;
 }
-/* .el-row {
-        margin-bottom: 20px;
-    }
-    
-    .el-col:last-child {
-        margin-bottom: 0;
-    } */
-/* .el-col {
-        width: 20%;
-    } */
 /* 歌单介绍 */
-
 .playListIntro {
   height: 50px;
   overflow: hidden;
@@ -171,7 +159,6 @@ export default {
   color: #fff;
 }
 /* 歌单封面 */
-
 #playDetail {
   display: inline-block;
   width: 100%;
@@ -187,7 +174,6 @@ export default {
   background: #f2f3f4;
 }
 /* 播放键出现 */
-
 .playAppear {
   display: block;
   position: absolute;
@@ -199,7 +185,6 @@ export default {
   animation-fill-mode: forwards;
 }
 /* 播放动画 */
-
 @keyframes play {
   0% {
     opacity: 0;

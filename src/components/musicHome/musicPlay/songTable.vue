@@ -503,6 +503,6 @@ export default {
 }
 
 .el-tooltip {
-  z-index: 2000; /* 确保高于其他元素 */
+  z-index: 2000;
 }
 </style>

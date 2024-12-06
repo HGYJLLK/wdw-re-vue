@@ -29,7 +29,7 @@
 
       <button type="submit">注册</button>
 
-      <!-- 新增返回按钮 -->
+      <!-- 返回按钮 -->
       <div class="form-links" style="margin-top: 10px">
         <a
           @click="$emit('switch-mode', 'login')"
@@ -57,77 +57,9 @@ export default {
       },
     };
   },
-  // const handleSubmit = async () => {
-  //   if (
-  //     form.value.username === "" ||
-  //     form.value.password === "" ||
-  //     form.value.confirmPassword === "" ||
-  //     form.value.security_question === "" ||
-  //     form.value.security_answer === ""
-  //   ) {
-  //     alert("请填写所有必填项!");
-  //     return;
-  //   }
-
-  //   if (form.value.password !== form.value.confirmPassword) {
-  //     alert("两次密码输入不一致!");
-  //     return;
-  //   }
-
-  //   try {
-  //     const response = await axios.post("http://127.0.0.1:5001/register", {
-  //       username: form.value.username,
-  //       password: form.value.password,
-  //       security_question: form.value.security_question,
-  //       security_answer: form.value.security_answer,
-  //     });
-
-  //     alert("注册成功!");
-  //     // this.$emit("switch-mode", "login");
-  //   } catch (error) {
-  //     alert(error.response?.data?.message || "注册失败");
-  //   }
-  // };
-
-  // return {
-  //   form,
-  //   // handleSubmit: async function () {
-  //   //   if (
-  //   //     this.form.username === "" ||
-  //   //     this.form.password === "" ||
-  //   //     this.form.confirmPassword === "" ||
-  //   //     this.form.security_question === "" ||
-  //   //     this.form.security_answer === ""
-  //   //   ) {
-  //   //     alert("请填写所有必填项!");
-  //   //     return;
-  //   //   }
-
-  //   //   if (this.form.password !== this.form.confirmPassword) {
-  //   //     alert("两次密码输入不一致!");
-  //   //     return;
-  //   //   }
-
-  //   //   try {
-  //   //     await axios.post("http://127.0.0.1:5001/register", {
-  //   //       username: this.form.username,
-  //   //       password: this.form.password,
-  //   //       security_question: this.form.security_question,
-  //   //       security_answer: this.form.security_answer,
-  //   //     });
-
-  //   //     alert("注册成功!");
-  //   //     // 切换到登录模式
-  //   //     this.$emit("switch-mode", "login");
-  //   //   } catch (error) {
-  //   //     alert(error.response?.data?.message || "注册失败");
-  //   //   }
-  //   // },
-  // };
 
   methods: {
     async handleSubmit() {
-      // 使用普通函数
       if (
         this.form.username === "" ||
         this.form.password === "" ||

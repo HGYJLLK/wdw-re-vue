@@ -8,9 +8,6 @@
       <el-menu-item index="1" @click="changeActive('1')" id="songList"
         >歌曲列表</el-menu-item
       >
-      <!-- <el-menu-item index="2" @click="changeActive('2')"
-        >评论({{ commentCount }})</el-menu-item
-      > -->
     </el-menu>
   </div>
 </template>
@@ -19,10 +16,7 @@
 export default {
   name: "menuTab",
   components: {},
-  props: {
-    // 评论总数
-    commentCount: Number,
-  },
+  props: {},
   data() {
     return {
       // 高亮菜单

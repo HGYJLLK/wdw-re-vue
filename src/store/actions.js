@@ -106,7 +106,7 @@ const actions = {
     },
     updateQuality({ commit }, quality) {
         console.log('quality', quality);
-        commit('setQuality', quality);  // 提交 mutation 更新音质
+        commit('setQuality', quality);
     },
 }
 export default actions

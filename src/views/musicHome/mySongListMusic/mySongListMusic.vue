@@ -34,7 +34,7 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-import comment from "@/components/musicHome/songListPage/comment";
+// import comment from "@/components/musicHome/songListPage/comment";
 import img1 from "@/assets/musicList/a1.jpg";
 import img2 from "@/assets/musicList/a2.jpg";
 import img3 from "@/assets/musicList/a3.jpg";
@@ -48,7 +48,7 @@ export default {
     listDetail,
     menuTab,
     musicList,
-    comment,
+    // comment,
   },
   watch: {
     $route: function (newVal, oldVal) {

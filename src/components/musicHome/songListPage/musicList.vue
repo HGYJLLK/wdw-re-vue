@@ -7,155 +7,6 @@
       @action="handleContextMenuAction"
       @close="hideContextMenu"
     />
-    <!-- <div id="songSearchHead">
-      <span style="position: absolute; left: 2%; color: #fff; font-size: 15px"
-        >序号</span
-      >
-      <span style="position: absolute; left: 15%; color: #fff; font-size: 15px"
-        >音乐标题</span
-      >
-      <span style="position: absolute; left: 45%; color: #fff; font-size: 15px"
-        >歌手</span
-      >
-      <span style="position: absolute; left: 65%; color: #fff; font-size: 15px">
-        专辑
-      </span>
-      <span style="position: absolute; left: 85%; color: #fff; font-size: 15px"
-        >时长</span
-      >
-    </div>
-    <div
-      :class="{ songMesSin: index % 2 !== 0, songMesDou: index % 2 === 0 }"
-      v-for="(item, index) in songsDetail.songs"
-      :key="index"
-      background="#f9f9f9"
-      @dblclick="startSong(item, index)"
-      @mouseenter="currentIndex = index"
-      @mouseleave="currentIndex = -1"
-    >
-      <div class="songRoot">
-        <i
-          class="iconfont icon-MV"
-          style="color: #ec4141; cursor: default"
-          v-show="item.mv != 0"
-        ></i>
-        <i
-          class="iconfont icon-vip-l"
-          style="color: #ec4141; margin-left: 10px"
-          v-show="
-            songsDetail.privileges[index].chargeInfoList[0].chargeType !== 0
-          "
-        ></i>
-      </div>
-      <div
-        style="
-          font-size: 10px;
-          position: absolute;
-          top: 20px;
-          left: 28px;
-          color: #ec4141;
-        "
-        v-if="item.id === songId && isPlaying"
-      >
-        <playAni />
-      </div>
-      <i
-        class="iconfont icon-zanting"
-        style="
-          font-size: 10px;
-          position: absolute;
-          top: 2px;
-          left: 28px;
-          color: #ec4141;
-        "
-        v-else-if="item.id === songId && !isPlaying"
-      ></i>
-      <span
-        style="
-          font-size: 15px !important;
-          position: absolute;
-          top: 2px;
-          left: 25px;
-          color: #fff;
-        "
-        v-else
-        >{{ index >= 9 ? index + 1 : "0" + (index + 1) }}</span
-      >
-      <div
-        :class="{
-          pauseSongName: item.id !== songId,
-          startSongName: item.id === songId,
-          noSongName: songsDetail.privileges[index].st == -200,
-        }"
-        style="cursor: default"
-      >
-        <span
-          :title="item.name + (!item.alia[0] ? '' : '(' + item.alia[0] + ')')"
-          >{{ item.name }}</span
-        >
-        <span
-          style="color: #949495"
-          :title="item.name + (!item.alia[0] ? '' : '(' + item.alia[0] + ')')"
-          >{{ !item.alia[0] ? "" : "(" + item.alia[0] + ")" }}</span
-        >
-      </div>
-      <div class="songFunc" v-show="index === currentIndex">
-        <i class="iconfont icon-xin" style="opacity: 0.9; cursor: pointer"></i>
-        <i
-          class="iconfont icon-tianjia"
-          style="opacity: 0.9; cursor: pointer; margin-left: 10px"
-          title="添加到播放列表"
-          @click="addList(item, index)"
-        ></i>
-      </div>
-      <div
-        style="position: absolute; left: 45%"
-        :class="{
-          startSongAurtor: item.id === songId && item.id !== -1,
-          pauseSongAurtor: item.id !== songId,
-        }"
-      >
-        <div
-          style="
-            width: 160px;
-            white-space: nowrap;
-            text-overflow: ellipsis;
-            overflow: hidden;
-            word-break: break-all;
-          "
-        >
-          <span
-            style="cursor: default"
-            v-for="(item, index) in item.ar"
-            :key="index"
-            @click="toArtistPage(item.id)"
-            >{{ index === 0 ? item.name : "/" + item.name }}</span
-          >
-        </div>
-      </div>
-      <div
-        style="
-          width: 15%;
-          white-space: nowrap;
-          text-overflow: ellipsis;
-          overflow: hidden;
-          word-break: break-all;
-          position: absolute;
-          left: 65%;
-          cursor: pointer;
-          font-weight: 300;
-        "
-        @click="toAlbumPage(item.al.id)"
-      >
-        {{ item.al.name }}
-      </div>
-      <span style="position: absolute; left: 85%">{{
-        Math.floor(item.dt / 1000) | timeFormat
-      }}</span>
-    </div>
-    <br />
-    <br /><br /><br /> -->
-
     <div
       class="row"
       v-for="(item, index) in songsDetail.songs"
@@ -324,14 +175,6 @@ export default {
     backNumOne() {
       this.$refs.pagination.backNumOne();
     },
-    //点击视频跳转界面
-    toVideoPage(id) {
-      this.$router.push("/musicHome/videoPage/" + id);
-    },
-    //点击歌手跳转界面
-    toArtistPage(id) {
-      this.$router.push("/musicHome/artistPage/" + id);
-    },
 
     hoverIn(index) {
       const rows = this.$el.querySelectorAll(".row");
@@ -412,8 +255,8 @@ export default {
       });
     },
     showContextMenu(event, song) {
-      const menuWidth = 185; // 假设菜单宽度为200px
-      const menuHeight = 140; // 假设菜单高度为160px
+      const menuWidth = 185;
+      const menuHeight = 140;
       const viewportWidth = window.innerWidth; // 获取视口宽度
       const viewportHeight = window.innerHeight; // 获取视口高度
       const offset = 10; // 菜单和边界之间的最小间距
@@ -449,7 +292,6 @@ export default {
         this.addList(song);
       } else if (action === "delete") {
         console.log("删除歌曲：", song.name);
-        // 添加删除逻辑
       }
     },
   },

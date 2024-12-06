@@ -64,7 +64,6 @@ export default {
     },
   },
 
-  // 当组件显示时，重置为登录模式
   watch: {
     showLogin(val) {
       if (val) {
@@ -117,7 +116,6 @@ export default {
   color: #fff;
 }
 
-/* 为了确保内容不会溢出 */
 .auth-container {
   max-height: 90vh;
   overflow-y: auto;

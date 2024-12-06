@@ -116,8 +116,6 @@
       <div id="nextSong" @click="getNextSong">
         <i class="iconfont icon-xiayishou" style="font-size: 18px"></i>
       </div>
-      <!-- 歌词 -->
-      <!-- <div id="album"><span style="font-size: 15px">词</span></div> -->
     </div>
     <!-- 播放进度条 -->
     <span style="position: absolute; right: 72%; bottom: 12%; opacity: 0.7">{{
@@ -230,9 +228,13 @@ export default {
       //判断是否被拖动
       isChange: false,
       //音量值
-      volumeVal: 12,
+      volumeVal: localStorage.getItem("volumeVal")
+        ? Number(localStorage.getItem("volumeVal"))
+        : 12,
       //当前音量
       nowVolume: 50,
+      // 静音前的音量
+      previouseVolume: 50,
       currentQuality: "标准", // 默认音质
     };
   },
@@ -270,7 +272,7 @@ export default {
       this.$store.dispatch("saveIsPlaying", true);
     },
     currentQuality(newValue) {
-      console.log("音质变化:", newValue); // 在控制台查看音质是否变化
+      console.log("音质变化:", newValue);
     },
   },
   methods: {
@@ -279,22 +281,6 @@ export default {
       console.log("this.musicUrl", this.musicUrl);
 
       if (!this.musicUrl) {
-        // const h = this.$createElement;
-        // this.$message.error({
-        //   message: h("p", null, [
-        //     h("span", null, "列表中没有可播放的歌曲"),
-        //     h(
-        //       "i",
-        //       {
-        //         style: "color: red",
-        //       },
-        //       ""
-        //     ),
-        //   ]),
-        //   offset: 280,
-        //   center: true,
-        //   showClose: true,
-        // });
         return;
       }
       this.$store.dispatch("saveIsPlaying", true);
@@ -358,15 +344,17 @@ export default {
     changeVolume() {
       this.nowVolume = this.volumeVal;
       this.$refs.audio.volume = this.volumeVal / 100;
+      localStorage.setItem("volumeVal", this.volumeVal);
     },
     //静音
     muteVolume() {
+      this.previouseVolume = this.volumeVal;
       this.volumeVal = 0;
       this.$refs.audio.volume = this.volumeVal / 100;
     },
     // 恢复静音
     cancelMute() {
-      this.volumeVal = this.nowVolume;
+      this.volumeVal = this.previouseVolume;
       this.$refs.audio.volume = this.volumeVal / 100;
     },
     //展示当前播放歌单
@@ -417,22 +405,6 @@ export default {
         }
       }
       if (index === this.playList.length - 1) {
-        // const h = this.$createElement;
-        // this.$message.error({
-        //   message: h("p", null, [
-        //     h("span", null, "已经是列表最后一首歌曲"),
-        //     h(
-        //       "i",
-        //       {
-        //         style: "color: red",
-        //       },
-        //       ""
-        //     ),
-        //   ]),
-        //   offset: 280,
-        //   center: true,
-        //   showClose: true,
-        // });
         return;
       }
       this.startSong(this.playList[index + 1]);
@@ -447,22 +419,6 @@ export default {
         }
       }
       if (index === 0) {
-        // const h = this.$createElement;
-        // this.$message.error({
-        //   message: h("p", null, [
-        //     h("span", null, "已经是列表第一首歌曲"),
-        //     h(
-        //       "i",
-        //       {
-        //         style: "color: red",
-        //       },
-        //       ""
-        //     ),
-        //   ]),
-        //   offset: 280,
-        //   center: true,
-        //   showClose: true,
-        // });
         return;
       }
       this.startSong(this.playList[index - 1]);
@@ -577,11 +533,27 @@ export default {
       // 保存当前音质，触发store的更新
       this.$store.dispatch("updateQuality", quality);
     },
+    handleKeypress(e) {
+      if (e.code === "Space") {
+        if (this.isPlaying) {
+          this.pauseSong();
+        } else {
+          this.playSong();
+        }
+        // 阻止默认事件
+        e.preventDefault();
+      }
+    },
   },
   mounted() {
     // 若有歌曲变为已播放
     if (this.musicUrl == "") return;
     this.$store.dispatch("saveIsPlaying", true);
+
+    window.addEventListener("keydown", this.handleKeypress);
+  },
+  beforeDestroy() {
+    window.removeEventListener("keydown", this.handleKeypress);
   },
 };
 </script>
@@ -608,11 +580,6 @@ export default {
   height: 40px;
   line-height: 40px;
   text-align: center;
-}
-
-#play:hover,
-#pause:hover {
-  /* background: #ddddde; */
 }
 
 #playOrd,
@@ -713,9 +680,9 @@ export default {
 }
 
 .quality-expand {
-  width: 100%; /* 或者固定宽度 */
-  height: 100%; /* 或者根据内容自适应 */
-  cursor: pointer; /* 确保整个区域都是可点击的 */
+  width: 100%;
+  height: 100%;
+  cursor: pointer;
 }
 
 .quality-text {
@@ -732,11 +699,6 @@ export default {
   right: 105px;
   top: 30px;
 }
-
-/* ::v-deep .el-slider__runway,
-::v-deep .el-slider__bar {
-  background: #fff;
-} */
 
 ::v-deep .volume .el-slider__runway {
   background: #fff;

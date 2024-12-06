@@ -1,9 +1,5 @@
 <template>
   <div class="findMusic">
-    <div id="headTab">
-      <!-- 头部导航栏 -->
-      <headTab />
-    </div>
     <div>
       <!-- 二级路由 -->
       <router-view id="secondRoute" />
@@ -12,12 +8,9 @@
 </template>
 
 <script>
-import headTab from "@/components/musicHome/findMusic/headTab/headTab";
 export default {
   name: "findMusic",
-  components: {
-    headTab,
-  },
+  components: {},
   data() {
     return {};
   },
@@ -26,14 +19,6 @@ export default {
 </script>
 
 <style scoped>
-#headTab {
-  /* width: 100%; */
-  width: 450px;
-  /* height: 70px; */
-  margin-left: 50%;
-  transform: translateX(-50%);
-}
-
 #secondRoute:hover {
   overflow-y: overlay;
 }

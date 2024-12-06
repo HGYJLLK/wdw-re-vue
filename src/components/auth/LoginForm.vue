@@ -30,7 +30,6 @@
 
 <script>
 import tokenUtils from "../../utils/token";
-import defaultAvatar from "@/assets/image/default.jpg";
 
 export default {
   emits: ["switch-mode"],

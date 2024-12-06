@@ -21,10 +21,6 @@
             <i class="iconfont icon-music"></i>
             <span slot="title">发现音乐</span>
           </el-menu-item>
-          <!-- <el-menu-item index="/musicHome/recomVideo">
-            <i class="iconfont icon-video" style="color: #ffffff !important"></i>
-            <span slot="title">推荐视频</span>
-          </el-menu-item> -->
         </div>
         <p class="leftNavFont">我的音乐</p>
         <div>
@@ -57,22 +53,6 @@
             <span slot="title">我的歌单</span>
           </el-menu-item>
         </div>
-        <!-- <p class="leftNavFont">创建的歌单</p>
-        <div>
-          <el-menu-item
-            v-for="(item, i) in personalList"
-            :key="i"
-            :index="'/musicHome/songList/' + item.id"
-          >
-            <i
-              :class="{
-                'iconfont icon-heart': i == 0,
-                'iconfont icon-ziyuanldpi': i != 0,
-              }"
-            ></i>
-            <span slot="title">{{ item.name }}</span>
-          </el-menu-item>
-        </div> -->
       </el-menu>
       <br /><br /><br /><br /><br /><br /><br /><br /><br />
     </el-col>

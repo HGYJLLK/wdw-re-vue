@@ -1,13 +1,5 @@
 <template>
   <div class="myFavoriteMusic">
-    <!-- 歌单细节 -->
-    <!-- <listDetail :playList="playList" :songsDetail="songsDetail" /> -->
-    <!-- 导航栏 -->
-    <!-- <menuTab
-      ref="menuTab"
-      @changeActive="changeActive"
-      :commentCount="comment.total"
-    /> -->
     <newMenuTab
       :songs="songsDetail.songs"
       @audioData="handleAudioData"
@@ -16,20 +8,8 @@
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
-      <!-- 评论 -->
-      <!-- <comment
-        :comment="comment"
-        v-show="activeIndex === '2'"
-        @getCommentPage="getCommentPage"
-        :currentId = "currentId"
-      /> -->
-      <!-- 收藏者 -->
     </div>
     <br /><br /><br /><br /><br /><br />
-
-    <!-- <div>
-      <button @click="playMusic">点击我播放音乐</button>
-    </div> -->
   </div>
 </template>
 
@@ -39,7 +19,7 @@ import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import newMenuTab from "@/components/musicHome/songListPage/newMenuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-import comment from "@/components/musicHome/songListPage/comment";
+// import comment from "@/components/musicHome/songListPage/comment";
 import img1 from "@/assets/musicList/a1.jpg";
 import img2 from "@/assets/musicList/a2.jpg";
 import img3 from "@/assets/musicList/a3.jpg";
@@ -52,7 +32,7 @@ export default {
     listDetail,
     menuTab,
     musicList,
-    comment,
+    // comment,
     newMenuTab,
   },
   props: {

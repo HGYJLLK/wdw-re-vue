@@ -13,14 +13,6 @@ api.interceptors.request.use(config => {
   return config
 })
 
-// export const auth = {
-//   register: (data) => api.post('/register', data),
-//   login: (data) => api.post('/login', data),
-//   //getSecurityQuestion: (username) => api.get(`/security-question/${username}`),
-//   verifySecurityQuestion: (data) => api.post('/verify-security', data),
-//   resetPassword: (data) => api.post('/reset-password', data)
-// }
-
 export const auth = {
   register: (data) => api.post('/register', data),
   login: (data) => api.post('/login', data),
