@@ -73,6 +73,8 @@ export default {
     ...mapGetters([
       // 加载状态
       "isLoading",
+      // 用户信息
+      "userInfo",
     ]),
   },
   data() {
@@ -87,55 +89,55 @@ export default {
       queryIds: "",
       // 歌曲数据
       songsDetail: {
-        songs: [
-          {
-            id: 1,
-            name: "Song One",
-            ar: [{ name: "Artist One" }],
-            al: {
-              picUrl: img1,
-            },
-            dt: 307173, // 时长（毫秒）
-            mv: 0, // 没有MV
-            alia: [],
-            self: true, // 是否为用户自己上传的歌曲
-            fee: 8,
-            st: 0,
-          },
-          {
-            id: 2,
-            name: "Song Two",
-            ar: [{ name: "Artist Two" }, { name: "Artist Three" }],
-            al: {
-              picUrl: img2,
-            },
-            dt: 307173,
-            mv: 1, // 有MV
-            alia: [],
-            self: true, // 是否为用户自己上传的歌曲
-            fee: 8,
-            st: 0,
-          },
-          {
-            id: 3,
-            name: "Song Three",
-            ar: [{ name: "Artist Four" }],
-            al: {
-              picUrl: img3,
-            },
-            dt: 307173,
-            mv: 0,
-            alia: [],
-            self: true, // 是否为用户自己上传的歌曲
-            fee: 8,
-            st: 0,
-          },
-        ],
-        privileges: [
-          { chargeInfoList: [{ chargeType: 0 }], st: 0 }, // 免费歌曲
-          { chargeInfoList: [{ chargeType: 0 }], st: 0 },
-          { chargeInfoList: [{ chargeType: 0 }], st: 0 },
-        ],
+        // songs: [
+        //   {
+        //     id: 1,
+        //     name: "Song One",
+        //     ar: [{ name: "Artist One" }],
+        //     al: {
+        //       picUrl: img1,
+        //     },
+        //     dt: 307173, // 时长（毫秒）
+        //     mv: 0, // 没有MV
+        //     alia: [],
+        //     self: true, // 是否为用户自己上传的歌曲
+        //     fee: 8,
+        //     st: 0,
+        //   },
+        //   {
+        //     id: 2,
+        //     name: "Song Two",
+        //     ar: [{ name: "Artist Two" }, { name: "Artist Three" }],
+        //     al: {
+        //       picUrl: img2,
+        //     },
+        //     dt: 307173,
+        //     mv: 1, // 有MV
+        //     alia: [],
+        //     self: true, // 是否为用户自己上传的歌曲
+        //     fee: 8,
+        //     st: 0,
+        //   },
+        //   {
+        //     id: 3,
+        //     name: "Song Three",
+        //     ar: [{ name: "Artist Four" }],
+        //     al: {
+        //       picUrl: img3,
+        //     },
+        //     dt: 307173,
+        //     mv: 0,
+        //     alia: [],
+        //     self: true, // 是否为用户自己上传的歌曲
+        //     fee: 8,
+        //     st: 0,
+        //   },
+        // ],
+        // privileges: [
+        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 }, // 免费歌曲
+        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 },
+        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 },
+        // ],
       },
       receivedAudioData: [],
       // 评论数据
@@ -160,11 +162,11 @@ export default {
       //       this.queryIds += item.id + ",";
       //     });
       //   });
-      // this.getSongDetail();
+      this.getSongDetail();
       this.getCommentPage(0);
     },
     // 获取歌曲数据
-    getSongDetail() {
+    async getSongDetail() {
       // this.$http
       //   .get("song/detail", {
       //     params: {
@@ -191,6 +193,23 @@ export default {
       //     };
       //     console.log("歌曲数据：", this.songsDetail);
       //   });
+      try {
+        const response = await this.$authHttp.get("/api/user/songs", {
+          params: {
+            username: this.userInfo.username,
+            playlist_type: 0,
+          },
+        });
+
+        console.log("/api/user/songs:", response);
+        this.songsDetail = response.data.songsDetail;
+
+        // localStorage.setItem("selectedFolders", "检索成功");
+        // window.location.reload();
+      } catch (error) {
+        console.error("获取歌曲数据失败:", error);
+        // this.$message.error(error.message || "检索失败");
+      }
     },
     // 获取评论数据
     getCommentPage(page) {

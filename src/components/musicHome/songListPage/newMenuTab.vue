@@ -281,6 +281,7 @@ export default {
 
       const formData = new FormData();
       formData.append("username", this.userInfo.username);
+      formData.append("playlist_type", 1);
 
       // 添加音频文件到FormData
       this.musicFiles.forEach((file) => {
@@ -296,7 +297,8 @@ export default {
 
         console.log("upload/audio response:", response);
 
-        this.$message.success("检索成功");
+        localStorage.setItem("selectedFolders", "检索成功");
+        window.location.reload();
       } catch (error) {
         console.error("检索失败:", error);
         this.$message.error(error.message || "检索失败");
@@ -472,7 +474,13 @@ export default {
       this.selectOption("online");
     },
   },
-  mounted() {},
+  mounted() {
+    const selectedFolders = localStorage.getItem("selectedFolders");
+    if (selectedFolders) {
+      this.$message.success(  );
+      localStorage.removeItem("selectedFolders");
+    }
+  },
 };
 </script>
 
