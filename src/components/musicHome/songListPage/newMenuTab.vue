@@ -108,7 +108,7 @@
           <!-- <h3 class="upload-title">上传音乐</h3> -->
           <div class="upload-form">
             <label class="upload-label">
-              选择文件:
+              选择文件：
               <input type="file" @change="uploadFile" class="upload-input" />
             </label>
             <label for="">
@@ -257,11 +257,6 @@ export default {
 
       // 拼接音乐数据
       this.musicFiles = [...this.musicFiles, ...musicFiles];
-      // console.log("Found folders:", this.tempFolders);
-      // console.log("Found music files:", this.musicFiles);
-
-      // Generate data URLs for the music files
-      // this.generateMusicUrls(this.musicFiles);
     },
 
     generateMusicUrls(musicFiles) {
@@ -281,77 +276,27 @@ export default {
       });
     },
 
-    // Confirm folder selection and process files
     async confirmFolders() {
-      // // 过滤未选中的文件夹
-      // // console.log("this.tempFolders", this.tempFolders);
-
-      // const selectedFolders = this.tempFolders.filter(
-      //   (folder) => folder.selected
-      // );
-      // // if (selectedFolders.length === 0) {
-      // //   this.$message.warning("未选择任何文件夹！");
-      // //   return;
-      // // }
-      // const selectedFolderNames = selectedFolders.map((folder) => folder.name);
-      // const selectedMusicFiles = this.musicFiles.filter((file) => {
-      //   const folderName = file.webkitRelativePath.split("/")[0];
-      //   return selectedFolderNames.includes(folderName);
-      // });
-      // // // 生成音频URL
-      // // this.audioUrls = await this.generateAudioUrls(selectedMusicFiles);
-      // // console.log("将要传递的音频数据：", this.audioUrls);
-
-      // // // 获取音频时长
-      // // const durations = await Promise.all(
-      // //   this.audioUrls.map((audio) => this.getAudioDuration(audio.url))
-      // // );
-      // // this.audioUrls.forEach((audio, index) => {
-      // //   audio.duration = durations[index];
-      // // });
-
-      // // 只存储文件的必要信息
-      // const newAudioData = selectedMusicFiles.map((file) => ({
-      //   name: file.name,
-      //   // webkitRelativePath: file.webkitRelativePath,
-      //   size: file.size,
-      //   // type: file.type,
-      // }));
-
-      // // 拼接音频数据，同时根据 name 去重，保留之前的
-      // const mergedAudioData = [...(this.audioData || []), ...newAudioData];
-
-      // // 使用 Map 进行去重，保留之前的元素
-      // this.audioData = Array.from(
-      //   mergedAudioData
-      //     .reduce((map, audio) => {
-      //       if (!map.has(audio.name)) {
-      //         map.set(audio.name, audio); // 保留之前的
-      //       }
-      //       return map;
-      //     }, new Map())
-      //     .values()
-      // );
-      // console.log("音频数据：", this.audioData);
-
-      // this.musicFiles = selectedMusicFiles; // 更新当前显示的音乐文件
       console.log("音频数据", this.musicFiles);
 
+      const formData = new FormData();
+      formData.append("username", this.userInfo.username);
+
+      // 添加音频文件到FormData
+      this.musicFiles.forEach((file) => {
+        formData.append("audio_files", file);
+      });
+
       try {
-        const response = await this.$authHttp.post("/upload/audio", {
-          audio_files: this.musicFiles,
-          username: this.userInfo.username,
+        const response = await this.$authHttp.post("/upload/audio", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data", // 确保Content-Type是multipart/form-data
+          },
         });
 
         console.log("upload/audio response:", response);
 
-        this.$message.success("上传成功！");
-
-        // if (response.data.code === 200) {
-        //   this.$message.success("上传成功！");
-        // } else {
-        //   this.$message.error(response.data.message);
-        // }
+        this.$message.success("检索成功");
       } catch (error) {
         console.error("检索失败:", error);
         this.$message.error(error.message || "检索失败");
