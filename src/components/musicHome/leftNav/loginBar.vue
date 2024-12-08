@@ -52,15 +52,15 @@
         <div class="avatar-section">
           <el-upload
             class="avatar-uploader"
-            :action="uploadUrl"
-            :headers="uploadHeaders"
             :show-file-list="false"
             :before-upload="beforeAvatarUpload"
-            :on-success="handleAvatarSuccess"
-            :on-error="handleUploadError"
+            :on-change="handleAvatarChange"
           >
             <img
-              v-if="(userInfo && userInfo.avatarUrl) || defaultAvatar"
+              v-if="
+                tempAvatar ||
+                (userInfo.avatarUrl && userInfo.avatarUrl.trim() !== '')
+              "
               :src="
                 tempAvatar ||
                 (userInfo.avatarUrl && userInfo.avatarUrl.trim() !== ''
@@ -151,6 +151,7 @@ export default {
       profileDialogVisible: false,
       uploadUrl: "http://127.0.0.1:5001/upload/avatar",
       tempAvatar: "",
+      selectedAvatarFile: null, // 临时存储选中的文件
       uploadHeaders: {
         Authorization: `Bearer ${localStorage.getItem("token")}`,
       },
@@ -188,6 +189,16 @@ export default {
     //打开登录窗口
     changeShowLogin(isShow) {
       this.$store.dispatch("changeShowLogin", isShow);
+    },
+
+    handleAvatarChange(file) {
+      // 创建图片预览
+      const reader = new FileReader();
+      reader.onload = (e) => {
+        this.tempAvatar = e.target.result; // 显示预览图
+      };
+      reader.readAsDataURL(file.raw); // 读取文件
+      this.selectedAvatarFile = file.raw; // 保存选中的文件
     },
 
     handleEditProfile() {

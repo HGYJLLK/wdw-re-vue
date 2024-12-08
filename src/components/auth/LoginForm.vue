@@ -89,8 +89,12 @@ export default {
         // 刷新页面
         window.location.reload();
       } catch (error) {
-        console.error("登录失败:", error);
-        this.$message.error(error.message || "登录失败");
+        if (error.response && error.response.data) {
+          const errorMessage = error.response.data.error || "登录失败";
+          this.$message.error(errorMessage);
+        } else {
+          this.$message.error(error.message || "登录失败");
+        }
       }
     },
 
