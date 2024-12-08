@@ -15,8 +15,8 @@
     <div v-else>
       <el-avatar
         :src="
-          userInfo.avatarUrl && userInfo.avatarUrl.trim() !== ''
-            ? userInfo.avatarUrl
+          userInfo.avatar && userInfo.avatar.trim() !== ''
+            ? userInfo.avatar
             : defaultAvatar
         "
         class="userHead"
@@ -59,12 +59,13 @@
             <img
               v-if="
                 tempAvatar ||
-                (userInfo.avatarUrl && userInfo.avatarUrl.trim() !== '')
+                (userInfo.avatar && userInfo.avatar.trim() !== '') ||
+                defaultAvatar
               "
               :src="
                 tempAvatar ||
-                (userInfo.avatarUrl && userInfo.avatarUrl.trim() !== ''
-                  ? userInfo.avatarUrl
+                (userInfo.avatar && userInfo.avatar.trim() !== ''
+                  ? userInfo.avatar
                   : defaultAvatar)
               "
               class="avatar"
@@ -100,25 +101,25 @@
             >修改密码</el-button
           >
 
-          <div class="password-section" v-if="showPasswordSection">
+          <div class="password-section" v-show="showPasswordSection">
             <el-form-item label="旧密码">
               <el-input
                 type="password"
-                v-model="profileForm.oldPassword"
+                v-model="profileForm.oldPwd"
                 placeholder="请输入旧密码"
               ></el-input>
             </el-form-item>
             <el-form-item label="新密码">
               <el-input
                 type="password"
-                v-model="profileForm.newPassword"
+                v-model="profileForm.newPwd"
                 placeholder="请输入新密码"
               ></el-input>
             </el-form-item>
             <el-form-item label="确认密码">
               <el-input
                 type="password"
-                v-model="profileForm.confirmPassword"
+                v-model="profileForm.conPwd"
                 placeholder="请确认新密码"
               ></el-input>
             </el-form-item>
@@ -160,12 +161,13 @@ export default {
         nickname: "",
         avatarUrl: "",
         intro: "",
-        oldPassword: "",
-        newPassword: "",
-        confirmPassword: "",
+        oldPwd: "",
+        newPwd: "",
+        conPwd: "",
       },
       defaultAvatar,
       showPasswordSection: false,
+      inputKey: 0, // 用于强制更新
     };
   },
 
@@ -205,14 +207,16 @@ export default {
       this.profileDialogVisible = true;
       this.tempAvatar = "";
       this.showPasswordSection = false;
-      this.profileForm.username = this.userInfo.username;
-      this.profileForm.nickname = this.userInfo.nickname;
-      this.profileForm.avatarUrl = this.userInfo.avatarUrl;
-      this.profileForm.intro = this.userInfo.intro;
-      this.profileForm.oldPassword = "";
-      this.profileForm.newPassword = "";
-      this.profileForm.confirmPassword = "";
-      this.console.log("个人信息", this.userInfo);
+      this.profileForm = {
+        username: this.userInfo.username,
+        nickname: this.userInfo.nickname,
+        avatarUrl: this.userInfo.avatarUrl,
+        intro: this.userInfo.intro,
+        oldPassword: "", // 确保重置密码字段
+        newPassword: "",
+        confirmPassword: "",
+      };
+      console.log("个人信息", this.userInfo);
     },
 
     handleAvatarError() {
@@ -257,38 +261,87 @@ export default {
       this.$message.error("上传失败，请重试");
     },
 
-    handleSaveProfile() {
-      const updatedInfo = {
-        ...this.userInfo,
-        nickname: this.profileForm.nickname,
-        avatarUrl: this.profileForm.avatarUrl || this.userInfo.avatarUrl,
-        oldPassword: this.profileForm.oldPassword,
-        newPassword: this.profileForm.newPassword,
-        confirmPassword: this.profileForm.confirmPassword,
-        intro: this.profileForm.intro,
-      };
+    async handleSaveProfile() {
+      try {
+        const formData = new FormData();
+        const { nickname, intro, oldPwd, newPwd, conPwd } = this.profileForm;
 
-      // 如果oldPassword不为空，则需要填写newPassword和confirmPassword，且两者必须相同
-      if (updatedInfo.oldPassword) {
-        if (!updatedInfo.newPassword) {
-          this.$message.error("请输入新密码");
-          return;
+        // 填充表单数据
+        formData.append("username", this.userInfo.username); // 从用户信息中获取用户名
+        if (nickname) formData.append("nickname", nickname);
+        if (intro) formData.append("intro", intro);
+
+        // 验证并处理密码相关信息
+        if (oldPwd) {
+          if (!newPwd) {
+            this.$message.error("请输入新密码");
+            return;
+          }
+          if (!conPwd) {
+            this.$message.error("请确认新密码");
+            return;
+          }
+          if (newPwd !== conPwd) {
+            this.$message.error("两次密码输入不一致");
+            return;
+          }
+          formData.append("oldPassword", oldPwd);
+          formData.append("newPassword", newPwd);
+          formData.append("confirmPassword", conPwd);
         }
-        if (!updatedInfo.confirmPassword) {
-          this.$message.error("请确认新密码");
-          return;
+
+        // 如果选择了头像文件，添加到表单
+        if (this.selectedAvatarFile) {
+          formData.append("avatar", this.selectedAvatarFile);
         }
-        if (updatedInfo.newPassword !== updatedInfo.confirmPassword) {
-          this.$message.error("两次密码输入不一致");
-          return;
+
+        // 发送请求到后端
+        const response = await this.$authHttp.post(
+          "/api/user/update",
+          formData,
+          {
+            headers: {
+              "Content-Type": "multipart/form-data",
+            },
+          }
+        );
+
+        // 处理后端响应
+        const { data } = response;
+        if (data.code === 200) {
+          this.$message.success("个人信息已更新");
+
+          // 更新前端存储的用户信息
+          const updatedUserInfo = {
+            ...this.userInfo,
+            ...data.data.updated_fields,
+          };
+          await this.$store.dispatch("saveUserInfo", updatedUserInfo);
+
+          // 关闭编辑窗口
+          this.profileDialogVisible = false;
+
+          // 清空密码字段
+          this.profileForm.oldPwd = "";
+          this.profileForm.newPwd = "";
+          this.profileForm.conPwd = "";
+        } else {
+          this.$message.error(data.message || "更新失败");
+        }
+      } catch (error) {
+        console.error("更新个人信息失败:", error);
+
+        // 检查错误信息
+        if (
+          error.response &&
+          error.response.data &&
+          error.response.data.error
+        ) {
+          this.$message.error(error.response.data.error);
+        } else {
+          this.$message.error("更新个人信息失败，请稍后重试");
         }
       }
-
-      // console.log("更新个人信息", updatedInfo);
-
-      // this.$store.dispatch("saveUserInfo", updatedInfo);
-      this.$message.success("个人信息已更新");
-      this.profileDialogVisible = false;
     },
 
     //登出
@@ -324,6 +377,7 @@ export default {
 
     togglePasswordSection() {
       this.showPasswordSection = !this.showPasswordSection;
+      this.inputKey += 1;
     },
   },
 
@@ -416,7 +470,7 @@ export default {
   position: absolute;
   top: 0;
   left: 50%;
-  transform: translateX(-50%);
+  transform: translate(-50%, 3%);
   width: 120px;
   height: 120px;
   border-radius: 50%;
