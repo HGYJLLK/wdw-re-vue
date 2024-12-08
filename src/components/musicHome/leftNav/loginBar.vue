@@ -321,10 +321,17 @@ export default {
           // 关闭编辑窗口
           this.profileDialogVisible = false;
 
-          // 清空密码字段
-          this.profileForm.oldPwd = "";
-          this.profileForm.newPwd = "";
-          this.profileForm.conPwd = "";
+          // 如果修改了密码，自动调用退出登录接口
+          if (oldPwd) {
+            this.handleLogout();
+          } else {
+            // 清空密码字段
+            this.profileForm.oldPwd = "";
+            this.profileForm.newPwd = "";
+            this.profileForm.conPwd = "";
+            // 刷新页面
+            window.location.reload();
+          }
         } else {
           this.$message.error(data.message || "更新失败");
         }
