@@ -5,13 +5,10 @@
       <form @submit.prevent="verifySecurityQuestion">
         <div class="form-group">
           <label>账号</label>
-          <input
-            v-model="form.username"
-            type="text"
-            required
-            @input="getSecurityQuestion"
-          />
+          <input type="text" required v-model="form.username">
         </div>
+
+        <button type="button" class="form-group" @click="getSecurityQuestion" v-if="!securityQuestion">获取密保问题</button>
 
         <div class="form-group" v-if="securityQuestion">
           <label>密保问题</label>
@@ -67,16 +64,19 @@ export default {
 
     // 获取密保问题
     const getSecurityQuestion = async () => {
-      if (form.value.username) {
-        try {
-          const response = await auth.verifySecurityQuestion({
-            username: form.value.username,
-            // 不传security_answer,后端会返回密保问题
-          });
-          securityQuestion.value = response.data.security_question;
-        } catch (error) {
-          console.error("获取密保问题失败:", error);
-        }
+      if (!form.value.username) {
+        alert("请输入账号");
+        return;
+      }
+      try {
+        const response = await auth.verifySecurityQuestion({
+          username: form.value.username,
+        });
+        securityQuestion.value = response.data.security_question;
+      } catch (error) {
+        console.error("获取密保问题失败:", error);
+        securityQuestion.value = ""; // 清空密保问题
+        alert("用户不存在或请求失败");
       }
     };
 
