@@ -268,9 +268,30 @@ export default {
     uploadFile(event) {
       this.newSong.file = event.target.files[0];
     },
-    addMusic() {
+    async addMusic() {
       // 保存音乐数据
       console.log("添加音乐：", this.newSong);
+      const formData = new FormData();
+      formData.append("username", this.userInfo.username);
+      formData.append("playlist_type", 1);
+      formData.append("audio_files", this.newSong.file);
+      formData.append("artist", this.newSong.artist);
+      try {
+        const response = await this.$authHttp.post("/upload/audio", formData, {
+          headers: {
+            "Content-Type": "multipart/form-data",
+          },
+        });
+
+        this.$message.success("添加成功");
+        this.dialogVisible = false;
+        // 告诉父组件有新的音频数据
+        this.$emit("audioData");
+      } catch (error) {
+        console.error("添加音乐失败:", error);
+        this.$message.error(error.message || "添加音乐失败");
+        return;
+      }
     },
     animateDialog() {
       // 动画逻辑
