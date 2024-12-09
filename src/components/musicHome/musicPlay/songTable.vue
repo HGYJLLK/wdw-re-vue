@@ -301,9 +301,19 @@ export default {
     },
     //根据id获取音乐url
     async getMusicUrl(musicId, isSelf, url) {
+      console.log("是否是自定义音乐：" + isSelf);
       if (isSelf) {
-        this.$store.dispatch("saveAur", [0, 0]);
-        this.$store.dispatch("saveMusicUrl", url);
+        await this.$authHttp
+          .get("/audio", {
+            params: {
+              id: musicId,
+            },
+          })
+          .then((res) => {
+            this.$store.dispatch("saveAur", [0, 0]);
+            this.$store.dispatch("saveMusicUrl", res.data.musicUrl);
+          });
+
         return;
       }
       await this.$http
