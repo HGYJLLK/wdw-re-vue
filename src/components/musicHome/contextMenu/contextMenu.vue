@@ -7,8 +7,8 @@
   >
     <ul>
       <li @click="handleAction('play')">播放</li>
-      <li @click="handleAction('add')">添加到我喜欢的音乐</li>
-      <li @click="handleAction('add')">添加到我的歌单</li>
+      <li @click="handleAction('addStar')">添加到我喜欢的音乐</li>
+      <li @click="handleAction('addMy')">添加到我的歌单</li>
       <li @click="handleAction('delete')">删除</li>
     </ul>
   </div>
@@ -23,7 +23,9 @@ export default {
   },
   methods: {
     handleAction(action) {
-      this.$emit("action", action, this.song);
+      console.log("this.song", this.song);
+
+      // this.$emit("action", action, this.song);
       this.$emit("close");
     },
   },

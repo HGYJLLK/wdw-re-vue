@@ -215,6 +215,7 @@ export default {
       const formData = new FormData();
       formData.append("username", this.userInfo.username);
       formData.append("playlist_type", 1);
+      formData.append("is_self", true);
 
       // 添加音频文件到FormData
       this.musicFiles.forEach((file) => {
@@ -276,6 +277,7 @@ export default {
       formData.append("playlist_type", 1);
       formData.append("audio_files", this.newSong.file);
       formData.append("artist", this.newSong.artist);
+      formData.append("is_self", true);
       try {
         const response = await this.$authHttp.post("/upload/audio", formData, {
           headers: {

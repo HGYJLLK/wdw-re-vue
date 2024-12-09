@@ -272,6 +272,7 @@ export default {
       });
     },
     showContextMenu(event, song) {
+
       const menuWidth = 185;
       const menuHeight = 140;
       const viewportWidth = window.innerWidth; // 获取视口宽度
@@ -305,10 +306,11 @@ export default {
     handleContextMenuAction(action, song) {
       if (action === "play") {
         this.startSong(song);
-      } else if (action === "add") {
-        this.addList(song);
+      } else if (action === "addStar") {
+        // this.addList(song);
       } else if (action === "delete") {
-        console.log("删除歌曲：", song.name);
+        // console.log("删除歌曲：", song.name);
+      } else {
       }
     },
   },
