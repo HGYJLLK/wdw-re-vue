@@ -64,7 +64,15 @@ export default {
   name: "musicList",
   props: {
     // 歌曲搜索信息
-    songsDetail: Object,
+    songsDetail: {
+      type: Object,
+      default: () => ({ songs: [] }),
+    },
+  },
+  watch: {
+    songsDetail(newVal) {
+      console.log("接收到新的歌曲数据：", newVal);
+    },
   },
   computed: {
     ...mapGetters([

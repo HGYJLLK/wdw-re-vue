@@ -3,13 +3,13 @@
     <h1 class="menuTitle">本地音乐</h1>
     <div class="playAllSong">
       <div class="left">
-        <div class="playAll" @click="allAddList">
+        <!-- <div class="playAll" @click="allAddList">
           <i
             class="iconfont icon-bofang"
             style="font-size: 15px; margin-right: 4px"
           ></i>
           播放全部
-        </div>
+        </div> -->
       </div>
       <div class="right">
         <div class="playAll" @click="addMusicDialog">
@@ -199,15 +199,13 @@ export default {
         const reader = new FileReader();
 
         reader.onload = (e) => {
-          // Create a URL for the file (data URL)
           const fileUrl = e.target.result;
           console.log("Generated file URL:", fileUrl);
 
-          // Now you can store or use this URL in your application
           this.musicUrls.push(fileUrl);
         };
 
-        reader.readAsDataURL(file); // Convert file to data URL
+        reader.readAsDataURL(file);
       });
     },
 
@@ -226,14 +224,19 @@ export default {
       try {
         const response = await this.$authHttp.post("/upload/audio", formData, {
           headers: {
-            "Content-Type": "multipart/form-data", // 确保Content-Type是multipart/form-data
+            "Content-Type": "multipart/form-data",
           },
         });
 
         console.log("upload/audio response:", response);
 
-        localStorage.setItem("selectedFolders", "检索成功");
-        window.location.reload();
+        this.$message.success("检索成功");
+
+        // 告诉父组件有新的音频数据
+        this.$emit("audioData");
+
+        // localStorage.setItem("selectedFolders", "检索成功");
+        // window.location.reload();
       } catch (error) {
         console.error("检索失败:", error);
         this.$message.error(error.message || "检索失败");
@@ -316,11 +319,11 @@ export default {
     },
   },
   mounted() {
-    const selectedFolders = localStorage.getItem("selectedFolders");
-    if (selectedFolders) {
-      this.$message.success();
-      localStorage.removeItem("selectedFolders");
-    }
+    // const selectedFolders = localStorage.getItem("selectedFolders");
+    // if (selectedFolders) {
+    //   this.$message.success(selectedFolders);
+    //   localStorage.removeItem("selectedFolders");
+    // }
   },
 };
 </script>

@@ -147,6 +147,21 @@ export default {
     },
     // 获取歌曲数据
     async getSongDetail() {
+      try {
+        const response = await this.$authHttp.get("/api/user/songs", {
+          params: {
+            username: this.userInfo.username,
+            playlist_type: 1,
+          },
+        });
+
+        // this.$message.success("获取歌曲数据成功");
+        this.songsDetail = response.data.songsDetail;
+        console.log("歌单数据：", this.songsDetail);
+      } catch (error) {
+        console.error("获取歌曲数据失败:", error);
+        this.$message.error(error.message || "获取歌曲数据失败");
+      }
       // this.$http
       //   .get("song/detail", {
       //     params: {
@@ -177,11 +192,12 @@ export default {
         const response = await this.$authHttp.get("/api/user/songs", {
           params: {
             username: this.userInfo.username,
-            playlist_type: 0,
+            playlist_type: 1,
           },
         });
 
         console.log("/api/user/songs:", response);
+        // response.data.songsDetail.code = 200;
         this.songsDetail = response.data.songsDetail;
 
         // localStorage.setItem("selectedFolders", "检索成功");
@@ -237,17 +253,18 @@ export default {
         console.log("音乐已暂停");
       }
     },
-    handleAudioData(data) {
-      this.receivedAudioData = data; // 更新父组件的状态
-      console.log("从子组件接收到的音频数据：", this.receivedAudioData);
+    handleAudioData() {
+      // this.receivedAudioData = data; // 更新父组件的状态
+      // console.log("从子组件接收到的音频数据：", this.receivedAudioData);
 
-      this.songsDetail.songs[0].url = this.receivedAudioData[0].url;
-      this.songsDetail.songs[1].url = this.receivedAudioData[1].url;
-      this.songsDetail.songs[2].url = this.receivedAudioData[2].url;
+      // this.songsDetail.songs[0].url = this.receivedAudioData[0].url;
+      // this.songsDetail.songs[1].url = this.receivedAudioData[1].url;
+      // this.songsDetail.songs[2].url = this.receivedAudioData[2].url;
 
-      this.songsDetail.songs[0].dt = this.receivedAudioData[0].duration;
-      this.songsDetail.songs[1].dt = this.receivedAudioData[1].duration;
-      this.songsDetail.songs[2].dt = this.receivedAudioData[2].duration;
+      // this.songsDetail.songs[0].dt = this.receivedAudioData[0].duration;
+      // this.songsDetail.songs[1].dt = this.receivedAudioData[1].duration;
+      // this.songsDetail.songs[2].dt = this.receivedAudioData[2].duration;
+      this.getPlayListDetail();
     },
     // 全部播放
     playAll() {

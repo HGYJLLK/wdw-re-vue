@@ -1,3 +1,13 @@
+# 环境依赖
+
+- Node.js
+- npm
+- Vue.js
+- Element-ui
+- ffmpeg
+- python
+- mysql
+
 # 技术难点与攻坚过程
 
 ## 网页检索电脑音乐文件
