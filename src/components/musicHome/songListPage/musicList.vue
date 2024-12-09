@@ -86,6 +86,8 @@ export default {
       "isLoading",
       //可播放区域
       "slider",
+      //用户信息
+      "userInfo",
     ]),
   },
   components: {
@@ -272,7 +274,6 @@ export default {
       });
     },
     showContextMenu(event, song) {
-
       const menuWidth = 185;
       const menuHeight = 140;
       const viewportWidth = window.innerWidth; // 获取视口宽度
@@ -303,11 +304,38 @@ export default {
     hideContextMenu() {
       this.contextMenuVisible = false;
     },
-    handleContextMenuAction(action, song) {
+    async handleContextMenuAction(action, song) {
       if (action === "play") {
         this.startSong(song);
       } else if (action === "addStar") {
         // this.addList(song);
+        // 保存音乐数据
+        console.log("添加音乐：", song);
+        const formData = new FormData();
+        formData.append("username", this.userInfo.username);
+        formData.append("playlist_type", 3);
+        // formData.append("audio_files", this.newSong.file);
+        formData.append("artist", song.ar[0].name);
+        try {
+          const response = await this.$authHttp.post(
+            "/upload/audio",
+            formData,
+            {
+              headers: {
+                "Content-Type": "multipart/form-data",
+              },
+            }
+          );
+
+          // this.$message.success("添加成功");
+          this.dialogVisible = false;
+          // 告诉父组件有新的音频数据
+          this.$emit("audioData");
+        } catch (error) {
+          console.error("添加音乐失败:", error);
+          this.$message.error(error.message || "添加音乐失败");
+          return;
+        }
       } else if (action === "delete") {
         // console.log("删除歌曲：", song.name);
       } else {
