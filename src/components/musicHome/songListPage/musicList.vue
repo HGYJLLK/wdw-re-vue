@@ -320,33 +320,28 @@ export default {
       if (action === "play") {
         this.startSong(song, index);
       } else if (action === "addStar") {
-        // this.addList(song);
-        // 保存音乐数据
-        console.log("添加音乐：", song);
-        const formData = new FormData();
-        formData.append("username", this.userInfo.username);
-        formData.append("playlist_type", 3);
-        // formData.append("audio_files", this.newSong.file);
-        formData.append("artist", song.ar[0].name);
         try {
-          const response = await this.$authHttp.post(
-            "/upload/audio",
-            formData,
-            {
-              headers: {
-                "Content-Type": "multipart/form-data",
-              },
-            }
-          );
+          const response = await this.$authHttp.post("/api/playlist/add", {
+            username: this.userInfo.username,
+            playlist_type: 3,
+            song_name: song.name,
+            artist: song.ar[0].name,
+            duration: song.dt,
+            pic_url: song.al.picUrl,
+            is_self: song.self,
+          });
 
           // this.$message.success("添加成功");
           this.dialogVisible = false;
           // 告诉父组件有新的音频数据
-          this.$emit("audioData");
+          // this.$emit("audioData");
         } catch (error) {
           console.error("添加音乐失败:", error);
-          this.$message.error(error.message || "添加音乐失败");
-          return;
+
+          // 解析后端返回的错误信息
+          const errorMessage =
+            error.response?.data?.message || error.message || "添加失败";
+          this.$message.error(errorMessage);
         }
       } else if (action === "delete") {
         try {

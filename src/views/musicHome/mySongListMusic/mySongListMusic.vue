@@ -8,8 +8,8 @@
       @changeActive="changeActive"
       :commentCount="comment.total"
     /> -->
-    <!-- 歌曲列表 -->
     <div style="margin-top: 15px"></div>
+    <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type" @audioData="handleAudioData"/>
       <!-- 评论 -->
@@ -30,7 +30,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
@@ -80,142 +80,142 @@ export default {
       queryIds: "",
       // 歌曲数据
       songsDetail: {
-        songs: [
-          {
-            id: 1,
-            name: "Song One",
-            ar: [{ id: 101, name: "Artist One" }],
-            al: {
-              id: 201,
-              name: "Album One",
-              picUrl: img1,
-            },
-            dt: 240000, // 时长（毫秒）
-            mv: 0, // 没有MV
-            alia: [],
-            self: true, // 是否为用户自己上传的歌曲
-            url: music1, // 歌曲链接
-            fee: 8,
-          },
-          {
-            id: 2,
-            name: "Song Two",
-            ar: [
-              { id: 102, name: "Artist Two" },
-              { id: 103, name: "Artist Three" },
-            ],
-            al: {
-              id: 202,
-              name: "Album Two",
-              picUrl: img2,
-            },
-            dt: 200000,
-            mv: 1, // 有MV
-            alia: [],
-            self: true, // 是否为用户自己上传的歌曲
-            url: music2,
-            fee: 8,
-          },
-          {
-            id: 3,
-            name: "Song Three",
-            ar: [{ id: 104, name: "Artist Four" }],
-            al: {
-              id: 203,
-              name: "Album Three",
-              picUrl: img3,
-            },
-            dt: 300000,
-            mv: 0,
-            alia: [],
-            self: true, // 是否为用户自己上传的歌曲
-            url: music3,
-            fee: 8,
-          },
-          {
-            name: "Re:Re:",
-            id: 2612360323,
-            ar: [{ id: 54103171, name: "結束バンド", tns: [], alias: [] }],
-            alia: [],
-            fee: 8,
-            al: {
-              id: 243454282,
-              name: "Re:結束バンド",
-              picUrl:
-                "https://p2.music.126.net/pYKoTtD_-zd1oC5eJ3jkdA==/109951169826632561.jpg",
-              tns: [],
-              pic_str: "109951169826632561",
-              pic: 109951169826632560,
-            },
-            dt: 307173,
-          },
-        ],
-        privileges: [
-          { chargeInfoList: [{ chargeType: 0 }], st: 0 }, // 免费歌曲
-          { chargeInfoList: [{ chargeType: 0 }], st: 0 },
-          { chargeInfoList: [{ chargeType: 0 }], st: 0 },
-          {
-            chargeInfoList: [{ chargeType: 0 }],
-            st: 0,
-            // pl: 128000,
-            // dl: 0,
-            // sp: 7,
-            // cp: 1,
-            // subp: 1,
-            // cs: false,
-            // maxbr: 320000,
-            // fl: 320000,
-            // toast: false,
-            // flag: 524548,
-            // preSell: false,
-            // playMaxbr: 320000,
-            // downloadMaxbr: 320000,
-            // maxBrLevel: "exhigh",
-            // playMaxBrLevel: "exhigh",
-            // downloadMaxBrLevel: "exhigh",
-            // plLevel: "standard",
-            // dlLevel: "none",
-            // flLevel: "exhigh",
-            // rscl: null,
-            // freeTrialPrivilege: {
-            //   resConsumable: false,
-            //   userConsumable: false,
-            //   listenType: 0,
-            //   cannotListenReason: 1,
-            //   playReason: null,
-            //   freeLimitTagType: null,
-            // },
-            // rightSource: 0,
-            // chargeInfoList: [
-            //   {
-            //     rate: 128000,
-            //     chargeUrl: null,
-            //     chargeMessage: null,
-            //     chargeType: 0,
-            //   },
-            //   {
-            //     rate: 192000,
-            //     chargeUrl: null,
-            //     chargeMessage: null,
-            //     chargeType: 0,
-            //   },
-            //   {
-            //     rate: 320000,
-            //     chargeUrl: null,
-            //     chargeMessage: null,
-            //     chargeType: 0,
-            //   },
-            //   {
-            //     rate: 999000,
-            //     chargeUrl: null,
-            //     chargeMessage: null,
-            //     chargeType: 1,
-            //   },
-            // ],
-            // code: 0,
-            // message: null,
-          },
-        ],
+        // songs: [
+        //   {
+        //     id: 1,
+        //     name: "Song One",
+        //     ar: [{ id: 101, name: "Artist One" }],
+        //     al: {
+        //       id: 201,
+        //       name: "Album One",
+        //       picUrl: img1,
+        //     },
+        //     dt: 240000, // 时长（毫秒）
+        //     mv: 0, // 没有MV
+        //     alia: [],
+        //     self: true, // 是否为用户自己上传的歌曲
+        //     url: music1, // 歌曲链接
+        //     fee: 8,
+        //   },
+        //   {
+        //     id: 2,
+        //     name: "Song Two",
+        //     ar: [
+        //       { id: 102, name: "Artist Two" },
+        //       { id: 103, name: "Artist Three" },
+        //     ],
+        //     al: {
+        //       id: 202,
+        //       name: "Album Two",
+        //       picUrl: img2,
+        //     },
+        //     dt: 200000,
+        //     mv: 1, // 有MV
+        //     alia: [],
+        //     self: true, // 是否为用户自己上传的歌曲
+        //     url: music2,
+        //     fee: 8,
+        //   },
+        //   {
+        //     id: 3,
+        //     name: "Song Three",
+        //     ar: [{ id: 104, name: "Artist Four" }],
+        //     al: {
+        //       id: 203,
+        //       name: "Album Three",
+        //       picUrl: img3,
+        //     },
+        //     dt: 300000,
+        //     mv: 0,
+        //     alia: [],
+        //     self: true, // 是否为用户自己上传的歌曲
+        //     url: music3,
+        //     fee: 8,
+        //   },
+        //   {
+        //     name: "Re:Re:",
+        //     id: 2612360323,
+        //     ar: [{ id: 54103171, name: "結束バンド", tns: [], alias: [] }],
+        //     alia: [],
+        //     fee: 8,
+        //     al: {
+        //       id: 243454282,
+        //       name: "Re:結束バンド",
+        //       picUrl:
+        //         "https://p2.music.126.net/pYKoTtD_-zd1oC5eJ3jkdA==/109951169826632561.jpg",
+        //       tns: [],
+        //       pic_str: "109951169826632561",
+        //       pic: 109951169826632560,
+        //     },
+        //     dt: 307173,
+        //   },
+        // ],
+        // privileges: [
+        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 }, // 免费歌曲
+        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 },
+        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 },
+        //   {
+        //     chargeInfoList: [{ chargeType: 0 }],
+        //     st: 0,
+        //     // pl: 128000,
+        //     // dl: 0,
+        //     // sp: 7,
+        //     // cp: 1,
+        //     // subp: 1,
+        //     // cs: false,
+        //     // maxbr: 320000,
+        //     // fl: 320000,
+        //     // toast: false,
+        //     // flag: 524548,
+        //     // preSell: false,
+        //     // playMaxbr: 320000,
+        //     // downloadMaxbr: 320000,
+        //     // maxBrLevel: "exhigh",
+        //     // playMaxBrLevel: "exhigh",
+        //     // downloadMaxBrLevel: "exhigh",
+        //     // plLevel: "standard",
+        //     // dlLevel: "none",
+        //     // flLevel: "exhigh",
+        //     // rscl: null,
+        //     // freeTrialPrivilege: {
+        //     //   resConsumable: false,
+        //     //   userConsumable: false,
+        //     //   listenType: 0,
+        //     //   cannotListenReason: 1,
+        //     //   playReason: null,
+        //     //   freeLimitTagType: null,
+        //     // },
+        //     // rightSource: 0,
+        //     // chargeInfoList: [
+        //     //   {
+        //     //     rate: 128000,
+        //     //     chargeUrl: null,
+        //     //     chargeMessage: null,
+        //     //     chargeType: 0,
+        //     //   },
+        //     //   {
+        //     //     rate: 192000,
+        //     //     chargeUrl: null,
+        //     //     chargeMessage: null,
+        //     //     chargeType: 0,
+        //     //   },
+        //     //   {
+        //     //     rate: 320000,
+        //     //     chargeUrl: null,
+        //     //     chargeMessage: null,
+        //     //     chargeType: 0,
+        //     //   },
+        //     //   {
+        //     //     rate: 999000,
+        //     //     chargeUrl: null,
+        //     //     chargeMessage: null,
+        //     //     chargeType: 1,
+        //     //   },
+        //     // ],
+        //     // code: 0,
+        //     // message: null,
+        //   },
+        // ],
       },
       // 歌单数据
       playList: {
@@ -230,7 +230,7 @@ export default {
       comment: {},
       audio: null,
       // 歌单类型
-      type: 2,
+      type: 3,
     };
   },
   methods: {
@@ -261,7 +261,22 @@ export default {
       this.getCommentPage(0);
     },
     // 获取歌曲数据
-    getSongDetail() {
+   async getSongDetail() {
+       try {
+        const response = await this.$authHttp.get("/api/user/songs", {
+          params: {
+            username: this.userInfo.username,
+            playlist_type: 2,
+          },
+        });
+
+        // this.$message.success("获取歌曲数据成功");
+        this.songsDetail = response.data.songsDetail;
+        console.log("歌单数据：", this.songsDetail);
+      } catch (error) {
+        console.error("获取歌曲数据失败:", error);
+        this.$message.error(error.message || "获取歌曲数据失败");
+      }
       // this.$http
       //   .get("song/detail", {
       //     params: {

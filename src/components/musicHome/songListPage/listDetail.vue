@@ -4,6 +4,7 @@
     <el-image
       :src="playList.coverImgUrl"
       fit="fill"
+      @error="onImageError"
       style="border-radius: 10px; height: 100%; width: 30vh; position: absolute"
     ></el-image>
     <div class="listName">
@@ -47,6 +48,7 @@
 </template>
 
 <script>
+import defaultAvatar from "@/assets/image/default.jpg";
 export default {
   name: "listDetail",
   components: {},
@@ -59,7 +61,9 @@ export default {
     songsDetail: Object,
   },
   data() {
-    return {};
+    return {
+      isImageLoading: true, // 图片是否加载中
+    };
   },
   methods: {
     // 全部播放
@@ -103,6 +107,13 @@ export default {
     toSongListPage(tag) {
       this.$router.push({ name: "songList", query: { tag: tag } });
     },
+    onImageError() {
+      console.log("图片加载失败，切换到默认图片");
+      this.playList.coverImgUrl = defaultAvatar; // 替换为默认图片
+    },
+  },
+  mounted() {
+    console.log("this.playList", this.playList);
   },
 };
 </script>
