@@ -7,6 +7,7 @@
       @action="handleContextMenuAction"
       @close="hideContextMenu"
       :type="type"
+      @updateHeight="updateContextMenuHeight"
     />
     <div
       class="row"
@@ -109,6 +110,7 @@ export default {
       contextMenuVisible: false,
       contextMenuPosition: { x: 0, y: 0 },
       currentSong: null,
+      menuHeight: 0,
     };
   },
   methods: {
@@ -281,7 +283,7 @@ export default {
     },
     showContextMenu(event, song) {
       const menuWidth = 185;
-      const menuHeight = 140;
+      const menuHeight = this.menuHeight - 10;
       const viewportWidth = window.innerWidth; // 获取视口宽度
       const viewportHeight = window.innerHeight; // 获取视口高度
       const offset = 10; // 菜单和边界之间的最小间距
@@ -346,6 +348,9 @@ export default {
         // console.log("删除歌曲：", song.name);
       } else {
       }
+    },
+    updateContextMenuHeight(height) {
+      this.menuHeight = height;
     },
   },
   created() {

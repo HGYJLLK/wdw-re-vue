@@ -4,13 +4,14 @@
     class="context-menu"
     :style="{ top: `${position.y}px`, left: `${position.x}px` }"
     @click.stop
+    ref="menuDiv"
   >
     <ul>
       <li @click="handleAction('play')">播放</li>
-      <li @click="handleAction('addStar')" v-if="type == 2 || type == -1">
+      <li @click="handleAction('addStar')" v-if="type == 3 || type == -1">
         添加到我喜欢的音乐
       </li>
-      <li @click="handleAction('addMy')" v-if="type == 3 || type == -1">
+      <li @click="handleAction('addMy')" v-if="type == 2 || type == -1">
         添加到我的歌单
       </li>
       <li @click="handleAction('delete')">删除</li>
@@ -31,6 +32,20 @@ export default {
       divHeight: 0,
     };
   },
+  watch: {
+    // type() {
+    //   this.$nextTick(() => {
+    //     this.calculateHeight(); // 每次 type 变化重新计算高度
+    //   });
+    // },
+    visible() {
+      if (this.visible) {
+        this.$nextTick(() => {
+          this.calculateHeight(); // 仅在菜单可见时计算高度
+        });
+      }
+    },
+  },
   methods: {
     handleAction(action) {
       console.log("this.song", this.song);
@@ -38,8 +53,18 @@ export default {
       // this.$emit("action", action, this.song);
       this.$emit("close");
     },
+    calculateHeight() {
+      if (this.$refs.menuDiv) {
+        const height = this.$refs.menuDiv.offsetHeight;
+        console.log("height", height);
+
+        this.$emit("updateHeight", height); // 传递高度到父组件
+      }
+    },
   },
-  mounted() {},
+  mounted() {
+    this.calculateHeight();
+  },
 };
 </script>
 

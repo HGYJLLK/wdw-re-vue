@@ -183,24 +183,24 @@ export default {
       //     };
       //     console.log("歌曲数据：", this.songsDetail);
       //   });
-      try {
-        const response = await this.$authHttp.get("/api/user/songs", {
-          params: {
-            username: this.userInfo.username,
-            playlist_type: 1,
-          },
-        });
+      // try {
+      //   const response = await this.$authHttp.get("/api/user/songs", {
+      //     params: {
+      //       username: this.userInfo.username,
+      //       playlist_type: 1,
+      //     },
+      //   });
 
-        console.log("/api/user/songs:", response);
-        // response.data.songsDetail.code = 200;
-        this.songsDetail = response.data.songsDetail;
+      //   console.log("/api/user/songs:", response);
+      //   // response.data.songsDetail.code = 200;
+      //   this.songsDetail = response.data.songsDetail;
 
-        // localStorage.setItem("selectedFolders", "检索成功");
-        // window.location.reload();
-      } catch (error) {
-        console.error("获取歌曲数据失败:", error);
-        // this.$message.error(error.message || "检索失败");
-      }
+      //   // localStorage.setItem("selectedFolders", "检索成功");
+      //   // window.location.reload();
+      // } catch (error) {
+      //   console.error("获取歌曲数据失败:", error);
+      //   // this.$message.error(error.message || "检索失败");
+      // }
     },
     // 获取评论数据
     getCommentPage(page) {

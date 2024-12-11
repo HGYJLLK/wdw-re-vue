@@ -23,7 +23,7 @@
           </el-menu-item>
         </div>
         <p class="leftNavFont">我的音乐</p>
-        <div>
+        <div v-if="isLoggedIn">
           <el-menu-item index="/musicHome/myCloudMusic">
             <img
               src="@/assets/image/jiashimoshibendiyinle.svg"
