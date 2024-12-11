@@ -221,6 +221,7 @@ export default {
       this.musicFiles.forEach((file) => {
         formData.append("audio_files", file);
       });
+      this.$store.dispatch("changeIsLoading", true);
 
       try {
         const response = await this.$authHttp.post("/upload/audio", formData, {
@@ -245,6 +246,7 @@ export default {
 
       // 传递音频数据给父组件
       // this.$emit("audioData", this.audioData);
+      this.$store.dispatch("changeIsLoading", false);
       this.dialogVisible = false;
     },
 

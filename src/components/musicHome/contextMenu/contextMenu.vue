@@ -8,13 +8,13 @@
   >
     <ul>
       <li @click="handleAction('play')">播放</li>
-      <li @click="handleAction('addStar')" v-if="type == 3 || type == -1">
+      <li @click="handleAction('addStar')" v-if="type == 1 || type == 3 || type == -1">
         添加到我喜欢的音乐
       </li>
-      <li @click="handleAction('addMy')" v-if="type == 2 || type == -1">
+      <li @click="handleAction('addMy')" v-if="type == 1 || type == 2 || type == -1">
         添加到我的歌单
       </li>
-      <li @click="handleAction('delete')">删除</li>
+      <li @click="handleAction('delete')" v-if="type == 1 || type == 2 || type == 3">删除</li>
     </ul>
   </div>
 </template>
