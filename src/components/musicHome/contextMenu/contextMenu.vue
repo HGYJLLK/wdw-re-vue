@@ -26,6 +26,7 @@ export default {
     position: Object,
     song: Object,
     type: Number,
+    index: Number,
   },
   data() {
     return {
@@ -48,9 +49,9 @@ export default {
   },
   methods: {
     handleAction(action) {
-      console.log("this.song", this.song);
+      console.log("this.song", this.song, this.index);
 
-      // this.$emit("action", action, this.song);
+      this.$emit("action", action, this.song, this.index);
       this.$emit("close");
     },
     calculateHeight() {

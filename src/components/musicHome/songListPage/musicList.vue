@@ -7,6 +7,7 @@
       @action="handleContextMenuAction"
       @close="hideContextMenu"
       :type="type"
+      :index="currentIndex"
       @updateHeight="updateContextMenuHeight"
     />
     <div
@@ -281,7 +282,7 @@ export default {
         y: 0,
       });
     },
-    showContextMenu(event, song) {
+    showContextMenu(event, song, index) {
       const menuWidth = 185;
       const menuHeight = this.menuHeight - 10;
       const viewportWidth = window.innerWidth; // 获取视口宽度
@@ -307,14 +308,17 @@ export default {
 
       this.contextMenuPosition = { x: x, y: y };
       this.currentSong = song;
+      this.currentIndex = index;
       this.contextMenuVisible = true;
     },
     hideContextMenu() {
       this.contextMenuVisible = false;
     },
-    async handleContextMenuAction(action, song) {
+    async handleContextMenuAction(action, song, index) {
+      console.log("song", song);
+
       if (action === "play") {
-        this.startSong(song);
+        this.startSong(song, index);
       } else if (action === "addStar") {
         // this.addList(song);
         // 保存音乐数据
