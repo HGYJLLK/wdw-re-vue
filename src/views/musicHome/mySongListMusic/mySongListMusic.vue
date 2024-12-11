@@ -11,7 +11,7 @@
     <!-- 歌曲列表 -->
     <div style="margin-top: 15px"></div>
     <div v-loading="isLoading" element-loading-text="加载中...">
-      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
+      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type"/>
       <!-- 评论 -->
       <!-- <comment
         :comment="comment"
@@ -229,6 +229,8 @@ export default {
       // 评论数据
       comment: {},
       audio: null,
+      // 歌单类型
+      type: 3,
     };
   },
   methods: {

@@ -6,6 +6,7 @@
       :song="currentSong"
       @action="handleContextMenuAction"
       @close="hideContextMenu"
+      :type="type"
     />
     <div
       class="row"
@@ -67,6 +68,11 @@ export default {
     songsDetail: {
       type: Object,
       default: () => ({ songs: [] }),
+    },
+    // 歌曲类型
+    type: {
+      type: Number,
+      default: -1,
     },
   },
   watch: {

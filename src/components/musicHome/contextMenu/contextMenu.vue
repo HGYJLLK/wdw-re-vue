@@ -7,8 +7,12 @@
   >
     <ul>
       <li @click="handleAction('play')">播放</li>
-      <li @click="handleAction('addStar')">添加到我喜欢的音乐</li>
-      <li @click="handleAction('addMy')">添加到我的歌单</li>
+      <li @click="handleAction('addStar')" v-if="type == 2 || type == -1">
+        添加到我喜欢的音乐
+      </li>
+      <li @click="handleAction('addMy')" v-if="type == 3 || type == -1">
+        添加到我的歌单
+      </li>
       <li @click="handleAction('delete')">删除</li>
     </ul>
   </div>
@@ -20,6 +24,12 @@ export default {
     visible: Boolean,
     position: Object,
     song: Object,
+    type: Number,
+  },
+  data() {
+    return {
+      divHeight: 0,
+    };
   },
   methods: {
     handleAction(action) {
@@ -29,13 +39,14 @@ export default {
       this.$emit("close");
     },
   },
+  mounted() {},
 };
 </script>
 
 <style scoped>
 .context-menu {
   width: 185px;
-  height: 140px;
+  height: auto;
   position: absolute;
   background: #222;
   border: 1px solid #444;

@@ -7,25 +7,18 @@
     />
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
-      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
+      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type" />
     </div>
     <br /><br /><br /><br /><br /><br />
   </div>
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import newMenuTab from "@/components/musicHome/songListPage/newMenuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-// import comment from "@/components/musicHome/songListPage/comment";
-import img1 from "@/assets/musicList/a1.jpg";
-import img2 from "@/assets/musicList/a2.jpg";
-import img3 from "@/assets/musicList/a3.jpg";
-import music1 from "@/assets/music/a1.mp3";
-import music2 from "@/assets/music/a2.mp3";
-import music3 from "@/assets/music/a3.mp3";
 export default {
   name: "myFavoriteMusic",
   components: {
@@ -123,6 +116,8 @@ export default {
       // 评论数据
       comment: {},
       audio: null,
+      // 歌单类型
+      type: 1,
     };
   },
   methods: {
@@ -232,27 +227,27 @@ export default {
     changeActive(index) {
       this.activeIndex = index;
     },
-    playMusic() {
-      console.log("播放音乐");
-      // 如果audio对象不存在，创建一个新的
-      if (!this.audio) {
-        this.audio = new Audio(music1);
-      }
-      // 如果音乐正在播放，暂停它；否则开始播放
-      if (this.audio.paused) {
-        this.audio
-          .play()
-          .then(() => {
-            console.log("音乐开始播放");
-          })
-          .catch((error) => {
-            console.error("播放出错:", error);
-          });
-      } else {
-        this.audio.pause();
-        console.log("音乐已暂停");
-      }
-    },
+    // playMusic() {
+    //   console.log("播放音乐");
+    //   // 如果audio对象不存在，创建一个新的
+    //   if (!this.audio) {
+    //     this.audio = new Audio(music1);
+    //   }
+    //   // 如果音乐正在播放，暂停它；否则开始播放
+    //   if (this.audio.paused) {
+    //     this.audio
+    //       .play()
+    //       .then(() => {
+    //         console.log("音乐开始播放");
+    //       })
+    //       .catch((error) => {
+    //         console.error("播放出错:", error);
+    //       });
+    //   } else {
+    //     this.audio.pause();
+    //     console.log("音乐已暂停");
+    //   }
+    // },
     handleAudioData() {
       // this.receivedAudioData = data; // 更新父组件的状态
       // console.log("从子组件接收到的音频数据：", this.receivedAudioData);
