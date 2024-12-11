@@ -349,7 +349,22 @@ export default {
           return;
         }
       } else if (action === "delete") {
-        // console.log("删除歌曲：", song.name);
+        try {
+          const response = await this.$authHttp.post("/api/user/songs/delete", {
+            username: this.userInfo.username,
+            music_id: song.id,
+            playlist_type: this.type,
+          });
+
+          // this.$message.success("添加成功");
+          this.dialogVisible = false;
+          // 告诉父组件有新的音频数据
+          this.$emit("audioData");
+        } catch (error) {
+          console.error("删除音乐失败:", error);
+          this.$message.error(error.message || "删除音乐失败");
+          return;
+        }
       } else {
       }
     },

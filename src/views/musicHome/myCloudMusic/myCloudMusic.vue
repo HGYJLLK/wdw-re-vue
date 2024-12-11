@@ -7,7 +7,7 @@
     />
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
-      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type" />
+      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type" @audioData="handleAudioData" />
     </div>
     <br /><br /><br /><br /><br /><br />
   </div>

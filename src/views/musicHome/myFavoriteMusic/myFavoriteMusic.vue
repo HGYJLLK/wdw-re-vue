@@ -11,7 +11,7 @@
     <div style="margin-top: 15px"></div>
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
-      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type"/>
+      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type" @audioData="handleAudioData"/>
       <!-- 评论 -->
       <!-- <comment
         :comment="comment"
@@ -230,7 +230,7 @@ export default {
       comment: {},
       audio: null,
       // 歌单类型
-      type: 2,
+      type: 3,
     };
   },
   methods: {
