@@ -216,12 +216,9 @@ export default {
         newPassword: "",
         confirmPassword: "",
       };
-      console.log("个人信息", this.userInfo);
     },
 
-    handleAvatarError() {
-      console.log("头像加载失败，使用默认头像");
-    },
+    handleAvatarError() {},
 
     beforeAvatarUpload(file) {
       const isImage = file.type.startsWith("image/");
@@ -243,12 +240,8 @@ export default {
 
       if (res.code === 200) {
         const avatarUrl = `http://127.0.0.1:5001${res.data.url}`;
-        console.log("头像上传成功", avatarUrl);
-
         this.tempAvatar = avatarUrl;
         this.profileForm.avatarUrl = avatarUrl;
-        console.log("头像上传成功", this.profileForm.avatarUrl);
-        console.log("头像上传成功", this.tempAvatar);
 
         this.$message.success("头像上传成功");
       } else {
@@ -266,7 +259,7 @@ export default {
         const formData = new FormData();
         const { nickname, intro, oldPwd, newPwd, conPwd } = this.profileForm;
 
-        // 填充表单数据
+        // 表单数据
         formData.append("username", this.userInfo.username); // 从用户信息中获取用户名
         if (nickname) formData.append("nickname", nickname);
         if (intro) formData.append("intro", intro);
@@ -353,21 +346,8 @@ export default {
 
     //登出
     async handleLogout() {
-      // this.$http
-      //   .get("/logout")
-      //   .then((res) => {
-      //     this.$message.success("成功退出");
-      //     this.$store.dispatch("saveUserInfo", null);
-      //     this.$store.dispatch("savePersonalList", []);
-      //   })
-      //   .catch((error) => {
-      //     console.log(error);
-      //   });
-
       try {
         const response = await this.$authHttp.get("/logout");
-        console.log("登出响应:", response);
-
         this.profileDialogVisible = false; // 关闭个人信息弹窗
         this.$store.dispatch("saveUserInfo", null);
         this.$store.dispatch("savePersonalList", []);

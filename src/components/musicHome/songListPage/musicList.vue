@@ -196,10 +196,6 @@ export default {
     getSongPage(offset, type) {
       this.$emit("getSongPage", offset, type);
     },
-    //点击专辑跳转界面
-    toAlbumPage(id) {
-      this.$router.push("/musicHome/albumPage/" + id);
-    },
     //返回第一页
     backNumOne() {
       this.$refs.pagination.backNumOne();
@@ -336,7 +332,7 @@ export default {
           // this.$message.success("添加成功");
           this.dialogVisible = false;
           // 告诉父组件有新的音频数据
-          // this.$emit("audioData");
+          this.$emit("audioData");
         } catch (error) {
           console.error("添加音乐失败:", error);
 

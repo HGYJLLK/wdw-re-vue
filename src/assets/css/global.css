@@ -11,7 +11,6 @@ body {
 /* 排除特定类 */
 .el-tooltip__popper.is-light {
     color: black !important;
-    /* 保证该类的颜色为黑色 */
 }
 
 span {

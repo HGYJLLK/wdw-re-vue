@@ -1,5 +1,5 @@
 <template>
-  <div class="musicHome" @click="closeSuggest">
+  <div class="musicHome">
     <el-container>
       <!-- 头部 -->
       <el-header>
@@ -36,8 +36,6 @@ import loginBar from "@/components/musicHome/leftNav/loginBar";
 import login from "@/components/musicHome/login/login";
 import musicPlay from "@/components/musicHome/musicPlay/musicPlay";
 import songTable from "@/components/musicHome/musicPlay/songTable";
-// import loveLetter from "@/components/musicHome/playAnimation/loveLetter";
-// import loveHeart from "@/components/musicHome/playAnimation/loveHeart";
 import { mapGetters, mapMutations, mapActions } from "vuex";
 export default {
   name: "musicHome",
@@ -46,26 +44,14 @@ export default {
     loginBar,
     musicPlay,
     songTable,
-    // loveLetter,
-    // loveHeart,
     login,
   },
   data() {
     return {
       //是否显示歌单
       showSongList: false,
-      //搜索框
-      searchData: "",
-      //彩蛋触发
-      isEgg: false,
-      //心动模式
-      loveModel: false,
-      //搜索建议
-      showSuggest: false,
       //是否能关闭
       isClose: false,
-      //热搜列表
-      hotSearchList: [],
     };
   },
   computed: {
@@ -82,8 +68,6 @@ export default {
       "hisMusicList",
       //播放过的歌曲歌单(避免上一首或者随机播放播放到重复的歌曲)
       "hasPlayList",
-      //搜索历史
-      "searchHistory",
       //个人信息
       "userInfo",
       //是否展示登录
@@ -91,53 +75,6 @@ export default {
     ]),
   },
   methods: {
-    //搜索并跳转到搜索界面
-    search() {
-      //女朋友要求彩蛋
-      if (this.searchData === "@crl是个憨批@") {
-        this.isEgg = true;
-        // 开启心动模式
-        this.loveModel = true;
-        setTimeout(() => {
-          this.isEgg = false;
-        }, 16000);
-        return;
-      }
-      // 解除心动模式
-      if (this.searchData === "@crl不是憨批@") {
-        this.loveModel = false;
-        return;
-      }
-      //判断为空不进行搜索
-      if (this.searchData.trim() === "") return;
-      // 关闭搜索建议
-      this.showSuggest = false;
-      //保存当前搜索数据到vuex
-      this.$store.dispatch("saveSearchInfo", this.searchData);
-      this.$store.dispatch("saveSearchHistory", this.searchData);
-      //跳转到搜索界面
-      if (this.$route.path !== "/musicHome/searchPage/searchBySong") {
-        this.$router.push({
-          name: "searchPage",
-        });
-      }
-      //调用搜索页获取数据
-      this.$refs.child.getSongPage(0, "Song");
-      this.$refs.child.backNumOne();
-    },
-    // 选取历史记录搜索
-    toSearch(item) {
-      this.searchData = item;
-      this.search();
-    },
-    //删除全部搜索记录
-    deleteAllSearchHistory() {
-      this.$store.dispatch("deleteAllSearchHistory");
-    },
-    //删除单个搜索记录
-    deleteSearchHistory(item) {
-      this.$store.dispatch("deleteSearchHistory", item);
-    },
     //是否展示歌单
     isShowSongList() {
       this.showSongList = !this.showSongList;
@@ -150,26 +87,12 @@ export default {
     cleanDur() {
       this.$refs.musicPlay.cleanDur();
     },
-    //关闭搜索建议
-    closeSuggest() {
-      if (!this.isClose) return;
-      this.showSuggest = false;
-    },
-    //获取热搜列表
-    getHotSearch() {
-      this.$http.get("/search/hot/detail").then((res) => {
-        console.log(res.data);
-        this.hotSearchList = res.data.data;
-      });
-    },
     //打开登录窗口
     changeShowLogin(isShow) {
       this.$store.dispatch("changeShowLogin", isShow);
     },
   },
-  created() {
-    this.getHotSearch();
-  },
+  created() {},
   mounted() {},
 };
 </script>
@@ -196,58 +119,8 @@ export default {
   font-size: 20px;
   color: #ffffff;
 }
-/* 搜索框 */
-
-#searchDiv {
-  position: relative;
-  width: 305px;
-  margin-top: -10px;
-}
-/* 搜索建议 */
-.searchSuggest {
-  position: absolute;
-  margin-top: 5px;
-  left: 15%;
-  width: 120%;
-  padding: 20px 15px;
-  height: 400px;
-  z-index: 100;
-  overflow-y: overlay;
-  overflow-y: auto;
-  border-radius: 2%;
-  box-shadow: rgb(57, 57, 68) 0px 0px 1px 1px;
-  background: rgb(45, 45, 56);
-}
-/* 历史标签 */
-.historyTag {
-  display: inline-block;
-  margin-top: 20px;
-  margin-right: 10px;
-  border-radius: 20px;
-  border: 1px solid #000;
-  padding: 5px 10px;
-  opacity: 0.7;
-  cursor: pointer;
-  color: #fff;
-}
-/* 热搜列表 */
-.hotSearch {
-  position: relative;
-  width: 100%;
-  height: 20%;
-  cursor: pointer;
-}
-.hotSearch:hover {
-  background: rgb(57, 57, 68);
-}
-.frontTir {
-  color: white;
-}
 .other {
   color: #fff;
-}
-.historyTag:hover {
-  background: rgb(66, 66, 76);
 }
 .el-header .el-input__inner {
   opacity: 0.5;

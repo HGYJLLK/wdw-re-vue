@@ -72,10 +72,6 @@ const actions = {
     sameHasAndPlay({ commit }) {
         commit('sameHasAndPlay')
     },
-    // 保存当前搜索信息
-    saveSearchInfo({ commit }, payload) {
-        commit('saveSearchInfo', payload)
-    },
     // 改变当前加载状态
     changeIsLoading({ commit }, payload) {
         commit('changeIsLoading', payload)
@@ -87,18 +83,6 @@ const actions = {
     // 保存进度条当前进度
     saveNowDuration({ commit }, payload) {
         commit('saveNowDuration', payload)
-    },
-    // 保存搜索历史
-    saveSearchHistory({ commit }, payload) {
-        commit('saveSearchHistory', payload)
-    },
-    // 删除单个历史标签
-    deleteSearchHistory({ commit }, payload) {
-        commit('deleteSearchHistory', payload)
-    },
-    // 删除所有历史标签
-    deleteAllSearchHistory({ commit }) {
-        commit('deleteAllSearchHistory')
     },
     // 是否显示登录面板
     changeShowLogin({ commit }, payload) {

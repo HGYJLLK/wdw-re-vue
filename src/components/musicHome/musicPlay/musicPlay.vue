@@ -266,20 +266,14 @@ export default {
     // 监听歌曲变化
     musicUrl(newUrl, oldUrl) {
       if (newUrl === oldUrl) return;
-      // this.musicUrl = newUrl;
-      console.log("歌曲url变化:", newUrl);
 
       this.$store.dispatch("saveIsPlaying", true);
     },
-    currentQuality(newValue) {
-      console.log("音质变化:", newValue);
-    },
+    currentQuality(newValue) {},
   },
   methods: {
     // 播放音乐
     playSong() {
-      console.log("this.musicUrl", this.musicUrl);
-
       if (!this.musicUrl) {
         return;
       }
@@ -318,22 +312,6 @@ export default {
     //鼠标拖拽松开时
     changeMusicDuration() {
       if (this.musicAllDuration === 0) {
-        const h = this.$createElement;
-        this.$message.error({
-          message: h("p", null, [
-            h("span", null, "列表中没有要播放的歌曲"),
-            h(
-              "i",
-              {
-                style: "color: red",
-              },
-              ""
-            ),
-          ]),
-          offset: 280,
-          center: true,
-          showClose: true,
-        });
         return;
       }
       this.$refs.audio.currentTime = this.musicDuration - this.playDur[0];
@@ -528,17 +506,11 @@ export default {
           this.$store.dispatch("saveMusicUrl", res.data.data[0].url);
         });
     },
-    //点击歌手跳转界面
-    toArtistPage(id) {
-      this.$router.push("/musicHome/artistPage/" + id);
-    },
     //点击跳转歌曲详情
     toSongDetail() {
       this.$router.push("/musicHome/songDetail");
     },
     selectQuality(quality) {
-      console.log("音质选择", quality);
-
       this.currentQuality = quality;
       // 保存当前音质，触发store的更新
       this.$store.dispatch("updateQuality", quality);

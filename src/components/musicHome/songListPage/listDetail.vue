@@ -75,7 +75,6 @@ export default {
           songList.push(this.songsDetail.songs[index]);
         }
       }
-      console.log(songList);
       // 全部加入歌单
       this.$store.dispatch("playAllSong", songList);
       // 获得音乐url并保存到当前播放url
@@ -103,18 +102,12 @@ export default {
           this.$store.dispatch("saveMusicUrl", res.data.data[0].url);
         });
     },
-    //点击歌单跳转界面
-    toSongListPage(tag) {
-      this.$router.push({ name: "songList", query: { tag: tag } });
-    },
     onImageError() {
       console.log("图片加载失败，切换到默认图片");
       this.playList.coverImgUrl = defaultAvatar; // 替换为默认图片
     },
   },
-  mounted() {
-    console.log("this.playList", this.playList);
-  },
+  mounted() {},
 };
 </script>
 

@@ -32,13 +32,9 @@ export default {
       "hasPlayList",
       //顺序模式
       "playOrd",
-      //当前搜索信息
-      "searchInfo",
       //当前可播放范围
       "slider",
       "playDur",
-      //当前搜索历史
-      "searchHistory",
       //用户信息
       "userInfo",
       //用户歌单
@@ -55,13 +51,8 @@ export default {
       sessionStorage.setItem("hisMusicList", JSON.stringify(this.hisMusicList));
       sessionStorage.setItem("hasPlayList", JSON.stringify(this.hasPlayList));
       sessionStorage.setItem("playOrd", JSON.stringify(this.playOrd));
-      sessionStorage.setItem("searchInfo", JSON.stringify(this.searchInfo));
       sessionStorage.setItem("slider", JSON.stringify(this.slider));
       sessionStorage.setItem("playDur", JSON.stringify(this.playDur));
-      sessionStorage.setItem(
-        "searchHistory",
-        JSON.stringify(this.searchHistory)
-      );
       sessionStorage.setItem("userInfo", JSON.stringify(this.userInfo));
       sessionStorage.setItem("personalList", JSON.stringify(this.personalList));
     },

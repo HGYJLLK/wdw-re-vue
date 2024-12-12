@@ -3,7 +3,7 @@
     <!-- 歌单细节 -->
     <listDetail :playList="playList" :songsDetail="songsDetail" />
     <!-- 歌曲列表 -->
-    <div style="margin-top: 10px;"></div>
+    <div style="margin-top: 10px"></div>
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" />
     </div>
@@ -16,14 +16,12 @@ import { mapGetters, mapMutations, mapActions } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-// import comment from "@/components/musicHome/songListPage/comment";
 export default {
   name: "songListPage",
   components: {
     listDetail,
     menuTab,
     musicList,
-    // comment,
   },
   watch: {
     $route: function (newVal, oldVal) {
@@ -52,8 +50,6 @@ export default {
       queryIds: "",
       // 歌曲数据
       songsDetail: {},
-      // 评论数据
-      comment: {},
       temp: {},
     };
   },
@@ -75,7 +71,7 @@ export default {
           });
         });
       this.getSongDetail();
-      this.getCommentPage(0);
+      this.$store.dispatch("changeIsLoading", false);
     },
     // 获取歌曲数据
     getSongDetail() {
@@ -86,7 +82,6 @@ export default {
           },
         })
         .then((res) => {
-          console.log("获取歌曲数据成功：", res.data);
           // this.songsDetail = res.data;
           // 过滤vip歌曲
           let filteredSongs = [];
@@ -111,28 +106,6 @@ export default {
             code: res.data.code,
             privileges: filteredPrivileges[0],
           };
-          console.log("歌曲数据：", this.songsDetail);
-        });
-    },
-    // 获取评论数据
-    getCommentPage(page) {
-      this.$store.dispatch("changeIsLoading", true);
-      this.$http
-        .get("comment/playlist", {
-          params: {
-            id: this.currentId,
-            limit: 20,
-            offset: page * 20,
-          },
-        })
-        .then((res) => {
-          if (page == 0) {
-            this.comment = res.data;
-          } else {
-            this.comment.comments = res.data.comments;
-          }
-          console.log(res.data);
-          this.$store.dispatch("changeIsLoading", false);
         });
     },
     // 改变导航栏

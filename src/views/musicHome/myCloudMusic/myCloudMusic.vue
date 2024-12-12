@@ -31,7 +31,6 @@ export default {
     listDetail,
     menuTab,
     musicList,
-    // comment,
     newMenuTab,
   },
   props: {
@@ -39,8 +38,6 @@ export default {
   },
   watch: {
     $route: function (newVal, oldVal) {
-      console.log("路由发生变化", newVal, oldVal);
-
       this.currentId = newVal.params.id;
       if (newVal.params.id != oldVal.params.id) {
         this.queryIds = "";
@@ -119,8 +116,6 @@ export default {
         // ],
       },
       receivedAudioData: [],
-      // 评论数据
-      comment: {},
       audio: null,
       // 歌单类型
       type: 1,
@@ -133,7 +128,7 @@ export default {
     async getPlayListDetail() {
       this.$store.dispatch("changeIsLoading", true);
       this.getSongDetail();
-      this.getCommentPage(0);
+      this.$store.dispatch("changeIsLoading", false);
     },
     // 获取歌曲数据
     async getSongDetail() {
@@ -147,32 +142,22 @@ export default {
 
         // this.$message.success("获取歌曲数据成功");
         this.songsDetail = response.data.songsDetail;
-        console.log("歌单数据：", this.songsDetail);
         let totalSizeBytes = 0;
         // 遍历 songsDetail 中的 songs
         if (this.songsDetail.songs && Array.isArray(this.songsDetail.songs)) {
           for (let song of this.songsDetail.songs) {
             // 检查 file_size 是否存在
-            console.log("file_size:", song.file_size);
-
             if (song.file_size) {
               totalSizeBytes += song.file_size; // 累加 file_size（单位：字节）
             }
           }
         }
 
-        console.log("歌单总大小（字节）：", totalSizeBytes);
-
         this.totalSizeGB = (totalSizeBytes / 1024 / 1024 / 1024).toFixed(1);
-        console.log("歌单总大小：", this.totalSizeGB);
       } catch (error) {
         console.error("获取歌曲数据失败:", error);
         this.$message.error(error.message || "获取歌曲数据失败");
       }
-    },
-    getCommentPage(page) {
-      this.$store.dispatch("changeIsLoading", true);
-      this.$store.dispatch("changeIsLoading", false);
     },
     // 改变导航栏
     changeActive(index) {
@@ -198,7 +183,6 @@ export default {
     },
     //根据id获取音乐url
     async getMusicUrl(musicId, isSelf, url) {
-      console.log("是否是自定义音乐：" + isSelf);
       if (isSelf) {
         await this.$authHttp
           .get("/audio", {
@@ -220,8 +204,6 @@ export default {
           },
         })
         .then((res) => {
-          console.log("将要播放的歌曲的url：", res);
-
           if (res.data.data[0].freeTrialInfo) {
             this.$store.dispatch("saveAur", [
               res.data.data[0].freeTrialInfo.start,
@@ -236,7 +218,6 @@ export default {
   },
   created() {
     this.getPlayListDetail();
-    console.log("歌单总大小：", this.totalSizeGB);
   },
 };
 </script>

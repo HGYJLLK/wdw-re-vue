@@ -359,10 +359,6 @@ export default {
     delHisListSong(musicId) {
       this.$store.dispatch("deleteHisListSong", musicId);
     },
-    //点击歌手跳转界面
-    toArtistPage(id) {
-      this.$router.push("/musicHome/artistPage/" + id);
-    },
   },
   created() {},
 };

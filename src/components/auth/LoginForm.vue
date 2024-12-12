@@ -18,12 +18,6 @@
         <a @click="$emit('switch-mode', 'forgot')">忘记密码?</a>
         <a @click="$emit('switch-mode', 'register')">注册账号</a>
       </div>
-
-      <!-- <div class="form-links" style="margin-top: 10px">
-        <a @click="goToHome" style="width: 100%; text-align: center"
-          >返回主页</a
-        >
-      </div> -->
     </form>
   </div>
 </template>
@@ -51,17 +45,12 @@ export default {
       }
 
       try {
-        console.log("开始登录，发送数据:", this.form);
         const response = await this.$authHttp.post("/login", this.form);
-        console.log("登录响应:", response);
-
         const { data } = response;
 
         if (!data) {
           throw new Error("登录响应数据为空");
         }
-
-        console.log("登录成功，用户信息:", data.data);
 
         // 保存token
         if (data.data && data.data.token) {

@@ -146,10 +146,6 @@ const mutations = {
     saveSongId(state, songId) {
         state.songId = songId
     },
-    // 保存当前搜索信息
-    saveSearchInfo(state, searchInfo) {
-        state.searchInfo = searchInfo
-    },
     // 修改当前加载状态
     changeIsLoading(state, isLoading) {
         state.isLoading = isLoading
@@ -166,37 +162,7 @@ const mutations = {
     saveNowDuration(state, nowDuration) {
         state.nowDuration = nowDuration
     },
-    // 保存搜索历史
-    saveSearchHistory(state, searchHistory) {
-        for (let searchHisInfo of state.searchHistory) {
-            if (searchHisInfo === searchHistory) {
-                let index = state.searchHistory.indexOf(searchHisInfo);
-                if (index !== -1) {
-                    state.searchHistory.splice(index, 1);
-                    break;
-                }
-            }
-        }
-        state.searchHistory.unshift(searchHistory)
-    },
-    // 删除单个搜索历史标签
-    deleteSearchHistory(state, searchHistory) {
-        for (let searchHisInfo of state.searchHistory) {
-            if (searchHisInfo === searchHistory) {
-                let index = state.searchHistory.indexOf(searchHisInfo);
-                if (index !== -1) {
-                    state.searchHistory.splice(index, 1);
-                    break;
-                }
-            }
-        }
-    },
-    // 删除所有搜索历史
-    deleteAllSearchHistory(state) {
-        state.searchHistory = [];
-    },
     setQuality(state, quality) {
-        console.log('设置音质:', quality); // 确保 mutation 被调用
         state.currentQuality = quality;
     }
 }

@@ -2,13 +2,7 @@
   <div class="singel" v-if="songId" ref="scroll">
     <div class="singel-main">
       <div class="singel-top">
-        <div class="bck-img">
-          <!-- <img
-            :src="musicDetail.al.picUrl"
-            alt
-            style="width: 100%; filter: blur(80px); border-radius: 50%"
-          /> -->
-        </div>
+        <div class="bck-img"></div>
         <div class="singel-play-img">
           <div
             :class="{ playBar: isPlaying, playBarReverse: !isPlaying }"
@@ -60,23 +54,6 @@
               >{{ currentQuality }}</span
             >
             <div style="margin: 19px 0; fontsize: 13px">
-              <!-- <div
-                style="
-                  display: inline-block;
-                  width: 140px;
-                  color: #00bfff;
-                  margin-right: 5%;
-                  white-space: nowrap;
-                  text-overflow: ellipsis;
-                  overflow: hidden;
-                  word-break: break-all;
-                "
-              >
-                <span style="color: #fff">专辑:</span
-                ><span style="cursor: default">{{
-                  musicDetail.alia[0] || musicDetail.al.name
-                }}</span>
-              </div> -->
               <div
                 style="
                   display: inline-block;
@@ -122,10 +99,6 @@
         </div>
       </div>
     </div>
-    <!-- 底部信息 -->
-    <div class="singel-bottom">
-      <div class="showComment"></div>
-    </div>
   </div>
 </template>
 
@@ -170,8 +143,6 @@ export default {
       this.timerId = 0;
       this.lyricIndex = 0;
       this.getSongLyric(this.songId);
-      this.getSongComment(0);
-      this.getSongSimi(this.songId);
       // this.$refs.comment.backNumOne();
     },
     //歌曲播放状态
@@ -181,14 +152,9 @@ export default {
       let index = this.findCurLyricIndex(this.nowDuration);
       if (index !== this.lyricIndex) {
         this.lyricIndex = index;
-        console.log("歌词位置更新");
         this.$nextTick(() => {
           this.scrollToActiveLyric();
         });
-        console.log(
-          "this.$refs.lyricScroll.scrollTop",
-          this.$refs.lyricScroll.scrollTop
-        );
       }
     },
   },
@@ -200,54 +166,11 @@ export default {
       lrcObject: [],
       lyricIndex: 0,
       timerId: 0,
-      // 相似信息
-      simiInfo: [],
       //歌曲评论
       comment: {},
     };
   },
   methods: {
-    //获取相似单曲
-    getSongSimi(id) {
-      this.$http
-        .get("/simi/song", {
-          params: {
-            id: id,
-          },
-        })
-        .then((res) => {
-          console.log(res.data);
-          this.simiInfo = res.data.songs;
-          for (let song of this.simiInfo) {
-            // 某些键值和之前请求的不符合，进行修改
-            song["al"] = song["album"];
-            delete song["album"];
-            song["alia"] = song["alias"];
-            delete song["alias"];
-            song["ar"] = song["artists"];
-            delete song["artists"];
-            song["dt"] = song["duration"];
-            delete song["duration"];
-          }
-        });
-    },
-    //获取单曲评论
-    getSongComment(page) {
-      this.$store.dispatch("changeIsLoading", true);
-      this.$http
-        .get("/comment/music", {
-          params: { id: this.songId, limit: 20, offset: page * 20 },
-        })
-        .then((res) => {
-          console.log(res.data);
-          if (page == 0) {
-            this.comment = res.data;
-          } else {
-            this.comment.comments = res.data.comments;
-          }
-          this.$store.dispatch("changeIsLoading", false);
-        });
-    },
     //收缩页面
     comBack() {
       this.$router.back();
@@ -261,7 +184,6 @@ export default {
           },
         })
         .then((res) => {
-          console.log(res.data);
           this.lyrics = res.data.lrc.lyric;
           this.createLrcObj(this.lyrics);
         });
@@ -299,15 +221,6 @@ export default {
         return a.t - b.t;
       });
       this.lrcObject = oLRC.ms;
-      console.log("this.lrcObject", this.lrcObject);
-    },
-    //点击歌手跳转界面
-    toArtistPage(id) {
-      this.$router.push("/musicHome/artistPage/" + id);
-    },
-    //点击专辑跳转界面
-    toAlbumPage(id) {
-      this.$router.push("/musicHome/albumPage/" + id);
     },
     findCurLyricIndex(nowDuration) {
       for (let i = 0; i < this.lrcObject.length; i++) {
@@ -316,8 +229,6 @@ export default {
         }
       }
       // 找遍了都没找到（说明播放到最后一句）
-      console.log("歌曲播放到最后一句", this.lrcObject.length - 1);
-
       return this.lrcObject.length - 1;
     },
     resetLyricScroll() {
@@ -356,8 +267,6 @@ export default {
   },
   created() {
     this.getSongLyric(this.songId);
-    this.getSongComment(0);
-    this.getSongSimi(this.songId);
   },
   mounted() {},
 };
@@ -510,21 +419,6 @@ li {
 .showLyric:hover {
   overflow-y: scroll;
 }
-/* 底部信息 */
-.singel-bottom {
-  width: 100%;
-}
-/* 评论区 */
-.showComment {
-  width: 58%;
-  float: left;
-}
-/* 相似部分 */
-.simiInfo {
-  width: 42%;
-  float: left;
-}
-
 ::v-deep .el-button {
   background: rgb(19, 19, 26);
   border: 1px solid rgb(43, 43, 49);

@@ -29,19 +29,6 @@ Vue.prototype.$http = musicHttp      // 音乐服务
 Vue.prototype.$authHttp = authHttp   // 认证服务
 
 Vue.use(VueJsonp)
-
-// axios.defaults.baseURL = 'http://localhost:3000/'
-// // axios.defaults.baseURL = 'https://autumnfish.cn/'
-// // axios.defaults.baseURL = '/api'
-// // axios.defaults.baseURL = 'http://8.129.133.120:3000/'
-// // axios.defaults.withCredentials = true;
-// //引入vuescroll
-// // import vuescroll from "vuescroll";
-// //引入vuescroll样式
-// // import "vuescroll/dist/vuescroll.css";
-
-
-// Vue.use(vuescroll); //使用
 Vue.config.productionTip = false
 
 Vue.config.warnHandler = function (msg, vm, trace) {

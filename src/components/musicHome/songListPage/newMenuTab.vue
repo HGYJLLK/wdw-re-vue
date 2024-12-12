@@ -226,8 +226,6 @@ export default {
 
         reader.onload = (e) => {
           const fileUrl = e.target.result;
-          console.log("Generated file URL:", fileUrl);
-
           this.musicUrls.push(fileUrl);
         };
 
@@ -256,8 +254,6 @@ export default {
             "Content-Type": "multipart/form-data",
           },
         });
-
-        console.log("upload/audio response:", response);
 
         this.$message.success("检索成功");
 
@@ -326,29 +322,6 @@ export default {
         return;
       }
     },
-    animateDialog() {
-      // 动画逻辑
-      gsap.fromTo(
-        this.$refs.localButton,
-        { x: -200, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5 }
-      );
-      gsap.fromTo(
-        this.$refs.addButton,
-        { x: 200, opacity: 0 },
-        { x: 0, opacity: 1, duration: 0.5 }
-      );
-      gsap.fromTo(
-        this.$refs.content,
-        { opacity: 0 },
-        { opacity: 1, duration: 0.5, delay: 0.2 }
-      );
-      gsap.fromTo(
-        this.$refs.footer,
-        { y: 50, opacity: 0 },
-        { y: 0, opacity: 1, duration: 0.5, delay: 0.4 }
-      );
-    },
     handleClose(done) {
       done();
     },
@@ -356,16 +329,6 @@ export default {
     // 触发隐藏的 input[type="file"]
     triggerFolderSelection() {
       this.$refs.folderInput.click();
-    },
-
-    // 生成音频URL
-    async generateAudioUrls(files) {
-      const urls = [];
-      for (const file of files) {
-        const url = URL.createObjectURL(file);
-        urls.push({ name: file.name, url: url });
-      }
-      return urls;
     },
     addMusicDialog() {
       this.dialogVisible = true;

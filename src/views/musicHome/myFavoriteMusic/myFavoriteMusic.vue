@@ -13,10 +13,6 @@
       />
     </div>
     <br /><br /><br /><br /><br /><br />
-
-    <!-- <div>
-      <button @click="playMusic">点击我播放音乐</button>
-    </div> -->
   </div>
 </template>
 
@@ -25,7 +21,6 @@ import { mapGetters } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-import music1 from "@/assets/music/a1.mp3";
 import defaultAvatar from "@/assets/image/default.jpg";
 export default {
   name: "myFavoriteMusic",
@@ -33,7 +28,6 @@ export default {
     listDetail,
     menuTab,
     musicList,
-    // comment,
   },
   watch: {
     $route: function (newVal, oldVal) {
@@ -69,8 +63,6 @@ export default {
       playList: {
         coverImgUrl: defaultAvatar, // 默认图片
       },
-      // 评论数据
-      comment: {},
       audio: null,
       // 歌单类型
       type: 3,
@@ -98,8 +90,6 @@ export default {
         });
 
         this.songsDetail = response.data.songsDetail;
-        console.log("歌单数据：", this.songsDetail);
-
         // 判断是否有歌曲，设置封面图片
         if (this.songsDetail?.songs?.length > 0) {
           const coverImgUrl =
@@ -108,10 +98,7 @@ export default {
         } else {
           this.playList.coverImgUrl = defaultAvatar;
         }
-
-        console.log("封面图设置为：", this.playList.coverImgUrl);
-
-        this.getCommentPage(0);
+        this.$store.dispatch("changeIsLoading", false);
       } catch (error) {
         console.error("获取歌曲数据失败:", error);
         this.$message.error(error.message || "获取歌曲数据失败");
@@ -121,52 +108,9 @@ export default {
         this.$store.dispatch("changeIsLoading", false);
       }
     },
-    // 获取歌曲数据
-    // async getSongDetail() {
-    //   try {
-    //     const response = await this.$authHttp.get("/api/user/songs", {
-    //       params: {
-    //         username: this.userInfo.username,
-    //         playlist_type: 3,
-    //       },
-    //     });
-
-    //     // this.$message.success("获取歌曲数据成功");
-    //     this.songsDetail = response.data.songsDetail;
-    //     console.log("歌单数据：", this.songsDetail);
-    //   } catch (error) {
-    //     console.error("获取歌曲数据失败:", error);
-    //     this.$message.error(error.message || "获取歌曲数据失败");
-    //   }
-    // },
-    getCommentPage(page) {
-      this.$store.dispatch("changeIsLoading", true);
-      this.$store.dispatch("changeIsLoading", false);
-    },
     // 改变导航栏
     changeActive(index) {
       this.activeIndex = index;
-    },
-    playMusic() {
-      console.log("播放音乐");
-      // 如果audio对象不存在，创建一个新的
-      if (!this.audio) {
-        this.audio = new Audio(music1);
-      }
-      // 如果音乐正在播放，暂停它；否则开始播放
-      if (this.audio.paused) {
-        this.audio
-          .play()
-          .then(() => {
-            console.log("音乐开始播放");
-          })
-          .catch((error) => {
-            console.error("播放出错:", error);
-          });
-      } else {
-        this.audio.pause();
-        console.log("音乐已暂停");
-      }
     },
     handleAudioData() {
       this.getPlayListDetail();

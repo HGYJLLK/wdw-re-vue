@@ -28,18 +28,12 @@ export const songId = state => state.songId
 // 当前进度条
 export const nowDuration = state => state.nowDuration
 
-// 当前搜索信息
-export const searchInfo = state => state.searchInfo
-
 // 当前加载状态
 export const isLoading = state => state.isLoading
 
 // 开始和结束时间段
 export const slider = state => state.slider
 export const playDur = state => state.playDur
-
-// 搜索历史
-export const searchHistory = state => state.searchHistory
 
 // 用户信息
 export const userInfo = state => state.userInfo
