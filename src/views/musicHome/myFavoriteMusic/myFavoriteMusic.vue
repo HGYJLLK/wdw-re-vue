@@ -2,12 +2,6 @@
   <div class="myFavoriteMusic">
     <!-- 歌单细节 -->
     <listDetail :playList="playList" :songsDetail="songsDetail" />
-    <!-- 导航栏 -->
-    <!-- <menuTab
-      ref="menuTab"
-      @changeActive="changeActive"
-      :commentCount="comment.total"
-    /> -->
     <div style="margin-top: 15px"></div>
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
@@ -17,14 +11,6 @@
         :type="type"
         @audioData="handleAudioData"
       />
-      <!-- 评论 -->
-      <!-- <comment
-        :comment="comment"
-        v-show="activeIndex === '2'"
-        @getCommentPage="getCommentPage"
-        :currentId = "currentId"
-      /> -->
-      <!-- 收藏者 -->
     </div>
     <br /><br /><br /><br /><br /><br />
 
@@ -39,13 +25,7 @@ import { mapGetters } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-// import comment from "@/components/musicHome/songListPage/comment";
-import img1 from "@/assets/musicList/a1.jpg";
-import img2 from "@/assets/musicList/a2.jpg";
-import img3 from "@/assets/musicList/a3.jpg";
 import music1 from "@/assets/music/a1.mp3";
-import music2 from "@/assets/music/a2.mp3";
-import music3 from "@/assets/music/a3.mp3";
 import defaultAvatar from "@/assets/image/default.jpg";
 export default {
   name: "myFavoriteMusic",
@@ -142,23 +122,23 @@ export default {
       }
     },
     // 获取歌曲数据
-    async getSongDetail() {
-      try {
-        const response = await this.$authHttp.get("/api/user/songs", {
-          params: {
-            username: this.userInfo.username,
-            playlist_type: 3,
-          },
-        });
+    // async getSongDetail() {
+    //   try {
+    //     const response = await this.$authHttp.get("/api/user/songs", {
+    //       params: {
+    //         username: this.userInfo.username,
+    //         playlist_type: 3,
+    //       },
+    //     });
 
-        // this.$message.success("获取歌曲数据成功");
-        this.songsDetail = response.data.songsDetail;
-        console.log("歌单数据：", this.songsDetail);
-      } catch (error) {
-        console.error("获取歌曲数据失败:", error);
-        this.$message.error(error.message || "获取歌曲数据失败");
-      }
-    },
+    //     // this.$message.success("获取歌曲数据成功");
+    //     this.songsDetail = response.data.songsDetail;
+    //     console.log("歌单数据：", this.songsDetail);
+    //   } catch (error) {
+    //     console.error("获取歌曲数据失败:", error);
+    //     this.$message.error(error.message || "获取歌曲数据失败");
+    //   }
+    // },
     getCommentPage(page) {
       this.$store.dispatch("changeIsLoading", true);
       this.$store.dispatch("changeIsLoading", false);

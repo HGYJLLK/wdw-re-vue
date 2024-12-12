@@ -156,8 +156,9 @@ export default {
     },
     //根据id获取音乐url
     async getMusicUrl(musicId, isSelf, url) {
-      console.log("是否是自定义音乐：" + isSelf);
       if (isSelf) {
+        console.log("是否是自定义音乐：" + isSelf);
+
         await this.$authHttp
           .get("/audio", {
             params: {
@@ -329,6 +330,7 @@ export default {
             duration: song.dt,
             pic_url: song.al.picUrl,
             is_self: song.self,
+            music_id: song.id,
           });
 
           // this.$message.success("添加成功");
@@ -361,6 +363,30 @@ export default {
           return;
         }
       } else {
+        try {
+          const response = await this.$authHttp.post("/api/playlist/add", {
+            username: this.userInfo.username,
+            playlist_type: 2,
+            song_name: song.name,
+            artist: song.ar[0].name,
+            duration: song.dt,
+            pic_url: song.al.picUrl,
+            is_self: song.self,
+            music_id: song.id,
+          });
+
+          // this.$message.success("添加成功");
+          this.dialogVisible = false;
+          // 告诉父组件有新的音频数据
+          // this.$emit("audioData");
+        } catch (error) {
+          console.error("添加音乐失败:", error);
+
+          // 解析后端返回的错误信息
+          const errorMessage =
+            error.response?.data?.message || error.message || "添加失败";
+          this.$message.error(errorMessage);
+        }
       }
     },
     updateContextMenuHeight(height) {

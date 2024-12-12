@@ -1,6 +1,13 @@
 <template>
   <div class="menuTab">
     <h1 class="menuTitle">本地音乐</h1>
+    <div class="menuSize">
+      <span class="capacityLabel">网盘容量</span>
+      <div class="progressBar">
+        <div class="progressFill"></div>
+      </div>
+      <span class="capacityValue">0GB / 1GB</span>
+    </div>
     <div class="playAllSong">
       <div class="left">
         <div class="playAll" @click="allAddList">
@@ -27,6 +34,7 @@
       :visible.sync="dialogVisible"
       width="30%"
       :before-close="handleClose"
+      v-loading="isUploading"
       :close-on-click-modal="false"
     >
       <div class="tab-container">
@@ -73,7 +81,11 @@
             />
             <button
               @click="triggerFolderSelection"
-              style="margin-right: 10px; background-color: red; opacity: 0.8"
+              style="
+                margin-right: 10px;
+                background: rgba(255, 0, 0, 0.8);
+                font-weight: bold;
+              "
             >
               添加文件夹
             </button>
@@ -105,8 +117,8 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
-import { gsap, selector } from "gsap";
+import { mapGetters } from "vuex";
+import { gsap } from "gsap";
 import tokenUtils from "../../../utils/token";
 export default {
   name: "newMenuTab",
@@ -114,6 +126,11 @@ export default {
   props: {
     // 歌曲数据
     songs: Array,
+    // 歌单大小
+    totalFileSizeGB: {
+      type: Number,
+      default: 0,
+    },
   },
   data() {
     return {
@@ -129,6 +146,8 @@ export default {
         artist: "",
         duration: "",
       },
+      displaySize: this.totalFileSizeGB,
+      isUploading: false,
     };
   },
   computed: {
@@ -149,6 +168,13 @@ export default {
       // 用户信息
       "userInfo",
     ]),
+  },
+  watch: {
+    totalFileSizeGB(newValue, oldValue) {
+      console.log(`totalFileSizeGB 变化：从 ${oldValue} 变为 ${newValue}`);
+      // 动态更新界面或执行其他逻辑
+      this.updateProgress(newValue);
+    },
   },
   methods: {
     // 全部播放
@@ -221,8 +247,9 @@ export default {
       this.musicFiles.forEach((file) => {
         formData.append("audio_files", file);
       });
-      this.$store.dispatch("changeIsLoading", true);
 
+      this.$store.dispatch("changeIsLoading", true);
+      this.isUploading = true; // 开始加载动画
       try {
         const response = await this.$authHttp.post("/upload/audio", formData, {
           headers: {
@@ -242,11 +269,13 @@ export default {
       } catch (error) {
         console.error("检索失败:", error);
         this.$message.error(error.message || "检索失败");
+      } finally {
+        this.$store.dispatch("changeIsLoading", false);
+        this.isUploading = false; // 结束加载动画
       }
 
       // 传递音频数据给父组件
-      // this.$emit("audioData", this.audioData);
-      this.$store.dispatch("changeIsLoading", false);
+      this.$emit("audioData", this.audioData);
       this.dialogVisible = false;
     },
 
@@ -342,14 +371,19 @@ export default {
       this.dialogVisible = true;
       this.selectOption("online");
     },
+    updateProgress(current) {
+      const progressBar = document.querySelector(".progressFill");
+      const capacityValue = document.querySelector(".capacityValue");
+
+      const percentage = Math.min((current / 1) * 100, 100);
+      capacityValue.textContent = `${current}GB / 1GB`;
+
+      setTimeout(() => {
+        progressBar.style.width = `${percentage}%`;
+      }, 100);
+    },
   },
-  mounted() {
-    // const selectedFolders = localStorage.getItem("selectedFolders");
-    // if (selectedFolders) {
-    //   this.$message.success(selectedFolders);
-    //   localStorage.removeItem("selectedFolders");
-    // }
-  },
+  mounted() {},
 };
 </script>
 
@@ -483,8 +517,8 @@ export default {
 }
 
 .online-bottom button:last-child {
-  background: green;
-  opacity: 0.8;
+  background: rgba(0, 128, 0, 0.8);
+  font-weight: bold;
 }
 
 .footer {
@@ -576,7 +610,7 @@ label {
 label {
   display: flex;
   align-items: center;
-  gap: 10px; /* 控制文字和输入框之间的间距 */
+  gap: 10px;
   font-size: 14px;
   color: #e0e0e0;
 }
@@ -610,7 +644,7 @@ label {
   padding: 10px;
   border-radius: 5px;
   font-size: 14px;
-  flex: 1; /* 和文件选择框对齐宽度 */
+  flex: 1;
 }
 
 .upload-button {
@@ -632,5 +666,41 @@ label {
 
 .tab-option.disabled {
   cursor: not-allowed;
+}
+
+.menuSize {
+  display: flex;
+  align-items: center;
+  gap: 10px;
+  font-size: 16px;
+  color: #fff;
+  margin-top: 10px;
+  margin-bottom: 10px;
+}
+
+.capacityLabel {
+  font-weight: bold;
+}
+
+.progressBar {
+  flex: 1;
+  height: 10px;
+  background-color: #e0e0e0;
+  border-radius: 5px;
+  overflow: hidden;
+  position: relative;
+}
+
+.progressFill {
+  height: 100%;
+  background-color: #4caf50;
+  width: 0%;
+  transition: width 1s ease;
+}
+
+.capacityValue {
+  font-size: 16px;
+  color: #fff;
+  white-space: nowrap;
 }
 </style>

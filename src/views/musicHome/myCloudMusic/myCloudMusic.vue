@@ -4,10 +4,16 @@
       :songs="songsDetail.songs"
       @audioData="handleAudioData"
       @playAll="playAll"
+      :totalFileSizeGB="totalSizeGB"
     />
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
-      <musicList v-show="activeIndex === '1'" :songsDetail="songsDetail" :type="type" @audioData="handleAudioData" />
+      <musicList
+        v-show="activeIndex === '1'"
+        :songsDetail="songsDetail"
+        :type="type"
+        @audioData="handleAudioData"
+      />
     </div>
     <br /><br /><br /><br /><br /><br />
   </div>
@@ -118,25 +124,14 @@ export default {
       audio: null,
       // 歌单类型
       type: 1,
+      // 歌单大小
+      totalSizeGB: 0,
     };
   },
   methods: {
     // 获取歌单详情数据
     async getPlayListDetail() {
       this.$store.dispatch("changeIsLoading", true);
-      // await this.$http
-      //   .get("playlist/detail", {
-      //     params: {
-      //       id: this.currentId,
-      //     },
-      //   })
-      //   .then((res) => {
-      //     console.log(res.data);
-      //     this.playList = res.data.playlist;
-      //     this.playList.trackIds.forEach((item) => {
-      //       this.queryIds += item.id + ",";
-      //     });
-      //   });
       this.getSongDetail();
       this.getCommentPage(0);
     },
@@ -153,113 +148,38 @@ export default {
         // this.$message.success("获取歌曲数据成功");
         this.songsDetail = response.data.songsDetail;
         console.log("歌单数据：", this.songsDetail);
+        let totalSizeBytes = 0;
+        // 遍历 songsDetail 中的 songs
+        if (this.songsDetail.songs && Array.isArray(this.songsDetail.songs)) {
+          for (let song of this.songsDetail.songs) {
+            // 检查 file_size 是否存在
+            console.log("file_size:", song.file_size);
+
+            if (song.file_size) {
+              totalSizeBytes += song.file_size; // 累加 file_size（单位：字节）
+            }
+          }
+        }
+
+        console.log("歌单总大小（字节）：", totalSizeBytes);
+
+        this.totalSizeGB = (totalSizeBytes / 1024 / 1024 / 1024).toFixed(1);
+        console.log("歌单总大小：", this.totalSizeGB);
       } catch (error) {
         console.error("获取歌曲数据失败:", error);
         this.$message.error(error.message || "获取歌曲数据失败");
       }
-      // this.$http
-      //   .get("song/detail", {
-      //     params: {
-      //       ids: this.queryIds.substr(0, this.queryIds.length - 1),
-      //     },
-      //   })
-      //   .then((res) => {
-      //     console.log("获取歌曲数据成功：", res.data);
-      //     // this.songsDetail = res.data;
-      //     // 过滤vip歌曲
-      //     let filteredSongs = [];
-      //     let filteredPrivileges = [];
-      //     res.data.songs.forEach((item, index) => {
-      //       if (item.fee != 1) {
-      //         filteredSongs.push(item);
-      //         filteredPrivileges.push(res.data.privileges[index]);
-      //       }
-      //     });
-      //     // 更新状态
-      //     this.songsDetail = {
-      //       songs: filteredSongs,
-      //       code: res.data.code,
-      //       privileges: filteredPrivileges,
-      //     };
-      //     console.log("歌曲数据：", this.songsDetail);
-      //   });
-      // try {
-      //   const response = await this.$authHttp.get("/api/user/songs", {
-      //     params: {
-      //       username: this.userInfo.username,
-      //       playlist_type: 1,
-      //     },
-      //   });
-
-      //   console.log("/api/user/songs:", response);
-      //   // response.data.songsDetail.code = 200;
-      //   this.songsDetail = response.data.songsDetail;
-
-      //   // localStorage.setItem("selectedFolders", "检索成功");
-      //   // window.location.reload();
-      // } catch (error) {
-      //   console.error("获取歌曲数据失败:", error);
-      //   // this.$message.error(error.message || "检索失败");
-      // }
     },
-    // 获取评论数据
     getCommentPage(page) {
       this.$store.dispatch("changeIsLoading", true);
-      // this.$http
-      //   .get("comment/playlist", {
-      //     params: {
-      //       id: this.currentId,
-      //       limit: 20,
-      //       offset: page * 20,
-      //     },
-      //   })
-      //   .then((res) => {
-      //     if (page == 0) {
-      //       this.comment = res.data;
-      //     } else {
-      //       this.comment.comments = res.data.comments;
-      //     }
-      //     console.log(res.data);
       this.$store.dispatch("changeIsLoading", false);
-      //   });
     },
     // 改变导航栏
     changeActive(index) {
       this.activeIndex = index;
     },
-    // playMusic() {
-    //   console.log("播放音乐");
-    //   // 如果audio对象不存在，创建一个新的
-    //   if (!this.audio) {
-    //     this.audio = new Audio(music1);
-    //   }
-    //   // 如果音乐正在播放，暂停它；否则开始播放
-    //   if (this.audio.paused) {
-    //     this.audio
-    //       .play()
-    //       .then(() => {
-    //         console.log("音乐开始播放");
-    //       })
-    //       .catch((error) => {
-    //         console.error("播放出错:", error);
-    //       });
-    //   } else {
-    //     this.audio.pause();
-    //     console.log("音乐已暂停");
-    //   }
-    // },
-    handleAudioData() {
-      // this.receivedAudioData = data; // 更新父组件的状态
-      // console.log("从子组件接收到的音频数据：", this.receivedAudioData);
-
-      // this.songsDetail.songs[0].url = this.receivedAudioData[0].url;
-      // this.songsDetail.songs[1].url = this.receivedAudioData[1].url;
-      // this.songsDetail.songs[2].url = this.receivedAudioData[2].url;
-
-      // this.songsDetail.songs[0].dt = this.receivedAudioData[0].duration;
-      // this.songsDetail.songs[1].dt = this.receivedAudioData[1].duration;
-      // this.songsDetail.songs[2].dt = this.receivedAudioData[2].duration;
-      this.getPlayListDetail();
+    async handleAudioData() {
+      await this.getPlayListDetail();
     },
     // 全部播放
     playAll() {
@@ -316,6 +236,7 @@ export default {
   },
   created() {
     this.getPlayListDetail();
+    console.log("歌单总大小：", this.totalSizeGB);
   },
 };
 </script>
