@@ -3,7 +3,7 @@
     <el-container>
       <!-- 头部 -->
       <el-header>
-        <img src="../assets/image/demo.svg" alt="" id="musicDemo" />
+        <img src="../assets/image/favicon.png" alt="" id="musicDemo" />
         <span>Liu的音乐播放器</span>
         <loginBar style="position: absolute; right: 5%; top: 20%" />
       </el-header>

@@ -21,7 +21,8 @@ import { mapGetters } from "vuex";
 import listDetail from "@/components/musicHome/songListPage/listDetail";
 import menuTab from "@/components/musicHome/songListPage/menuTab";
 import musicList from "@/components/musicHome/songListPage/musicList";
-import defaultAvatar from "@/assets/image/default.jpg";
+import defaultAvatar from "@/assets/image/default.png";
+import defaultAvatar2 from "@/assets/image/default.jpg";
 export default {
   name: "myFavoriteMusic",
   components: {
@@ -74,7 +75,7 @@ export default {
       this.playList.name = "我喜欢的音乐";
       this.playList.creator = {
         nickname: this.userInfo.nickname,
-        avatarUrl: this.userInfo.avatarUrl || defaultAvatar,
+        avatarUrl: this.userInfo.avatarUrl || defaultAvatar2,
         username: this.userInfo.username,
       };
 
