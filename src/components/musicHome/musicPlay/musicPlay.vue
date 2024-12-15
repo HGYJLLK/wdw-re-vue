@@ -148,6 +148,7 @@
             <el-dropdown-item
               @click.native="selectQuality('高品质')"
               :class="{ selected: currentQuality === '高品质' }"
+              :disabled="musicDetail.self"
               >高品质</el-dropdown-item
             >
             <el-dropdown-item
@@ -158,6 +159,7 @@
             <el-dropdown-item
               @click.native="selectQuality('流畅')"
               :class="{ selected: currentQuality === '流畅' }"
+              :disabled="musicDetail.self"
               >流畅</el-dropdown-item
             >
           </el-dropdown-menu>
@@ -701,5 +703,11 @@ export default {
 .selected {
   background-color: #ecf5ff;
   color: #66b1ff;
+}
+
+::v-deep .el-dropdown-menu__item.is-disabled {
+  color: #ccc; /* 灰色 */
+  cursor: not-allowed; /* 禁用状态的鼠标指针 */
+  pointer-events: auto; /* 鼠标事件 */
 }
 </style>
