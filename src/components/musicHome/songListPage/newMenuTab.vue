@@ -6,7 +6,7 @@
       <div class="progressBar">
         <div class="progressFill"></div>
       </div>
-      <span class="capacityValue">0.0GB / 1GB</span>
+      <span class="capacityValue">{{ totalFileSizeInGB }}GB / 1GB</span>
     </div>
     <div class="playAllSong">
       <div class="left">
@@ -125,7 +125,6 @@
 
 <script>
 import { mapGetters } from "vuex";
-import { gsap } from "gsap";
 import tokenUtils from "../../../utils/token";
 export default {
   name: "newMenuTab",
@@ -176,12 +175,13 @@ export default {
       // 用户信息
       "userInfo",
     ]),
+    totalFileSizeInGB() {
+      return (this.totalFileSizeGB / 1024 / 1024 / 1024).toFixed(1); // 保留一位小数
+    },
   },
   watch: {
     totalFileSizeGB(newValue, oldValue) {
-      console.log(`totalFileSizeGB 变化：从 ${oldValue} 变为 ${newValue}`);
-      // 动态更新界面或执行其他逻辑
-      this.updateProgress(newValue);
+      this.updateProgress();
     },
   },
   methods: {
@@ -247,10 +247,43 @@ export default {
       formData.append("playlist_type", 1);
       formData.append("is_self", true);
 
-      // 添加音频文件到FormData
-      this.musicFiles.forEach((file) => {
+      // 最大容量限制
+      const maxCapacity = this.getMaxSize();
+
+      // 获取已添加音乐的总大小
+      console.log("已经添加的音乐大小", this.totalFileSizeGB);
+
+      const usedCapacity = this.totalFileSizeGB;
+
+      // 剩余可用容量
+      const availableCapacity = maxCapacity - usedCapacity;
+
+      if (availableCapacity <= 0) {
+        this.$message.error("已添加音乐容量已达到 1GB，无法再添加音乐！");
+        return;
+      }
+
+      let totalSize = 0;
+      const validFiles = [];
+
+      // 筛选出不超过剩余容量的文件
+      for (const file of this.musicFiles) {
+        if (totalSize + file.size <= availableCapacity) {
+          validFiles.push(file);
+          totalSize += file.size;
+        } else {
+          console.warn("部分文件超出剩余容量限制,已过滤。");
+        }
+      }
+
+      validFiles.forEach((file) => {
         formData.append("audio_files", file);
       });
+
+      // // 添加音频文件到FormData
+      // this.musicFiles.forEach((file) => {
+      //   formData.append("audio_files", file);
+      // });
 
       this.$store.dispatch("changeIsLoading", true);
       this.isUploading = true; // 开始加载动画
@@ -281,6 +314,18 @@ export default {
       this.dialogVisible = false;
     },
 
+    getMaxSize() {
+      return 1024 * 1024 * 1024; // 1GB
+    },
+
+    calculateUsedCapacity() {
+      // 假设 this.existingMusicFiles 是一个数组，包含已添加的音乐文件信息
+      return this.existingMusicFiles.reduce(
+        (total, file) => total + file.size,
+        0
+      );
+    },
+
     getAudioDuration(audioUrl) {
       return new Promise((resolve, reject) => {
         const audio = new Audio(audioUrl);
@@ -295,16 +340,13 @@ export default {
       });
     },
 
-    processMusicFiles(musicFiles) {
-      console.log("Processing music files:", musicFiles);
-    },
+    processMusicFiles(musicFiles) {},
 
     uploadFile(event) {
       this.newSong.file = event.target.files[0];
     },
     async addMusic() {
       // 保存音乐数据
-      console.log("添加音乐：", this.newSong);
       const formData = new FormData();
       formData.append("username", this.userInfo.username);
       formData.append("playlist_type", 1);
@@ -340,13 +382,13 @@ export default {
       this.dialogVisible = true;
       this.selectOption("online");
     },
-    updateProgress(current) {
+    updateProgress() {
       const progressBar = document.querySelector(".progressFill");
       const capacityValue = document.querySelector(".capacityValue");
       const addMusicButton = document.querySelector("#addMusicBtn");
 
-      const percentage = Math.min((current / 1) * 100, 100);
-      capacityValue.textContent = `${current}GB / 1GB`;
+      const percentage = Math.min((this.totalFileSizeInGB / 1) * 100, 100);
+      capacityValue.textContent = `${this.totalFileSizeInGB}GB / 1GB`;
 
       if (percentage === 100) {
         this.isOpend = false;

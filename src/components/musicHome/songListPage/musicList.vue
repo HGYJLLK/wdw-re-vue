@@ -115,8 +115,6 @@ export default {
   methods: {
     // 双击切换到当前播放
     startSong(musicDetail, index) {
-      console.log("将要播放的歌曲的数据：", musicDetail);
-
       if (musicDetail.id === this.songId) return;
       if (this.songsDetail.privileges[index].st == -200) {
         return;

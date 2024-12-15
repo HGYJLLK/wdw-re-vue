@@ -4,7 +4,7 @@
       :songs="songsDetail.songs"
       @audioData="handleAudioData"
       @playAll="playAll"
-      :totalFileSizeGB="totalSizeGB"
+      :totalFileSizeGB="totalSizeBytes"
     />
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
@@ -75,7 +75,7 @@ export default {
       // 歌单类型
       type: 1,
       // 歌单大小
-      totalSizeGB: 0,
+      totalSizeBytes: 0,
     };
   },
   methods: {
@@ -97,18 +97,16 @@ export default {
 
         // this.$message.success("获取歌曲数据成功");
         this.songsDetail = response.data.songsDetail;
-        let totalSizeBytes = 0;
         // 遍历 songsDetail 中的 songs
         if (this.songsDetail.songs && Array.isArray(this.songsDetail.songs)) {
           for (let song of this.songsDetail.songs) {
             // 检查 file_size 是否存在
             if (song.file_size) {
-              totalSizeBytes += song.file_size; // 累加 file_size（单位：字节）
+              this.totalSizeBytes += song.file_size; // 累加 file_size（单位：字节）
             }
           }
         }
-
-        this.totalSizeGB = (totalSizeBytes / 1024 / 1024 / 1024).toFixed(1);
+        console.log("歌单大小：", this.totalSizeBytes);
       } catch (error) {
         console.error("获取歌曲数据失败:", error);
         this.$message.error(error.message || "获取歌曲数据失败");
