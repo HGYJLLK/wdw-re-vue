@@ -80,7 +80,7 @@ export default {
       this.playList.name = "我喜欢的音乐";
       this.playList.creator = {
         nickname: this.userInfo.nickname,
-        avatarUrl: this.userInfo.avatar || defaultAvatar2,
+        avatarUrl: this.userInfo.avatar || "",
         username: this.userInfo.username,
       };
 

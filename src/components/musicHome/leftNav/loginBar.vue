@@ -17,7 +17,7 @@
         :src="
           userInfo.avatar && userInfo.avatar.trim() !== ''
             ? userInfo.avatar
-            : defaultAvatar
+            : ''
         "
         class="userHead"
         style="vertical-align: middle; cursor: default"
@@ -60,13 +60,13 @@
               v-if="
                 tempAvatar ||
                 (userInfo.avatar && userInfo.avatar.trim() !== '') ||
-                defaultAvatar
+                ''
               "
               :src="
                 tempAvatar ||
                 (userInfo.avatar && userInfo.avatar.trim() !== ''
                   ? userInfo.avatar
-                  : defaultAvatar)
+                  : '')
               "
               class="avatar"
             />
