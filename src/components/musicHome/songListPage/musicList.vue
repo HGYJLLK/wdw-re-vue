@@ -59,7 +59,7 @@
 </template>
 
 <script>
-import { mapGetters, mapMutations, mapActions } from "vuex";
+import { mapGetters } from "vuex";
 import playAni from "@/components/musicHome/playAnimation/playAni";
 import contextMenu from "@/components/musicHome/contextMenu/contextMenu";
 import { gsap } from "gsap";
@@ -78,9 +78,7 @@ export default {
     },
   },
   watch: {
-    songsDetail(newVal) {
-      console.log("接收到新的歌曲数据：", newVal);
-    },
+    songsDetail(newVal) {},
   },
   computed: {
     ...mapGetters([
@@ -393,7 +391,6 @@ export default {
     this.getSongPage(0, "Song");
   },
   mounted() {
-    console.log("列表中拿到的音频信息", this.songsDetail);
     document.addEventListener("click", this.hideContextMenu);
   },
   beforeDestroy() {

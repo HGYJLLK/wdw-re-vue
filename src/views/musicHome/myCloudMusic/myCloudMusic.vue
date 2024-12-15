@@ -9,11 +9,16 @@
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList
-        v-show="activeIndex === '1'"
+        v-show="songsDetail.songs && songsDetail.songs.length > 0"
         :songsDetail="songsDetail"
         :type="type"
         @audioData="handleAudioData"
       />
+      <div v-show="!songsDetail.songs || songsDetail.songs.length === 0">
+        <div class="no-data">
+          <img src="@/assets/image/no-data.png" alt="no-data" />
+        </div>
+      </div>
     </div>
     <br /><br /><br /><br /><br /><br />
   </div>
@@ -64,57 +69,7 @@ export default {
       // 请求的歌曲id
       queryIds: "",
       // 歌曲数据
-      songsDetail: {
-        // songs: [
-        //   {
-        //     id: 1,
-        //     name: "Song One",
-        //     ar: [{ name: "Artist One" }],
-        //     al: {
-        //       picUrl: img1,
-        //     },
-        //     dt: 307173, // 时长（毫秒）
-        //     mv: 0, // 没有MV
-        //     alia: [],
-        //     self: true, // 是否为用户自己上传的歌曲
-        //     fee: 8,
-        //     st: 0,
-        //   },
-        //   {
-        //     id: 2,
-        //     name: "Song Two",
-        //     ar: [{ name: "Artist Two" }, { name: "Artist Three" }],
-        //     al: {
-        //       picUrl: img2,
-        //     },
-        //     dt: 307173,
-        //     mv: 1, // 有MV
-        //     alia: [],
-        //     self: true, // 是否为用户自己上传的歌曲
-        //     fee: 8,
-        //     st: 0,
-        //   },
-        //   {
-        //     id: 3,
-        //     name: "Song Three",
-        //     ar: [{ name: "Artist Four" }],
-        //     al: {
-        //       picUrl: img3,
-        //     },
-        //     dt: 307173,
-        //     mv: 0,
-        //     alia: [],
-        //     self: true, // 是否为用户自己上传的歌曲
-        //     fee: 8,
-        //     st: 0,
-        //   },
-        // ],
-        // privileges: [
-        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 }, // 免费歌曲
-        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 },
-        //   { chargeInfoList: [{ chargeType: 0 }], st: 0 },
-        // ],
-      },
+      songsDetail: {},
       receivedAudioData: [],
       audio: null,
       // 歌单类型
@@ -233,5 +188,13 @@ export default {
 }
 .myFavoriteMusic:hover {
   overflow-y: overlay;
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-top: 15%;
 }
 </style>

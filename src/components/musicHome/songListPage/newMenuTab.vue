@@ -6,7 +6,7 @@
       <div class="progressBar">
         <div class="progressFill"></div>
       </div>
-      <span class="capacityValue">0GB / 1GB</span>
+      <span class="capacityValue">0.0GB / 1GB</span>
     </div>
     <div class="playAllSong">
       <div class="left">
@@ -19,7 +19,14 @@
         </div>
       </div>
       <div class="right">
-        <div class="playAll" @click="addMusicDialog">
+        <div
+          class="playAll"
+          id="addMusicBtn"
+          @click="isOpend ? addMusicDialog() : null"
+          :class="{
+            disabled: !isOpend,
+          }"
+        >
           <i
             class="iconfont icon-tianjia"
             style="font-size: 15px; margin-right: 4px"
@@ -148,6 +155,7 @@ export default {
       },
       displaySize: this.totalFileSizeGB,
       isUploading: false,
+      isOpend: false,
     };
   },
   computed: {
@@ -234,8 +242,6 @@ export default {
     },
 
     async confirmFolders() {
-      console.log("音频数据", this.musicFiles);
-
       const formData = new FormData();
       formData.append("username", this.userInfo.username);
       formData.append("playlist_type", 1);
@@ -337,9 +343,18 @@ export default {
     updateProgress(current) {
       const progressBar = document.querySelector(".progressFill");
       const capacityValue = document.querySelector(".capacityValue");
+      const addMusicButton = document.querySelector("#addMusicBtn");
 
       const percentage = Math.min((current / 1) * 100, 100);
       capacityValue.textContent = `${current}GB / 1GB`;
+
+      if (percentage === 100) {
+        this.isOpend = false;
+        addMusicButton.style.background = "rgba(255, 0, 0, 0.8)";
+      } else {
+        this.isOpend = true;
+        addMusicButton.style.background = "rgba(255, 0, 0, 1)";
+      }
 
       setTimeout(() => {
         progressBar.style.width = `${percentage}%`;
@@ -628,6 +643,10 @@ label {
 }
 
 .tab-option.disabled {
+  cursor: not-allowed;
+}
+
+#addMusicBtn.disabled {
   cursor: not-allowed;
 }
 

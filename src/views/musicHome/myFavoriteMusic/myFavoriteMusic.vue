@@ -6,11 +6,16 @@
     <!-- 歌曲列表 -->
     <div v-loading="isLoading" element-loading-text="加载中...">
       <musicList
-        v-show="activeIndex === '1'"
+        v-show="songsDetail.songs && songsDetail.songs.length > 0"
         :songsDetail="songsDetail"
         :type="type"
         @audioData="handleAudioData"
       />
+      <div v-show="!songsDetail.songs || songsDetail.songs.length === 0">
+        <div class="no-data">
+          <img src="@/assets/image/no-data.png" alt="no-data" />
+        </div>
+      </div>
     </div>
     <br /><br /><br /><br /><br /><br />
   </div>
@@ -32,8 +37,6 @@ export default {
   },
   watch: {
     $route: function (newVal, oldVal) {
-      console.log("路由发生变化", newVal, oldVal);
-
       this.currentId = newVal.params.id;
       if (newVal.params.id != oldVal.params.id) {
         this.queryIds = "";
@@ -134,5 +137,13 @@ export default {
 }
 .myFavoriteMusic:hover {
   overflow-y: overlay;
+}
+
+.no-data {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 100%;
+  margin-top: 10%;
 }
 </style>
