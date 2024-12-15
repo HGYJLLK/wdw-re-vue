@@ -69,7 +69,7 @@ export default {
       },
       audio: null,
       // 歌单类型
-      type: 3,
+      type: 2,
     };
   },
   methods: {
@@ -77,7 +77,7 @@ export default {
     async getPlayListDetail() {
       this.$store.dispatch("changeIsLoading", true);
 
-      this.playList.name = "我喜欢的音乐";
+      this.playList.name = "我的歌单";
       this.playList.creator = {
         nickname: this.userInfo.nickname,
         avatarUrl: this.userInfo.avatarUrl || defaultAvatar2,
