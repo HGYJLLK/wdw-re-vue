@@ -538,6 +538,9 @@ export default {
     this.$store.dispatch("saveIsPlaying", true);
 
     window.addEventListener("keydown", this.handleKeypress);
+
+    // 暂停播放
+    this.pauseSong();
   },
   beforeDestroy() {
     window.removeEventListener("keydown", this.handleKeypress);
