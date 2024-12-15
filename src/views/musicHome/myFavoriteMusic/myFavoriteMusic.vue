@@ -80,7 +80,7 @@ export default {
       this.playList.name = "我喜欢的音乐";
       this.playList.creator = {
         nickname: this.userInfo.nickname,
-        avatarUrl: this.userInfo.avatarUrl || defaultAvatar2,
+        avatarUrl: this.userInfo.avatar || defaultAvatar2,
         username: this.userInfo.username,
       };
 
@@ -122,6 +122,9 @@ export default {
   },
   created() {
     this.getPlayListDetail();
+  },
+  mounted() {
+    console.log("用户信息：", this.userInfo);
   },
 };
 </script>
