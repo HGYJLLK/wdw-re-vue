@@ -516,6 +516,11 @@ export default {
       this.$store.dispatch("updateQuality", quality);
     },
     handleKeypress(e) {
+      // 检查事件的目标是否是输入框或其他可编辑元素
+      const target = e.target.tagName.toLowerCase();
+      if (target === "input" || target === "textarea") {
+        return;
+      }
       if (e.code === "Space") {
         if (this.isPlaying) {
           this.pauseSong();
