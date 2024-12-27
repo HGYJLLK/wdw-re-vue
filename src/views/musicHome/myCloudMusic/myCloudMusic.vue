@@ -41,15 +41,15 @@ export default {
   props: {
     audioData: Array,
   },
-  watch: {
-    $route: function (newVal, oldVal) {
-      this.currentId = newVal.params.id;
-      if (newVal.params.id != oldVal.params.id) {
-        this.queryIds = "";
-        this.getPlayListDetail();
-      }
-    },
-  },
+  // watch: {
+  //   $route: function (newVal, oldVal) {
+  //     this.currentId = newVal.params.id;
+  //     if (newVal.params.id != oldVal.params.id) {
+  //       this.queryIds = "";
+  //       this.getPlayListDetail();
+  //     }
+  //   },
+  // },
   computed: {
     ...mapGetters([
       // 加载状态
@@ -94,7 +94,7 @@ export default {
             playlist_type: 1,
           },
         });
-
+        this.totalSizeBytes = 0;
         // this.$message.success("获取歌曲数据成功");
         this.songsDetail = response.data.songsDetail;
         // 遍历 songsDetail 中的 songs
@@ -106,6 +106,8 @@ export default {
             }
           }
         }
+
+        if (this.totalSizeBytes == 0) this.totalSizeBytes += 0.001;
         console.log("歌单大小：", this.totalSizeBytes);
       } catch (error) {
         console.error("获取歌曲数据失败:", error);
@@ -170,6 +172,9 @@ export default {
     },
   },
   created() {
+    // this.getPlayListDetail();
+  },
+  mounted() {
     this.getPlayListDetail();
   },
 };

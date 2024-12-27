@@ -135,7 +135,7 @@ export default {
     // 歌单大小
     totalFileSizeGB: {
       type: Number,
-      default: 0,
+      default: -1,
     },
   },
   data() {
@@ -181,6 +181,8 @@ export default {
   },
   watch: {
     totalFileSizeGB(newValue, oldValue) {
+      console.log("newValue", newValue);
+
       this.updateProgress();
     },
   },
@@ -389,6 +391,8 @@ export default {
 
       const percentage = Math.min((this.totalFileSizeInGB / 1) * 100, 100);
       capacityValue.textContent = `${this.totalFileSizeInGB}GB / 1GB`;
+
+      console.log("percentage", percentage);
 
       if (percentage === 100) {
         this.isOpend = false;
