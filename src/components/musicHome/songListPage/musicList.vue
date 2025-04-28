@@ -18,21 +18,25 @@
       @mouseenter="hoverIn(index)"
       @mouseleave="hoverOut(index)"
       @dblclick="startSong(item, index)"
+      :class="{ 'disabled-song': item.is_disabled }"
     >
       <div
         style="font-size: 50px; color: #ec4141; width: 15%"
-        v-if="item.id === songId && isPlaying"
+        v-if="item.id === songId && isPlaying && !item.is_disabled"
       >
         <playAni />
       </div>
       <i
         class="iconfont icon-zanting"
         style="font-size: 50px; color: #ec4141; width: 15%"
-        v-else-if="item.id === songId && !isPlaying"
+        v-else-if="item.id === songId && !isPlaying && !item.is_disabled"
       ></i>
-      <div class="number" v-else>
+      <div class="number" v-else-if="!item.is_disabled">
         #{{ (index + 1).toString().padStart(3, "0") }}
       </div>
+      <!-- <div class="disabled-icon" v-else>
+        <i class="iconfont icon-jinzhi"></i>
+      </div> -->
       <!-- <div class="number">#{{ item.number }}</div> -->
       <div class="row-main">
         <div class="row-container">
@@ -115,6 +119,16 @@ export default {
   methods: {
     // 双击切换到当前播放
     startSong(musicDetail, index) {
+      // console.log(
+      //   "this.songsDetail.privileges[index].st",
+      //   this.songsDetail.privileges[index].st
+      // );
+      // console.log("musicDetail.id", musicDetail.id);
+      // console.log("this.songId", this.songId);
+      if (musicDetail.is_disabled) {
+        this.$message.error("此音乐已被管理员禁用");
+        return;
+      }
       if (musicDetail.id === this.songId) return;
       if (this.songsDetail.privileges[index].st == -200) {
         return;
@@ -136,6 +150,10 @@ export default {
     },
     //加入歌单
     addList(musicDetail, index) {
+      console.log(
+        "this.songsDetail.privileges[index].st",
+        this.songsDetail.privileges[index].st
+      );
       if (this.songsDetail.privileges[index].st == -200) {
         return;
       }
@@ -145,10 +163,14 @@ export default {
       // 放入当前播放歌单
       for (let song of this.playList) {
         if (song.id === musicDetail.id) {
+          console.log("是否运行");
           return;
         }
       }
       this.$store.dispatch("pushPlayList", musicDetail);
+      // 获得push后的歌单
+      console.log(this.$store.state.playList);
+      console.log(this.$store.state.hasPlayList);
     },
     //根据id获取音乐url
     async getMusicUrl(musicId, isSelf, url) {
@@ -309,7 +331,10 @@ export default {
     },
     async handleContextMenuAction(action, song, index) {
       console.log("song", song);
-
+      if (song.is_disabled && action !== "delete") {
+        this.$message.error("此音乐已被管理员禁用");
+        return;
+      }
       if (action === "play") {
         this.startSong(song, index);
       } else if (action === "addStar") {
@@ -556,5 +581,30 @@ export default {
   margin-left: 20px;
   color: white;
   font-size: 25px;
+}
+
+.disabled-song {
+  background-color: rgba(220, 53, 69, 0.1);
+  opacity: 0.7;
+  cursor: not-allowed;
+}
+
+.disabled-song:hover {
+  background-color: rgba(220, 53, 69, 0.15) !important;
+}
+
+.disabled-song .text {
+  color: #dc3545;
+}
+
+.disabled-icon {
+  width: 15%;
+  font-size: 24px;
+  color: #dc3545;
+  text-align: center;
+}
+
+.disabled-icon i {
+  margin-right: 5px;
 }
 </style>

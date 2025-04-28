@@ -97,6 +97,8 @@ export default {
         this.totalSizeBytes = 0;
         // this.$message.success("获取歌曲数据成功");
         this.songsDetail = response.data.songsDetail;
+        console.log("歌曲数据：", this.songsDetail);
+        
         // 遍历 songsDetail 中的 songs
         if (this.songsDetail.songs && Array.isArray(this.songsDetail.songs)) {
           for (let song of this.songsDetail.songs) {

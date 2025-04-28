@@ -435,24 +435,36 @@ export default {
     },
     //随机播放
     randomPlay() {
-      //接受子组件传来的数据
-      if (this.hasPlayList.length === 1) {
-        this.$store.dispatch("sameHasAndPlay");
-      }
-      // 在已经播放过的列表中删除歌曲防止重复播放
-      this.$store.dispatch("deleteHasListSong", this.songId);
+      // console.log("this.hasPlayList.length", this.hasPlayList.length);
+      console.log("this.songId", this.songId);
+
+      // //接受子组件传来的数据
+      // if (this.hasPlayList.length === 1) {
+      //   this.$store.dispatch("sameHasAndPlay");
+      // }
+      // // 在已经播放过的列表中删除歌曲防止重复播放
+      // this.$store.dispatch("deleteHasListSong", this.songId);
       // 获取随机
-      const index = this.getRandom(0, this.hasPlayList.length - 1);
-      //放入历史播放
-      this.$store.dispatch("deleteHisListSong", this.hasPlayList[index].id);
-      this.$store.dispatch("unshiftHisMusicList", this.hasPlayList[index]);
-      //获取随机歌曲url并保存
-      this.getMusicUrl(this.hasPlayList[index].id);
-      //保存到当前播放歌曲详情
-      this.$store.dispatch("saveMusicDetail", this.hasPlayList[index]);
-      //保存当前歌曲id
-      this.$store.dispatch("saveSongId", this.hasPlayList[index].id);
+      const len = this.playList.length;
+      while (true) {
+        const index = this.getRandom(0, len - 1);
+        if (this.playList[index].id !== this.songId) {
+          this.startSong(this.playList[index]);
+          break;
+        }
+      }
     },
+    //   const index = this.getRandom(0, this.hasPlayList.length - 1);
+    //   //放入历史播放
+    //   this.$store.dispatch("deleteHisListSong", this.hasPlayList[index].id);
+    //   this.$store.dispatch("unshiftHisMusicList", this.hasPlayList[index]);
+    //   //获取随机歌曲url并保存
+    //   this.getMusicUrl(this.hasPlayList[index].id);
+    //   //保存到当前播放歌曲详情
+    //   this.$store.dispatch("saveMusicDetail", this.hasPlayList[index]);
+    //   //保存当前歌曲id
+    //   this.$store.dispatch("saveSongId", this.hasPlayList[index].id);
+    // },
     //随机数
     getRandom(min, max) {
       return Math.floor(Math.random() * (max - min + 1) + min);
@@ -465,6 +477,8 @@ export default {
       // 保存到当前播放歌曲详情
       this.$store.dispatch("saveMusicDetail", musicDetail);
       // 保存到当前播放歌曲id
+      console.log("musicDetail.id", musicDetail.id);
+
       this.$store.dispatch("saveSongId", musicDetail.id);
       // 放入历史歌单
       this.$store.dispatch("deleteHisListSong", musicDetail.id);
