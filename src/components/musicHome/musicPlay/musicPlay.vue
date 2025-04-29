@@ -490,6 +490,25 @@ export default {
     //根据id获取音乐url
     async getMusicUrl(musicId, isSelf, url) {
       console.log("是否是自定义音乐：" + isSelf);
+
+      // 首先检查音乐是否被禁用（仅针对API音乐）
+      if (!isSelf) {
+        try {
+          const statusResponse = await this.$authHttp.get("/api/music/status", {
+            params: {
+              id: musicId,
+            },
+          });
+
+          if (statusResponse.data.is_disabled) {
+            this.$message.error("该音乐已被管理员禁用");
+            return; // 如果被禁用，直接返回不播放
+          }
+        } catch (error) {
+          console.error("检查音乐状态失败:", error);
+        }
+      }
+
       if (isSelf) {
         await this.$authHttp
           .get("/audio", {

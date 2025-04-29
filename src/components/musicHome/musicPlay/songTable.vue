@@ -284,8 +284,39 @@ export default {
   },
   methods: {
     // 双击切换到当前播放
-    startSong(musicDetail) {
+    async startSong(musicDetail) {
       if (musicDetail.id === this.songId) return;
+
+      // 检查API音乐是否被禁用
+      if (!musicDetail.self) {
+        const musicId = musicDetail.id;
+        console.log(`[CLIENT] 检查音乐ID: ${musicId} 是否被禁用`);
+
+        try {
+          // 确保URL正确且绝对化
+          // const statusUrl = `${this.$http.defaults.baseURL}/api/music/status`;
+          // console.log(`[CLIENT] 发送请求到: ${statusUrl}?id=${musicId}`);
+
+          const statusResponse = await this.$authHttp.get("/api/music/status", {
+            params: { id: musicId },
+          });
+
+          console.log(`[CLIENT] 收到状态响应:`, statusResponse.data);
+
+          if (statusResponse.data.is_disabled) {
+            console.log(`[CLIENT] 音乐ID ${musicId} 已被禁用，阻止播放`);
+            this.$message.error("该音乐已被管理员禁用");
+            return;
+          }
+        } catch (error) {
+          console.error(`[CLIENT] 检查音乐ID ${musicId} 状态失败:`, error);
+          // 尝试打印更多错误详情
+          if (error.response) {
+            console.error("错误状态:", error.response.status);
+            console.error("错误数据:", error.response.data);
+          }
+        }
+      }
       // 获得音乐url并保存到当前播放url
       this.getMusicUrl(musicDetail.id, musicDetail.self, musicDetail.url);
       // 保存到当前播放歌曲详情

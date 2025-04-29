@@ -18,7 +18,7 @@
       @mouseenter="hoverIn(index)"
       @mouseleave="hoverOut(index)"
       @dblclick="startSong(item, index)"
-      :class="{ 'disabled-song': item.is_disabled }"
+      :class="{ 'disabled-music': disabledMusicIds.has(item.id) }"
     >
       <div
         style="font-size: 50px; color: #ec4141; width: 15%"
@@ -114,11 +114,12 @@ export default {
       contextMenuPosition: { x: 0, y: 0 },
       currentSong: null,
       menuHeight: 0,
+      disabledMusicIds: new Set(), // 存储被禁用的音乐ID
     };
   },
   methods: {
     // 双击切换到当前播放
-    startSong(musicDetail, index) {
+    async startSong(musicDetail, index) {
       // console.log(
       //   "this.songsDetail.privileges[index].st",
       //   this.songsDetail.privileges[index].st
@@ -132,6 +133,23 @@ export default {
       if (musicDetail.id === this.songId) return;
       if (this.songsDetail.privileges[index].st == -200) {
         return;
+      }
+
+      if (!musicDetail.self) {
+        try {
+          const statusResponse = await this.$authHttp.get("/api/music/status", {
+            params: {
+              id: musicDetail.id,
+            },
+          });
+
+          if (statusResponse.data.is_disabled) {
+            this.$message.error("该音乐已被管理员禁用");
+            return; // 如果被禁用，直接返回不播放
+          }
+        } catch (error) {
+          console.error("检查音乐状态失败:", error);
+        }
       }
       // 获得音乐url并保存到当前播放url
       /**
@@ -409,12 +427,39 @@ export default {
     updateContextMenuHeight(height) {
       this.menuHeight = height;
     },
+    // 检查禁用状态
+    async checkDisabledStatus() {
+      if (!this.songsDetail.songs) return;
+
+      // 筛选出API音乐
+      const apiMusicIds = this.songsDetail.songs
+        .filter((song) => !song.self)
+        .map((song) => song.id);
+
+      for (const id of apiMusicIds) {
+        try {
+          const response = await this.$authHttp.get("/api/music/status", {
+            params: { id },
+          });
+
+          if (response.data.is_disabled) {
+            this.disabledMusicIds.add(id);
+          }
+        } catch (error) {
+          console.error(`检查音乐状态失败 (ID: ${id}):`, error);
+        }
+      }
+
+      this.$forceUpdate(); // 更新视图
+    },
   },
   created() {
     this.getSongPage(0, "Song");
   },
-  mounted() {
+  async mounted() {
     document.addEventListener("click", this.hideContextMenu);
+
+    await this.checkDisabledStatus();
   },
   beforeDestroy() {
     document.removeEventListener("click", this.hideContextMenu);
@@ -606,5 +651,14 @@ export default {
 
 .disabled-icon i {
   margin-right: 5px;
+}
+
+.disabled-music {
+  background-color: rgba(220, 53, 69, 0.1) !important;
+  opacity: 0.7;
+}
+
+.disabled-music:hover {
+  background-color: rgba(220, 53, 69, 0.2) !important;
 }
 </style>
