@@ -118,6 +118,7 @@ export default {
       currentSong: null,
       menuHeight: 0,
       disabledMusicIds: [], // 存储被禁用的音乐ID
+      isAddingToPlaylist: false,
     };
   },
   methods: {
@@ -371,6 +372,7 @@ export default {
       if (action === "play") {
         this.startSong(song, index);
       } else if (action === "addStar") {
+        this.isAddingToPlaylist = true;
         try {
           const response = await this.$authHttp.post("/api/playlist/add", {
             username: this.userInfo.username,
@@ -381,9 +383,10 @@ export default {
             pic_url: song.al.picUrl,
             is_self: song.self,
             music_id: song.id,
+            song_size: song.sq.size,
           });
 
-          // this.$message.success("添加成功");
+          this.$message.success("已添加到我喜欢的音乐");
           this.dialogVisible = false;
           // 告诉父组件有新的音频数据
           this.$emit("audioData");
@@ -394,6 +397,8 @@ export default {
           const errorMessage =
             error.response?.data?.message || error.message || "添加失败";
           this.$message.error(errorMessage);
+        } finally {
+          this.isAddingToPlaylist = false; // 结束加载
         }
       } else if (action === "delete") {
         try {
@@ -413,6 +418,7 @@ export default {
           return;
         }
       } else {
+        this.isAddingToPlaylist = true; // 开始加载
         try {
           const response = await this.$authHttp.post("/api/playlist/add", {
             username: this.userInfo.username,
@@ -423,9 +429,10 @@ export default {
             pic_url: song.al.picUrl,
             is_self: song.self,
             music_id: song.id,
+            song_size: song.sq.size,
           });
 
-          // this.$message.success("添加成功");
+          this.$message.success("已添加到我的歌单");
           this.dialogVisible = false;
           // 告诉父组件有新的音频数据
           // this.$emit("audioData");
@@ -436,6 +443,8 @@ export default {
           const errorMessage =
             error.response?.data?.message || error.message || "添加失败";
           this.$message.error(errorMessage);
+        } finally {
+          this.isAddingToPlaylist = false; // 结束加载
         }
       }
     },
@@ -444,9 +453,9 @@ export default {
     },
     // 检查音乐是否被禁用
     isMusicDisabled(musicId) {
-      console.log("zuizhognceshi:", musicId);
-      console.log("this.disabledMusicIds:", this.disabledMusicIds);
-      
+      // console.log("zuizhognceshi:", musicId);
+      // console.log("this.disabledMusicIds:", this.disabledMusicIds);
+
       return this.disabledMusicIds.includes(String(musicId));
     },
     // 检查禁用状态
