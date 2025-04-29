@@ -18,7 +18,7 @@
       @mouseenter="hoverIn(index)"
       @mouseleave="hoverOut(index)"
       @dblclick="startSong(item, index)"
-      :class="{ 'disabled-music': disabledMusicIds.has(item.id) }"
+      :class="{ 'disabled-music': isMusicDisabled(item.id) }"
     >
       <div
         style="font-size: 50px; color: #ec4141; width: 15%"
@@ -99,6 +99,9 @@ export default {
       //用户信息
       "userInfo",
     ]),
+    // disabledMusicIdsComputed() {
+    //   return this.disabledMusicIds;
+    // },
   },
   components: {
     //播放动画
@@ -114,7 +117,7 @@ export default {
       contextMenuPosition: { x: 0, y: 0 },
       currentSong: null,
       menuHeight: 0,
-      disabledMusicIds: new Set(), // 存储被禁用的音乐ID
+      disabledMusicIds: [], // 存储被禁用的音乐ID
     };
   },
   methods: {
@@ -165,6 +168,18 @@ export default {
       this.$store.dispatch("deleteHisListSong", musicDetail.id);
       this.$store.dispatch("unshiftHisMusicList", musicDetail);
       this.addList(musicDetail, index);
+    },
+
+    async fetchDisabledMusic() {
+      try {
+        const response = await this.$authHttp.get("/api/disabled-music");
+        this.disabledMusicIds = response.data.disabled_music_ids || [];
+        console.log("已禁用音乐ID列表:", this.disabledMusicIds);
+        this.$forceUpdate(); // 强制更新视图
+      } catch (error) {
+        console.error("获取禁用音乐列表失败:", error);
+        this.disabledMusicIds = [];
+      }
     },
     //加入歌单
     addList(musicDetail, index) {
@@ -427,6 +442,13 @@ export default {
     updateContextMenuHeight(height) {
       this.menuHeight = height;
     },
+    // 检查音乐是否被禁用
+    isMusicDisabled(musicId) {
+      console.log("zuizhognceshi:", musicId);
+      console.log("this.disabledMusicIds:", this.disabledMusicIds);
+      
+      return this.disabledMusicIds.includes(String(musicId));
+    },
     // 检查禁用状态
     async checkDisabledStatus() {
       if (!this.songsDetail.songs) return;
@@ -458,7 +480,7 @@ export default {
   },
   async mounted() {
     document.addEventListener("click", this.hideContextMenu);
-
+    await this.fetchDisabledMusic();
     await this.checkDisabledStatus();
   },
   beforeDestroy() {
