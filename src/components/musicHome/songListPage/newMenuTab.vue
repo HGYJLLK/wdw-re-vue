@@ -390,6 +390,8 @@ export default {
       const addMusicButton = document.querySelector("#addMusicBtn");
 
       const totalSizeGB = this.totalFileSizeGB / (1024 * 1024 * 1024);
+      const percentage = Math.min((totalSizeGB / 1) * 100, 100);
+
       capacityValue.textContent = `${totalSizeGB.toFixed(2)}GB / 1GB`;
 
       console.log("计算的大小(GB):", totalSizeGB);
