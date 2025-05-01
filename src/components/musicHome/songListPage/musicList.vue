@@ -383,7 +383,7 @@ export default {
             pic_url: song.al.picUrl,
             is_self: song.self,
             music_id: song.id,
-            song_size: song.sq.size,
+            song_size: song.sq ? song.sq.size : song.file_size,
           });
 
           this.$message.success("已添加到我喜欢的音乐");
