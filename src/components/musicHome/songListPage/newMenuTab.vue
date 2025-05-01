@@ -389,12 +389,17 @@ export default {
       const capacityValue = document.querySelector(".capacityValue");
       const addMusicButton = document.querySelector("#addMusicBtn");
 
-      const percentage = Math.min((this.totalFileSizeInGB / 1) * 100, 100);
-      capacityValue.textContent = `${this.totalFileSizeInGB}GB / 1GB`;
+      const totalSizeGB = this.totalFileSizeGB / (1024 * 1024 * 1024);
+      capacityValue.textContent = `${totalSizeGB.toFixed(2)}GB / 1GB`;
 
-      console.log("percentage", percentage);
+      console.log("计算的大小(GB):", totalSizeGB);
+      console.log("计算的百分比:", percentage);
 
-      if (percentage === 100) {
+      // capacityValue.textContent = `${this.totalFileSizeInGB}GB / 1GB`;
+
+      // console.log("percentage", percentage);
+
+      if (percentage >= 100) {
         this.isOpend = false;
         addMusicButton.style.background = "rgba(255, 0, 0, 0.8)";
       } else {

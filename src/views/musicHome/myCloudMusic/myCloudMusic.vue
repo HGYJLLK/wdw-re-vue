@@ -98,13 +98,13 @@ export default {
         // this.$message.success("获取歌曲数据成功");
         this.songsDetail = response.data.songsDetail;
         console.log("歌曲数据：", this.songsDetail);
-        
+
         // 遍历 songsDetail 中的 songs
         if (this.songsDetail.songs && Array.isArray(this.songsDetail.songs)) {
           for (let song of this.songsDetail.songs) {
             // 检查 file_size 是否存在
             if (song.file_size) {
-              this.totalSizeBytes += song.file_size; // 累加 file_size（单位：字节）
+              this.totalSizeBytes += Number(song.file_size); // 累加 file_size（单位：字节）
             }
           }
         }
@@ -122,6 +122,7 @@ export default {
     },
     async handleAudioData() {
       await this.getPlayListDetail();
+      this.$forceUpdate();
     },
     // 全部播放
     playAll() {
